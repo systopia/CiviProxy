@@ -6,7 +6,13 @@ require_once 'civiproxy.civix.php';
  * POC email 
  */
 function civiproxy_civicrm_alterMailParams( &$params, $context ) {
-  error_log(print_r($params,1));
+  foreach (array('html', 'text') as $key) {
+    $value = $params[$key];
+    $value = str_replace('http://localhost:8888/mh/sites/all/modules/civicrm/extern/url.php',  'http://localhost:8888/proxy/url.php',     $value);
+    $value = str_replace('http://localhost:8888/mh/sites/all/modules/civicrm/extern/open.php', 'http://localhost:8888/proxy/open.php',    $value);
+    $value = str_replace('http://localhost:8888/mh/sites/default/files/civicrm/persist',       'http://localhost:8888/proxy/file.php?q=', $value);
+    $params[$key] = $value;
+  }
 }
 
 
