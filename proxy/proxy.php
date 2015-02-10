@@ -21,8 +21,8 @@ require_once "config.php";
  *                               where type can be 'int', 'string' (unchecked),
  */
 function civiproxy_redirect($url_requested, $parameters) {
-  error_log('CALLING: '.$url_requested);
-  error_log(print_r($parameters,1));
+  // error_log('CALLING: '.$url_requested);
+  // error_log(print_r($parameters,1));
 
   $url = $url_requested;
   $curlSession = curl_init();
@@ -113,4 +113,17 @@ function civiproxy_get_parameters($valid_parameters) {
   }
 
   return $result;
+}
+
+/**
+ * responds with an error
+ * 
+ */
+function civiproxy_rest_error($message) {
+  $error = array( 'is_error'      => 1,
+                  'error_message' => $message);
+  // TODO: Implement
+  //header();
+  print $message;
+  exit(1);
 }
