@@ -3,7 +3,7 @@
 require_once 'civiproxy.civix.php';
 
 /**
- * POC email 
+ * POC email
  */
 function civiproxy_civicrm_alterMailParams( &$params, $context ) {
   foreach (array('html', 'text') as $key) {
@@ -92,4 +92,22 @@ function civiproxy_civicrm_managed(&$entities) {
  */
 function civiproxy_civicrm_caseTypes(&$caseTypes) {
   _civiproxy_civix_civicrm_caseTypes($caseTypes);
+}
+
+/**
+* Implementation of hook_civicrm_alterSettingsFolders
+*
+* Scan for settings in custom folder and import them
+*
+*/
+function civiproxy_civicrm_alterSettingsFolders(&$metaDataFolders = NULL){
+  static $configured = FALSE;
+  if ($configured) return;
+  $configured = TRUE;
+
+  $extRoot = dirname( __FILE__ ) . DIRECTORY_SEPARATOR;
+  $extDir = $extRoot . 'settings';
+  if(!in_array($extDir, $metaDataFolders)){
+    $metaDataFolders[] = $extDir;
+  }
 }

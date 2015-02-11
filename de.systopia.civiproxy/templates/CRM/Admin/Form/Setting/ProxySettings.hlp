@@ -1,0 +1,11 @@
+{htxt id='id-proxy-enabled'}
+    <p>{ts}TODO #1{/ts}</p>
+{/htxt}
+
+{htxt id='id-image-cache-enabled'}
+    <p>{ts}TODO #2{/ts}</p>
+{/htxt}
+
+{htxt id='id-proxy-url'}
+    <p>{ts}TODO #3{/ts}</p>
+{/htxt}
