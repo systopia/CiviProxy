@@ -4,3 +4,4 @@ TODO
 2) REST error -> set headers?
 3) file cache  => http://pear.php.net/manual/en/package.caching.cache-lite.cache-lite.cache-lite.php
 4) config page for extension
+5) sanitize string values (mysql_escape_string?)
