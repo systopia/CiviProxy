@@ -10,7 +10,6 @@
 $civiproxy_version = '0.1';
 require_once "config.php";
 
-
 /**
  * this will redirect the request to another URL,
  *  i.e. will pass the reply on to this request
@@ -21,8 +20,8 @@ require_once "config.php";
  *                               where type can be 'int', 'string' (unchecked),
  */
 function civiproxy_redirect($url_requested, $parameters) {
-  error_log('CALLING: '.$url_requested);
-  error_log(print_r($parameters,1));
+  // error_log('CALLING: '.$url_requested);
+  // error_log(print_r($parameters,1));
 
   $url = $url_requested;
   $curlSession = curl_init();
@@ -70,24 +69,33 @@ function civiproxy_redirect($url_requested, $parameters) {
     $body = $content[1];
 
     // handle headers - simply re-outputing them
-    $header_ar = split(chr(10), $header);
+    $header_ar = explode(chr(10), $header);
     foreach ($header_ar as $header_line){
       if (!preg_match("/^Transfer-Encoding/", $header_line)){
-        // TODO: replace returned URLs
-        //$header_line = str_replace($url, "TODO://", $header_line);
+        civiproxy_mend_URLs($header_line);
         header(trim($header_line));
       }
     }
 
-    // TODO: do we need this?
     //rewrite all hard coded urls to ensure the links still work!
-    //$body = str_replace($base,$mydomain,$body);
+    civiproxy_mend_URLs($body);
+
     print $body;
   }
 
   curl_close ($curlSession);
 }
 
+
+/**
+ * Will mend all the URLs in the string that point to the target,
+ *  so they will point to this proxy instead
+ */
+function civiproxy_mend_URLs(&$string) {
+  // TODO: this will become more complex with the file cache
+  global $target_civicrm, $proxy_base;
+  $string = preg_replace("#$target_civicrm#", $proxy_base, $string);
+}
 
 /**
  * Will check the incoming connection.

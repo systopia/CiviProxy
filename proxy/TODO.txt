@@ -2,5 +2,5 @@ TODO
 
 1) make index page nice (real html)
 2) REST error -> set headers?
-3) replace URLs
-4) file cache?
+3) file cache  => http://pear.php.net/manual/en/package.caching.cache-lite.cache-lite.cache-lite.php
+4) config page for extension

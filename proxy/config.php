@@ -9,23 +9,22 @@
 
 
 // this is the primary variable that you would want to change
-//$target_civicrm = 'https://civicrm.muslimehelfen.org';
 $target_civicrm = 'http://localhost:8888/mh';
+$proxy_base     = 'http://localhost:8888/proxy';
+
+// default paths, override if you want
+$target_rest = $target_civicrm . '/sites/all/modules/civicrm/extern/rest.php';
+$target_url  = $target_civicrm . '/sites/all/modules/civicrm/extern/url.php';
+$target_open = $target_civicrm . '/sites/all/modules/civicrm/extern/open.php';
 
 // API and SITE keys
 $api_key_map = array();
 $sys_key_map = array();
 
 if (file_exists("secrets.php")) {
-  // keys can also be stored in secrets php
+  // keys can also be stored in 'secrets.php'
   require_once "secrets.php";
 }
-
-
-// default paths, override if you want
-$target_rest = $target_civicrm . '/sites/all/modules/civicrm/extern/rest.php';
-$target_url  = $target_civicrm . '/sites/all/modules/civicrm/extern/url.php';
-$target_open = $target_civicrm . '/sites/all/modules/civicrm/extern/open.php';
 
 // define the REST actions that will be allowed
 $rest_allowed_actions = array(

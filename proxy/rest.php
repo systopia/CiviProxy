@@ -17,9 +17,7 @@ if (!civiproxy_security_check('rest')) {
 }
 
 // check credentials
-error_log(print_r($_REQUEST,1));
 $credentials = civiproxy_get_parameters(array('key' => 'string', 'api_key' => 'string'));
-error_log(print_r($credentials,1));
 if (empty($credentials['key'])) {
   civiproxy_rest_error("No site key given");
 } else {
