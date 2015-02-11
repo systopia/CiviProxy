@@ -10,6 +10,9 @@
 require_once "config.php";
 require_once "proxy.php";
 
+// basic check
+civiproxy_security_check('url');
+
 // basic restraints
 $valid_parameters = array(  'u'   => 'int',
                             'q'   => 'int',

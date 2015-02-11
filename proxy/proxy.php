@@ -21,8 +21,8 @@ require_once "config.php";
  *                               where type can be 'int', 'string' (unchecked),
  */
 function civiproxy_redirect($url_requested, $parameters) {
-  // error_log('CALLING: '.$url_requested);
-  // error_log(print_r($parameters,1));
+  error_log('CALLING: '.$url_requested);
+  error_log(print_r($parameters,1));
 
   $url = $url_requested;
   $curlSession = curl_init();
@@ -82,11 +82,26 @@ function civiproxy_redirect($url_requested, $parameters) {
     // TODO: do we need this?
     //rewrite all hard coded urls to ensure the links still work!
     //$body = str_replace($base,$mydomain,$body);
-
     print $body;
   }
 
   curl_close ($curlSession);
+}
+
+
+/**
+ * Will check the incoming connection.
+ * This hook allowes for (future) checks for flooding, spoofing, 
+ * unauthorized access quantities, etc.
+ * 
+ * @param $target  
+ * @param $quit    if TRUE, quit immediately if access denied
+ *
+ * @return TRUE if allowed, FALSE if not (or quits if $quit is set)
+ */
+function civiproxy_security_check($target, $quit=TRUE) {
+  // TODO: implement
+  return TRUE;
 }
 
 
@@ -106,24 +121,27 @@ function civiproxy_get_parameters($valid_parameters) {
         $value = (int) $value;
       } elseif ($type == 'string') {
         // TODO: sanitize? SQL?
-        $value = (int) $value;
+        $value = $value;
+      } elseif ($type == 'float2') {
+        // TODO: check if safe wrt l10n. rather use sprintf
+        $value = number_format($value, 2, '.', '');
+      } elseif (is_array($type)) {
+        // this is a list of valid options
+        $requested_value = $value;
+        $value = '';
+        foreach ($type as $allowed_value) {
+          if ($requested_value === $allowed_value) {
+            $value = $requested_value;
+            break;
+          }
+        }
+      } else {
+        error_log("CiviProxy: unknown type '$type'. Ignored.");
+        $value = '';
       }
       $result[$name] = $value;
     }
   }
 
   return $result;
-}
-
-/**
- * responds with an error
- * 
- */
-function civiproxy_rest_error($message) {
-  $error = array( 'is_error'      => 1,
-                  'error_message' => $message);
-  // TODO: Implement
-  //header();
-  print $message;
-  exit(1);
 }

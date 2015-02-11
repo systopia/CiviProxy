@@ -10,4 +10,5 @@
 require_once "config.php";
 require_once "proxy.php";
 
+// TODO: make nice
 print_r("SYSTOPIA CiviCRM Proxy Version $civiproxy_version");

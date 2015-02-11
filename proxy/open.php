@@ -10,6 +10,9 @@
 require_once "config.php";
 require_once "proxy.php";
 
+// basic check
+civiproxy_security_check('open');
+
 // basic restraints
 $valid_parameters = array(  'q'   => 'int'  );
 

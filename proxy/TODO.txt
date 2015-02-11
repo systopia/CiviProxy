@@ -1,0 +1,6 @@
+TODO
+
+1) make index page nice (real html)
+2) REST error -> set headers?
+3) replace URLs
+4) file cache?
