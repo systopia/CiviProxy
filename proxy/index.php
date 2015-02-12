@@ -9,13 +9,13 @@
 
 require_once "config.php";
 require_once "proxy.php";
+?>
 
-$source = '
 <!DOCTYPE html>
 <html>
  <head>
   <meta charset="UTF-8">
-  <title>CiviProxy Version ' . $civiproxy_version . '</title>
+  <title>CiviProxy Version <?php echo $civiproxy_version;?></title>
   <link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
   <style type="text/css">
     body {
@@ -52,11 +52,8 @@ $source = '
   <div id="container">
     <div id="info" class="center">
       <a href="https://www.systopia.de/"><img src="static/images/systopia_logo.png" alt="SYSTOPIA Organisationsberatung"></img></a>
-      <p id="version">CiviProxy Version ' . $civiproxy_version . '</p>
+      <p id="version">CiviProxy Version <?php echo $civiproxy_version;?></p>
     </div>
   </div>
  </body>
 </html>
-';
-
-echo($source);
