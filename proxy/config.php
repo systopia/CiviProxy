@@ -16,6 +16,7 @@ $proxy_base     = 'https://ssl.webpack.de/wp11230065.server-he.de';
 $target_rest = $target_civicrm . '/sites/all/modules/civicrm/extern/rest.php';
 $target_url  = $target_civicrm . '/sites/all/modules/civicrm/extern/url.php';
 $target_open = $target_civicrm . '/sites/all/modules/civicrm/extern/open.php';
+$target_file = $target_civicrm . '/sites/default/files/civicrm/persist/';
 
 // API and SITE keys
 $api_key_map = array();
@@ -25,6 +26,13 @@ if (file_exists("secrets.php")) {
   // keys can also be stored in 'secrets.php'
   require_once "secrets.php";
 }
+
+// define file cache options, see http://pear.php.net/manual/en/package.caching.cache-lite.cache-lite.cache-lite.php
+$file_cache_options = array(
+    'cacheDir' => 'file_cache/',
+    'lifeTime' => 3600
+);
+
 
 // define the REST actions that will be allowed
 $rest_allowed_actions = array(

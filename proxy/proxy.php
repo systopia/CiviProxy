@@ -7,7 +7,7 @@
 | http://www.systopia.de/                                 |
 +---------------------------------------------------------*/
 
-$civiproxy_version = '0.1';
+$civiproxy_version = '0.2';
 require_once "config.php";
 
 /**
@@ -153,4 +153,13 @@ function civiproxy_get_parameters($valid_parameters) {
   }
 
   return $result;
+}
+
+/**
+ * generates a CiviCRM REST API compliant error
+ * and ends processing
+ */
+function civiproxy_http_error($message, $code = 404) {
+  header("HTTP/1.1 $code $message");
+  exit();
 }
