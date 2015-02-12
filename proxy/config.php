@@ -9,8 +9,8 @@
 
 
 // this is the primary variable that you would want to change
-$target_civicrm = 'http://localhost:8888/mh';
-$proxy_base     = 'http://localhost:8888/proxy';
+$target_civicrm = 'https://crmtest.muslimehelfen.org';
+$proxy_base     = 'https://ssl.webpack.de/wp11230065.server-he.de';
 
 // default paths, override if you want
 $target_rest = $target_civicrm . '/sites/all/modules/civicrm/extern/rest.php';

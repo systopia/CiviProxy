@@ -49,8 +49,9 @@ function civiproxy_redirect($url_requested, $parameters) {
   curl_setopt($curlSession, CURLOPT_URL, $url);
   curl_setopt($curlSession, CURLOPT_HEADER, 1);
   curl_setopt($curlSession, CURLOPT_RETURNTRANSFER,1);
-  curl_setopt($curlSession, CURLOPT_TIMEOUT,30);
+  curl_setopt($curlSession, CURLOPT_TIMEOUT, 30);
   curl_setopt($curlSession, CURLOPT_SSL_VERIFYHOST, 1);
+  curl_setopt($curlSession, CURLOPT_CAINFO, 'target.pem');
 
   //Send the request and store the result in an array
   $response = curl_exec($curlSession);
