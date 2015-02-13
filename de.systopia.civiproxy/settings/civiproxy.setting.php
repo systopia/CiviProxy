@@ -30,4 +30,16 @@ return array(
     'description' => 'The URL from which the proxy will be available for requests',
     'help_text' => 'TODO',
   ),
+  'proxy_version' => array(
+    'group_name' => 'CiviProxy Settings',
+    'group' => 'de.systopia',
+    'name' => 'proxy_version',
+    'type' => 'String',
+    'default' => "",
+    'add' => '4.3',
+    'is_domain' => 1,
+    'is_contact' => 0,
+    'description' => 'The version of the currently selected proxy',
+    'help_text' => 'TODO',
+  ),
  );

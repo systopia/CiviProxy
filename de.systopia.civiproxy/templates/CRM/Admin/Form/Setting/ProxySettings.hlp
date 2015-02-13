@@ -10,3 +10,15 @@
   {ts}Enter your CiviProxy's URL here{/ts}
 </p>
 {/htxt}
+
+{htxt id='id-proxy-version'}
+<p>
+  {ts}TODO #1{/ts}
+</p>
+{/htxt}
+
+{htxt id='id-extoptout-url'}
+<p>
+  {ts}TODO #2{/ts}
+</p>
+{/htxt}
