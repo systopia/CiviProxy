@@ -50,7 +50,7 @@ function civiproxy_redirect($url_requested, $parameters) {
   curl_setopt($curlSession, CURLOPT_HEADER, 1);
   curl_setopt($curlSession, CURLOPT_RETURNTRANSFER,1);
   curl_setopt($curlSession, CURLOPT_TIMEOUT, 30);
-  curl_setopt($curlSession, CURLOPT_SSL_VERIFYHOST, 1);
+  curl_setopt($curlSession, CURLOPT_SSL_VERIFYHOST, 0);
   curl_setopt($curlSession, CURLOPT_CAINFO, 'target.pem');
 
   //Send the request and store the result in an array
@@ -58,7 +58,7 @@ function civiproxy_redirect($url_requested, $parameters) {
 
   // Check that a connection was made
   if (curl_error($curlSession)){
-    print curl_error($curlSession);
+    civiproxy_http_error(curl_error($curlSession), curl_errno($curlSession));
 
   } else {
     //clean duplicate header that seems to appear on fastcgi with output buffer on some servers!!
@@ -93,9 +93,23 @@ function civiproxy_redirect($url_requested, $parameters) {
  *  so they will point to this proxy instead
  */
 function civiproxy_mend_URLs(&$string) {
-  // TODO: this will become more complex with the file cache
-  global $target_civicrm, $proxy_base;
-  $string = preg_replace("#$target_civicrm#", $proxy_base, $string);
+  global $target_rest, $target_url, $target_open, $target_file, $target_mail, $proxy_base;
+
+  if ($target_rest) {
+    $string = preg_replace("#$target_rest#", $proxy_base . '/rest.php', $string);
+  }
+  if ($target_url) {
+    $string = preg_replace("#$target_url#",  $proxy_base . '/url.php', $string); 
+  }
+  if ($target_open) {
+    $string = preg_replace("#$target_open#", $proxy_base . '/open.php', $string); 
+  }
+  if ($target_mail) {
+    $string = preg_replace("#$target_mail#", $proxy_base . '/mail.php', $string); 
+  }
+  if ($target_file) {
+    $string = preg_replace("#$target_file#", $proxy_base . '/file.php?id=', $string); 
+  }
 }
 
 /**
@@ -160,6 +174,8 @@ function civiproxy_get_parameters($valid_parameters) {
  * and ends processing
  */
 function civiproxy_http_error($message, $code = 404) {
-  header("HTTP/1.1 $code $message (CiviProxy $civiproxy_version)");
+  global $civiproxy_version;
+  header("HTTP/1.1 $code $message (CiviProxy {$civiproxy_version})");
+  // TODO: create error msg body
   exit();
 }

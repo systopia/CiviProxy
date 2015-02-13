@@ -8,15 +8,32 @@
 +---------------------------------------------------------*/
 
 
-// this is the primary variable that you would want to change
+/****************************************************************
+ **                            URLS                            **
+ ****************************************************************/
 $target_civicrm = 'https://crmtest.muslimehelfen.org';
-$proxy_base     = 'https://ssl.webpack.de/wp11230065.server-he.de';
+//$proxy_base     = 'https://ssl.webpack.de/wp11230065.server-he.de';
+$proxy_base     = 'http://localhost:8888/proxy';
 
-// default paths, override if you want
-$target_rest = $target_civicrm . '/sites/all/modules/civicrm/extern/rest.php';
-$target_url  = $target_civicrm . '/sites/all/modules/civicrm/extern/url.php';
-$target_open = $target_civicrm . '/sites/all/modules/civicrm/extern/open.php';
-$target_file = $target_civicrm . '/sites/default/files/civicrm/persist/';
+
+/****************************************************************
+ **                      DEFAULT PATHS                         **
+ **                                                            **
+ **          set to NULL to disable a feature                  **
+ ****************************************************************/
+
+// default paths, override if you want. Set to NULL to disable
+$target_rest     = $target_civicrm . '/sites/all/modules/civicrm/extern/rest.php';
+$target_url      = $target_civicrm . '/sites/all/modules/civicrm/extern/url.php';
+$target_open     = $target_civicrm . '/sites/all/modules/civicrm/extern/open.php';
+$target_file     = $target_civicrm . '/sites/default/files/civicrm/persist/';
+$target_viewmail = $target_civicrm . '/civicrm/mailing/view';
+
+
+
+/****************************************************************
+ **                   File Caching Options                     **
+ ****************************************************************/
 
 // API and SITE keys
 $api_key_map = array();
@@ -30,11 +47,22 @@ if (file_exists("secrets.php")) {
 // define file cache options, see http://pear.php.net/manual/en/package.caching.cache-lite.cache-lite.cache-lite.php
 $file_cache_options = array(
     'cacheDir' => 'file_cache/',
-    'lifeTime' => 3600
+    'lifeTime' => 86400
 );
 
+// define regex patterns that shoud NOT be accepted
+$file_cache_exclude = array();
 
-// define the REST actions that will be allowed
+// if set, cached file must match at least one of these regex patterns
+$file_cache_include = array(
+        //'#.+[.](png|jpe?g|gif)#i'           // only media files
+    );
+
+
+
+/****************************************************************
+ **                   REST API OPTIONS                         **
+ ****************************************************************/
 $rest_allowed_actions = array(
   'MhApi' => array(
       'getcontact'      => array(

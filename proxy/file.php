@@ -10,6 +10,7 @@
 require_once "config.php";
 require_once "proxy.php";
 
+// see if file caching is enabled
 if (!$target_file) civiproxy_http_error("Feature disabled", 405);
 
 // basic check
@@ -21,6 +22,26 @@ $parameters = civiproxy_get_parameters($valid_parameters);
 
 // check if id specified
 if (empty($parameters['id'])) civiproxy_http_error("Resource not found");
+
+// check restrictions
+if (!empty($file_cache_exclude)) {
+  foreach ($file_cache_exclude as $pattern) {
+    if (preg_match($pattern, $parameters['id'])) {
+      civiproxy_http_error("Invalid Resource", 403);
+    }
+  }
+}
+if (!empty($file_cache_include)) {
+  $accept_id = FALSE;
+  foreach ($file_cache_include as $pattern) {
+    if (preg_match($pattern, $parameters['id'])) {
+      $accept_id = TRUE;
+    }
+  }
+  if (!$accept_id) {
+    civiproxy_http_error("Invalid Resource", 403);
+  }
+}
 
 // load PEAR file cache
 ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . 'libs');
@@ -36,7 +57,7 @@ $header = $file_cache->get($header_key);
 $data   = $file_cache->get($data_key);
 
 if ($header && $data) {
-  error_log("CACHE HIT");
+  // error_log("CACHE HIT");
   $header_lines = json_decode($header);
   foreach ($header_lines as $header_line) {
     header($header_line);
@@ -48,7 +69,7 @@ if ($header && $data) {
 
 // if we get here, we have a cache miss => load
 $url = $target_file . $parameters['id'];
-error_log("CACHE MISS. LOADING $url");
+// error_log("CACHE MISS. LOADING $url");
 
 $curlSession = curl_init();
 curl_setopt($curlSession, CURLOPT_URL, $url);

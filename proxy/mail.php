@@ -11,13 +11,12 @@ require_once "config.php";
 require_once "proxy.php";
 
 // see if mail open tracking is enabled
-if (!$target_open) civiproxy_http_error("Feature disabled", 405);
+if (!$target_viewmail) civiproxy_http_error("Feature disabled", 405);
 
 // basic check
-civiproxy_security_check('open');
+civiproxy_security_check('viewmail');
 
 // basic restraints
-$valid_parameters = array(  'q'   => 'int'  );
-
+$valid_parameters = array(  'id'   => 'int'  );
 $parameters = civiproxy_get_parameters($valid_parameters);
-civiproxy_redirect($target_open, $parameters);
+civiproxy_redirect($target_viewmail, $parameters);
