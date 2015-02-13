@@ -10,6 +10,10 @@
 require_once "config.php";
 require_once "proxy.php";
 
+// see if mail open tracking is enabled
+if (!$target_open) civiproxy_http_error("Feature disabled", 405);
+
+
 // basic check
 civiproxy_security_check('open');
 

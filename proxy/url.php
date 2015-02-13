@@ -10,6 +10,9 @@
 require_once "config.php";
 require_once "proxy.php";
 
+// see if URL tracking is enabled
+if (!$target_url) civiproxy_http_error("Feature disabled", 405);
+
 // basic check
 civiproxy_security_check('url');
 

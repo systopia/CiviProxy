@@ -10,6 +10,8 @@
 require_once "config.php";
 require_once "proxy.php";
 
+if (!$target_file) civiproxy_http_error("Feature disabled", 405);
+
 // basic check
 civiproxy_security_check('file');
 

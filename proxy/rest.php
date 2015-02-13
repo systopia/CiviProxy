@@ -10,6 +10,9 @@
 require_once "config.php";
 require_once "proxy.php";
 
+// see if REST API is enabled
+if (!$target_rest) civiproxy_http_error("Feature disabled", 405);
+
 
 // basic check
 if (!civiproxy_security_check('rest')) {

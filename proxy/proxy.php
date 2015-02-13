@@ -160,6 +160,6 @@ function civiproxy_get_parameters($valid_parameters) {
  * and ends processing
  */
 function civiproxy_http_error($message, $code = 404) {
-  header("HTTP/1.1 $code $message");
+  header("HTTP/1.1 $code $message (CiviProxy $civiproxy_version)");
   exit();
 }
