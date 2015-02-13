@@ -3,7 +3,7 @@
 require_once 'civiproxy.civix.php';
 
 /**
- * POC email
+ * In outgoing emails, replace the various resources and trackers with proxied versions
  */
 function civiproxy_civicrm_alterMailParams( &$params, $context ) {
   // check if the proxy is enabled
