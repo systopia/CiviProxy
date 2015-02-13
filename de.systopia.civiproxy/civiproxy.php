@@ -6,15 +6,28 @@ require_once 'civiproxy.civix.php';
  * POC email
  */
 function civiproxy_civicrm_alterMailParams( &$params, $context ) {
-  foreach (array('html', 'text') as $key) {
-    $value = $params[$key];
-    $value = str_replace('http://localhost:8888/mh/sites/all/modules/civicrm/extern/url.php',  'http://localhost:8888/proxy/url.php',     $value);
-    $value = str_replace('http://localhost:8888/mh/sites/all/modules/civicrm/extern/open.php', 'http://localhost:8888/proxy/open.php',    $value);
-    $value = str_replace('http://localhost:8888/mh/sites/default/files/civicrm/persist',       'http://localhost:8888/proxy/file.php?q=', $value);
-    $params[$key] = $value;
+  // check if the proxy is enabled
+  $enabled = CRM_Core_BAO_Setting::getItem('CiviProxy Settings', 'proxy_enabled');
+  if (!$enabled) return;
+
+  // get the URLs
+  $config      = CRM_Core_Config::singleton();
+  $system_base = $config->userFrameworkBaseURL;
+  $proxy_base  = CRM_Core_BAO_Setting::getItem('CiviProxy Settings', 'proxy_url');
+
+  // fields to replace:
+  $external_urls  = array('url.php', 'open.php');
+  $fields2replace = array('html', 'text');
+  foreach ($fields2replace as $field) {
+    $value = $params[$field];
+    $value = preg_replace("#{$system_base}sites/all/modules/civicrm/extern/url.php#i",  $proxy_base.'/url.php',      $value);
+    $value = preg_replace("#{$system_base}sites/all/modules/civicrm/extern/open.php#i", $proxy_base.'/open.php',     $value);
+    $value = preg_replace("#{$system_base}sites/default/files/civicrm/persist/#i",      $proxy_base.'/file.php?id=', $value);
+    $value = preg_replace("#{$system_base}civicrm/mailing/view#i",                      $proxy_base.'/mail.php',     $value);
+    $value = preg_replace("#{$system_base}civicrm/mailing/optout#i",                    $proxy_base.'/index.php',     $value);
+    $params[$field] = $value;
   }
 }
-
 
 /**
  * Implementation of hook_civicrm_config
