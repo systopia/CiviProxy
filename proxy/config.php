@@ -12,8 +12,8 @@
  **                            URLS                            **
  ****************************************************************/
 $target_civicrm = 'https://crmtest.muslimehelfen.org';
-//$proxy_base     = 'https://ssl.webpack.de/wp11230065.server-he.de';
-$proxy_base     = 'http://localhost:8888/proxy';
+$proxy_base     = 'https://ssl.webpack.de/wp11230065.server-he.de';
+//$proxy_base     = 'http://localhost:8888/proxy';
 
 
 /****************************************************************
@@ -29,6 +29,8 @@ $target_open     = $target_civicrm . '/sites/all/modules/civicrm/extern/open.php
 $target_file     = $target_civicrm . '/sites/default/files/civicrm/persist/';
 $target_mail     = $target_civicrm . '/civicrm/mailing/view';
 
+// CAREFUL: only enable on debug systems. Will log all queries to given PUBLIC file
+$debug           = NULL; //'debug.log';
 
 
 /****************************************************************

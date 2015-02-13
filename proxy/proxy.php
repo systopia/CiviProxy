@@ -123,6 +123,13 @@ function civiproxy_mend_URLs(&$string) {
  * @return TRUE if allowed, FALSE if not (or quits if $quit is set)
  */
 function civiproxy_security_check($target, $quit=TRUE) {
+  global $debug;
+  if (!empty($debug)) {
+    $file = fopen($debug, 'a');
+    fwrite($file, "REQUEST FROM " . $_SERVER['REMOTE_ADDR'] . " ON " . date('Y-m-d H:i:s') . ' -- ' . print_r($_REQUEST,1));
+    fclose($file);
+  }
+  
   // TODO: implement
   return TRUE;
 }
