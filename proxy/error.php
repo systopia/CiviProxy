@@ -125,7 +125,7 @@ $error = "Please do not divide by zero."; //TODO: remove this and call the page 
     <div id="error-container" class="center">
       <?php if(isset($error)):?>
       <div class="bs-callout bs-callout-danger">
-        <h4>An error has occured while processing your request</h4>
+        <h4>An error has occurred while processing your request</h4>
         <?php echo($error); ?>
       </div>
       <?php endif;?>
