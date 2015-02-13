@@ -13,7 +13,6 @@ class CRM_Admin_Form_Setting_ProxySettings extends CRM_Admin_Form_Setting
 
     // add all required elements
     $this->addElement('checkbox','proxy_enabled');
-    $this->addElement('checkbox','image_cache_enabled');
     $this->addElement('text', 'proxy_url', ts('Proxy URL'));
 
     $this->addButtons(array(
@@ -30,7 +29,6 @@ class CRM_Admin_Form_Setting_ProxySettings extends CRM_Admin_Form_Setting
 
   function preProcess() {
     $this->assign('proxy_enabled', CRM_Core_BAO_Setting::getItem('CiviProxy Settings', 'proxy_enabled'));
-    $this->assign('image_cache_enabled', CRM_Core_BAO_Setting::getItem('CiviProxy Settings', 'image_cache_enabled'));
     $this->setDefaults(array(
         'proxy_url' => CRM_Core_BAO_Setting::getItem('CiviProxy Settings', 'proxy_url'),
       ));
@@ -42,7 +40,6 @@ class CRM_Admin_Form_Setting_ProxySettings extends CRM_Admin_Form_Setting
 
     // checkboxes
     CRM_Core_BAO_Setting::setItem(!empty($values['proxy_enabled']),'CiviProxy Settings', 'proxy_enabled');
-    CRM_Core_BAO_Setting::setItem(!empty($values['image_cache_enabled']),'CiviProxy Settings', 'image_cache_enabled');
 
     // text
     if ($values['proxy_url']){

@@ -9,10 +9,6 @@
               <td><input value="1" type="checkbox" id="proxy_enabled" name="proxy_enabled" {if $proxy_enabled}checked="checked"{/if} class="form-checkbox"/></td>
             </tr>
             <tr>
-              <td class="label"><label for="image_cache_enabled"> {ts}Enable image cache{/ts} <a onclick='CRM.help("{ts}Enable Image Cache{/ts}", {literal}{"id":"id-image-cache-enabled","file":"CRM\/Admin\/Form\/Setting\/ProxySettings"}{/literal}); return false;' href="#" title="{ts}Help{/ts}" class="helpicon">&nbsp;</a></label></td>
-              <td><input value="1" type="checkbox" id="image_cache_enabled" name="image_cache_enabled" {if $image_cache_enabled}checked="checked"{/if} class="form-checkbox"/></td>
-            </tr>
-            <tr>
               <td class="label">{$form.proxy_url.label} <a onclick='CRM.help("{ts}Proxy URL{/ts}", {literal}{"id":"id-proxy-url","file":"CRM\/Admin\/Form\/Setting\/ProxySettings"}{/literal}); return false;' href="#" title="{ts}Help{/ts}" class="helpicon">&nbsp;</a></td>
               <td>{$form.proxy_url.html}</td>
             </tr>
@@ -32,7 +28,7 @@
 
 <style type="text/css">
   #proxy_url {
-    width: 220px;
+    width: 300px;
   }
 </style>
 {/literal}
