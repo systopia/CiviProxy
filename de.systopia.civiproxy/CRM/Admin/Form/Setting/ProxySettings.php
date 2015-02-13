@@ -16,7 +16,7 @@ class CRM_Admin_Form_Setting_ProxySettings extends CRM_Admin_Form_Setting
     $this->addElement('text', 'proxy_url', ts('Proxy URL'), array('disabled' => 'disabled'));
     $this->addElement('static', 'proxy_version', ts('Proxy version'));
 
-    $this->addElement('text', 'civimail_external_optout', ts('CiviMail: External out-out page'), array('disabled' => 'disabled'));
+    $this->addElement('text', 'civimail_external_optout', ts('CiviMail: External opt-out page'), array('disabled' => 'disabled'));
 
     $this->addButtons(array(
       array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE),

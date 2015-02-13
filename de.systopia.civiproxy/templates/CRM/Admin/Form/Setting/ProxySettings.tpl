@@ -26,7 +26,7 @@
       <div>
           <table id="component_settings" class="no-border">
             <tr>
-              <td class="label">{$form.civimail_external_optout.label} <a onclick='CRM.help("{ts}CiviMail: External out-out page{/ts}", {literal}{"id":"id-extoptout-url","file":"CRM\/Admin\/Form\/Setting\/ProxySettings"}{/literal}); return false;' href="#" title="{ts}Help{/ts}" class="helpicon">&nbsp;</a></td>
+              <td class="label">{$form.civimail_external_optout.label} <a onclick='CRM.help("{ts}CiviMail: External opt-out page{/ts}", {literal}{"id":"id-extoptout-url","file":"CRM\/Admin\/Form\/Setting\/ProxySettings"}{/literal}); return false;' href="#" title="{ts}Help{/ts}" class="helpicon">&nbsp;</a></td>
               <td>{$form.civimail_external_optout.html}</td>
             </tr>
           </table>
