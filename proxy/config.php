@@ -27,7 +27,7 @@ $target_rest     = $target_civicrm . '/sites/all/modules/civicrm/extern/rest.php
 $target_url      = $target_civicrm . '/sites/all/modules/civicrm/extern/url.php';
 $target_open     = $target_civicrm . '/sites/all/modules/civicrm/extern/open.php';
 $target_file     = $target_civicrm . '/sites/default/files/civicrm/persist/';
-$target_viewmail = $target_civicrm . '/civicrm/mailing/view';
+$target_mail     = $target_civicrm . '/civicrm/mailing/view';
 
 
 
