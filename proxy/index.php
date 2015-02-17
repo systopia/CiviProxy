@@ -31,7 +31,7 @@ require_once "proxy.php";
     .center {
       margin-left: auto;
       margin-right: auto;
-      width: 300px;
+      width: 970px;
     }
 
     p {
@@ -41,17 +41,17 @@ require_once "proxy.php";
 
     #info {
       padding-top: 20px;
+      vertical-align: top;
+      text-align: center;
+      width: 462px;
     }
-
-    #version {
-      padding-left: 2px;
-    }
+    
   </style>
  </head>
  <body>
   <div id="container">
     <div id="info" class="center">
-      <a href="https://www.systopia.de/"><img src="static/images/systopia_logo.png" alt="SYSTOPIA Organisationsberatung"></img></a>
+      <a href="https://www.systopia.de/"><img src="static/images/proxy-logo.png" alt="SYSTOPIA Organisationsberatung"></img></a>
       <p id="version">CiviProxy Version <?php echo $civiproxy_version;?></p>
     </div>
   </div>

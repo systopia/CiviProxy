@@ -11,6 +11,7 @@ require_once "config.php";
 require_once "proxy.php";
 
 $error = "Please do not divide by zero."; //TODO: remove this and call the page properly
+$display_version = FALSE;                 //TODO: "
 ?>
 
 <!DOCTYPE html>
@@ -52,10 +53,9 @@ $error = "Please do not divide by zero."; //TODO: remove this and call the page 
 
     #info {
       padding-top: 20px;
-    }
-
-    #version {
-      padding-left: 2px;
+      vertical-align: top;
+      text-align: center;
+      width: 462px;
     }
 
     .bs-callout {
@@ -119,8 +119,10 @@ $error = "Please do not divide by zero."; //TODO: remove this and call the page 
  <body>
   <div id="container">
     <div id="info" class="center-small">
-      <a href="https://www.systopia.de/"><img src="static/images/systopia_logo.png" alt="SYSTOPIA Organisationsberatung"></img></a>
-      <p id="version">CiviProxy Version <?php echo $civiproxy_version;?></p>
+      <a href="https://www.systopia.de/"><img src="static/images/proxy-logo.png" alt="SYSTOPIA Organisationsberatung"></img></a>
+      <?php if($display_version): ?>
+        <p id="version">CiviProxy Version <?php echo $civiproxy_version;?></p>
+      <?php endif; ?>
     </div>
     <div id="error-container" class="center">
       <?php if(isset($error)):?>
