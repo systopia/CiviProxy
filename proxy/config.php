@@ -97,6 +97,10 @@ $rest_allowed_actions = array(
                             'source'                => 'string',
                             'datum'                 => 'string',
                             'notes'                 => 'string',
+                            'turnus'                => 'int',
+                            'dekade'                => 'int',
+                            'bank_name'             => 'string',
+                            'bank_name'             => 'string',
                             ),
       'addactivity'     => array(
                             'contact_id'            => 'int',
