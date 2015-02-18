@@ -1,27 +1,28 @@
 <div class="crm-block crm-form-block">
   <div>
-    <h3>{ts}Core Settings{/ts}</h3>
+    <h3>{ts}Basic Settings{/ts}</h3>
     <div>
       <div>
           <table id="core_settings" class="no-border">
             <tr>
-              <td class="label"><label for="proxy_enabled"> {ts}Enable proxy{/ts} <a onclick='CRM.help("{ts}Enable Proxy{/ts}", {literal}{"id":"id-proxy-enabled","file":"CRM\/Admin\/Form\/Setting\/ProxySettings"}{/literal}); return false;' href="#" title="{ts}Help{/ts}" class="helpicon">&nbsp;</a></label></td>
+              <td class="label"><label for="proxy_enabled">{ts}CiviProxy enabled{/ts}&nbsp;<a onclick='CRM.help("{ts}CiviProxy enabled{/ts}", {literal}{"id":"id-proxy-enabled","file":"CRM\/Admin\/Form\/Setting\/ProxySettings"}{/literal}); return false;' href="#" title="{ts}Help{/ts}" class="helpicon">&nbsp;</a></label></td>
               <td><input value="1" type="checkbox" id="proxy_enabled" name="proxy_enabled" {if $proxy_enabled}checked="checked"{/if} class="form-checkbox"/></td>
             </tr>
             <tr>
-              <td class="label">{$form.proxy_url.label} <a onclick='CRM.help("{ts}Proxy URL{/ts}", {literal}{"id":"id-proxy-url","file":"CRM\/Admin\/Form\/Setting\/ProxySettings"}{/literal}); return false;' href="#" title="{ts}Help{/ts}" class="helpicon">&nbsp;</a></td>
+              <td class="label">{$form.proxy_url.label}&nbsp;<a onclick='CRM.help("{ts}Proxy URL{/ts}", {literal}{"id":"id-proxy-url","file":"CRM\/Admin\/Form\/Setting\/ProxySettings"}{/literal}); return false;' href="#" title="{ts}Help{/ts}" class="helpicon">&nbsp;</a></td>
               <td>{$form.proxy_url.html}</td>
             </tr>
             <tr>
-              <td class="label">{$form.proxy_version.label} <a onclick='CRM.help("{ts}Proxy Version{/ts}", {literal}{"id":"id-proxy-version","file":"CRM\/Admin\/Form\/Setting\/ProxySettings"}{/literal}); return false;' href="#" title="{ts}Help{/ts}" class="helpicon">&nbsp;</a></td>
+              <td class="label">{$form.proxy_version.label}&nbsp;<a onclick='CRM.help("{ts}Proxy Version{/ts}", {literal}{"id":"id-proxy-version","file":"CRM\/Admin\/Form\/Setting\/ProxySettings"}{/literal}); return false;' href="#" title="{ts}Help{/ts}" class="helpicon">&nbsp;</a></td>
               <td>{$form.proxy_version.html}</td>
             </tr>
           </table>
         </div>
     </div>
   </div>
+  {* ==== advanced settings disabled ========
   <div>
-    <h3>{ts}Component Settings{/ts}</h3>
+    <h3>{ts}Advanced Settings{/ts}</h3>
     <div>
       <div>
           <table id="component_settings" class="no-border">
@@ -33,6 +34,7 @@
         </div>
     </div>
   </div>
+  ==== advanced settings disabled ======== *}
   <div class="crm-submit-buttons">{include file="CRM/common/formButtons.tpl" location="bottom"}</div>
 </div>
 

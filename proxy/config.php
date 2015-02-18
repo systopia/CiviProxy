@@ -11,8 +11,11 @@
 /****************************************************************
  **                            URLS                            **
  ****************************************************************/
-$target_civicrm = 'https://crmtest.muslimehelfen.org';
+// this should point to the base address of the CiviProxy installation
 $proxy_base     = 'https://ssl.webpack.de/wp11230065.server-he.de';
+
+// this should point to the target CiviCRM system
+$target_civicrm = 'https://crmtest.muslimehelfen.org';
 //$proxy_base     = 'http://localhost:8888/proxy';
 
 

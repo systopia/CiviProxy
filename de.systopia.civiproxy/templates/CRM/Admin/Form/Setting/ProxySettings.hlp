@@ -1,7 +1,6 @@
 {htxt id='id-proxy-enabled'}
 <p>
-  {ts}Enable CiviProxy{/ts}
-  {ts}This will cause all resource URLs (images, URL trackers, mail open tracers, etc.) to point to the proxy.{/ts}
+  {ts}Activating CiviProxy will cause all resource URLs (images, URL trackers, mail open tracers, etc.) to point to the proxy.{/ts}
 </p>
 {/htxt}
 
@@ -13,7 +12,7 @@
 
 {htxt id='id-proxy-version'}
 <p>
-  {ts}TODO #1{/ts}
+  {ts}This is the CiviProxy version as reported by the installation at the given URL.{/ts}
 </p>
 {/htxt}
 
