@@ -12,11 +12,10 @@
  **                            URLS                            **
  ****************************************************************/
 // this should point to the base address of the CiviProxy installation
-$proxy_base     = 'https://ssl.webpack.de/wp11230065.server-he.de';
+$proxy_base     = 'https://proxy.yourdomain.org';
 
 // this should point to the target CiviCRM system
-$target_civicrm = 'https://crmtest.muslimehelfen.org';
-//$proxy_base     = 'http://localhost:8888/proxy';
+$target_civicrm = 'https://your.civicrm.installation.org';
 
 
 /****************************************************************
@@ -69,46 +68,9 @@ $file_cache_include = array(
  **                   REST API OPTIONS                         **
  ****************************************************************/
 $rest_allowed_actions = array(
-  'MhApi' => array(
-      'getcontact'      => array(
-                            'email'                 => 'string',
-                            'first_name'            => 'string',
-                            'last_name'             => 'string',
-                            'organization_name'     => 'string',
-                            'contact_type'          => array('Individual', 'Organization'),
-                            'prefix'                => 'string',
-                            'street_address'        => 'string',
-                            'country'               => 'string',
-                            'postal_code'           => 'string',
-                            'city'                  => 'string',
-                            'phone'                 => 'string',
-                            'create_if_not_found'   => 'int',
-                            'source'                => 'string',
-                            ),
-      'addcontribution'     => array(
-                            'contact_id'            => 'int',
-                            'financial_type_id'     => 'int',
-                            'financial_type'        => 'string',
-                            'payment_instrument'    => 'string',
-                            'contribution_campaign' => 'string',
-                            'total_amount'          => 'float2',
-                            'currency'              => 'string',
-                            'contribution_status'   => 'string',
-                            'is_test'               => 'int',
-                            'iban'                  => 'string',
-                            'bic'                   => 'string',
-                            'source'                => 'string',
-                            'datum'                 => 'string',
-                            'notes'                 => 'string',
-                            'turnus'                => 'int',
-                            'dekade'                => 'int',
-                            'bank_name'             => 'string',
-                            'bank_name'             => 'string',
-                            ),
-      'addactivity'     => array(
-                            'contact_id'            => 'int',
-                            'type_id'               => 'int',
-                            'subject'               => 'string',
+  'Contact' => array(
+      'getsingle'      => array(
+                            'email' => 'string'
                             ),
     )
   );
