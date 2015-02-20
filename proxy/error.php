@@ -9,9 +9,6 @@
 
 require_once "config.php";
 require_once "proxy.php";
-
-$error = "Please do not divide by zero."; //TODO: remove this and call the page properly
-$display_version = FALSE;                 //TODO: "
 ?>
 
 <!DOCTYPE html>
@@ -120,15 +117,13 @@ $display_version = FALSE;                 //TODO: "
   <div id="container">
     <div id="info" class="center-small">
       <a href="https://www.systopia.de/"><img src="static/images/proxy-logo.png" alt="SYSTOPIA Organisationsberatung"></img></a>
-      <?php if($display_version): ?>
-        <p id="version">CiviProxy Version <?php echo $civiproxy_version;?></p>
-      <?php endif; ?>
+      <p id="version">CiviProxy Version <?php echo $civiproxy_version;?></p>      
     </div>
     <div id="error-container" class="center">
-      <?php if(isset($error)):?>
+      <?php if(isset($civiproxy_error_message)):?>
       <div class="bs-callout bs-callout-danger">
-        <h4>An error has occurred while processing your request</h4>
-        <?php echo($error); ?>
+        <h4>An error has occurred while processing your request:</h4>
+        <?php echo($civiproxy_error_message); ?>
       </div>
       <?php endif;?>
     </div>

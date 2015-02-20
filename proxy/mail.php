@@ -19,4 +19,8 @@ civiproxy_security_check('viewmail');
 // basic restraints
 $valid_parameters = array(  'id'   => 'int'  );
 $parameters = civiproxy_get_parameters($valid_parameters);
+
+// check if id specified
+if (empty($parameters['id'])) civiproxy_http_error("Resource not found");
+
 civiproxy_redirect($target_mail, $parameters);

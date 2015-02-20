@@ -182,7 +182,12 @@ function civiproxy_get_parameters($valid_parameters) {
  */
 function civiproxy_http_error($message, $code = 404) {
   global $civiproxy_version;
-  header("HTTP/1.1 $code $message (CiviProxy {$civiproxy_version})");
-  // TODO: create error msg body
+  global $error_message;
+
+  $civiproxy_error_message = $message;
+
+  header("HTTP/1.1 $code $civiproxy_error_message (CiviProxy {$civiproxy_version})");
+  require "error.php";
+
   exit();
 }
