@@ -7,7 +7,7 @@
 | http://www.systopia.de/                                 |
 +---------------------------------------------------------*/
 
-$civiproxy_version = '0.2';
+$civiproxy_version = '0.3';
 require_once "config.php";
 
 /**
