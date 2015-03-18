@@ -25,13 +25,17 @@ $target_civicrm = 'https://your.civicrm.installation.org';
  ****************************************************************/
 
 // default paths, override if you want. Set to NULL to disable
-$target_rest     = $target_civicrm . '/sites/all/modules/civicrm/extern/rest.php';
-$target_url      = $target_civicrm . '/sites/all/modules/civicrm/extern/url.php';
-$target_open     = $target_civicrm . '/sites/all/modules/civicrm/extern/open.php';
-$target_file     = $target_civicrm . '/sites/default/files/civicrm/persist/';
-$target_mail     = $target_civicrm . '/civicrm/mailing/view';
+$target_rest      = $target_civicrm . '/sites/all/modules/civicrm/extern/rest.php';
+$target_url       = $target_civicrm . '/sites/all/modules/civicrm/extern/url.php';
+$target_open      = $target_civicrm . '/sites/all/modules/civicrm/extern/open.php';
+$target_file      = $target_civicrm . '/sites/default/files/civicrm/persist/';
+$target_mail_view = $target_civicrm . '/civicrm/mailing/view';
 
-// CAREFUL: only enable on debug systems. Will log all queries to given PUBLIC file
+// target_mail_base CANNOT be "$target_civicrm . '/civicrm/mailing'", 
+//  since these pages cannot be easily proxied.
+$target_mail_base = NULL;
+
+// CAREFUL: only enable temporarily on debug systems. Will log all queries to given PUBLIC file
 $debug           = NULL; //'debug.log';
 
 
@@ -68,6 +72,7 @@ $file_cache_include = array(
  **                   REST API OPTIONS                         **
  ****************************************************************/
 $rest_allowed_actions = array(
+  // this is an example:
   'Contact' => array(
       'getsingle'      => array(
                             'email' => 'string'

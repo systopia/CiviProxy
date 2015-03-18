@@ -155,6 +155,19 @@ function civiproxy_get_parameters($valid_parameters) {
       } elseif ($type == 'float2') {
         // TODO: check if safe wrt l10n. rather use sprintf
         $value = number_format($value, 2, '.', '');
+      } elseif ($type == 'hex') {
+        // hex code
+        if (!preg_match("#^[0-9a-f]*$#gi", $value)) {
+          error_log("CiviProxy: removed invalid hex parameter");
+          $value = '';
+        }
+      } elseif ($type == 'email') {
+        // valid email
+        // TODO: regex email address
+        // if (!preg_match("#^[0-9a-f]*$#gi", $value)) {
+        //   error_log("CiviProxy: removed invalid hex parameter");
+        //   $value = '';
+        // }
       } elseif (is_array($type)) {
         // this is a list of valid options
         $requested_value = $value;

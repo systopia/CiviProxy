@@ -20,21 +20,21 @@
         </div>
     </div>
   </div>
-  {* ==== advanced settings disabled ========
+  <br/>
   <div>
-    <h3>{ts}Advanced Settings{/ts}</h3>
+    <h3>{ts}Mailing Settings{/ts}</h3>
     <div>
       <div>
-          <table id="component_settings" class="no-border">
+          <table id="core_settings" class="no-border">
             <tr>
-              <td class="label">{$form.civimail_external_optout.label} <a onclick='CRM.help("{ts}CiviMail: External opt-out page{/ts}", {literal}{"id":"id-extoptout-url","file":"CRM\/Admin\/Form\/Setting\/ProxySettings"}{/literal}); return false;' href="#" title="{ts}Help{/ts}" class="helpicon">&nbsp;</a></td>
-              <td>{$form.civimail_external_optout.html}</td>
+              <td class="label">{$form.custom_mailing_base.label}&nbsp;<a onclick='CRM.help("{ts}CiviMail: Custom pages{/ts}", {literal}{"id":"id-custom-mailing-base","file":"CRM\/Admin\/Form\/Setting\/ProxySettings"}{/literal}); return false;' href="#" title="{ts}Help{/ts}" class="helpicon">&nbsp;</a></td>
+              <td>{$form.custom_mailing_base.html}</td>
             </tr>
           </table>
         </div>
     </div>
   </div>
-  ==== advanced settings disabled ======== *}
+  <br/>
   <div class="crm-submit-buttons">{include file="CRM/common/formButtons.tpl" location="bottom"}</div>
 </div>
 
@@ -42,24 +42,29 @@
 <script type="text/javascript">
   function enableInput() {
     cj('#proxy_url').attr('disabled',!this.checked);
-    cj('#civimail_external_optout').attr('disabled', !this.checked);
+    cj('#custom_mailing_base').attr('disabled', !this.checked);
   }
 
   function enableInputGlobal() {
     var is_enabled = cj('#proxy_enabled').attr('checked') == 'checked';
     cj('#proxy_url').attr('disabled', !is_enabled);
-    cj('#civimail_external_optout').attr('disabled', !is_enabled);
+    cj('#custom_mailing_base').attr('disabled', !is_enabled);
   }
 
   (function(cj) {
     cj('#proxy_enabled').click(enableInput);
     enableInputGlobal();
 
+    // set the default value to {$proxy_url}/mailing
+    if (cj("#custom_mailing_base").val().length == 0) {
+      cj("#custom_mailing_base").val(cj("#proxy_url").val() + '/mailing');
+    } 
+
   })(cj);
 </script>
 
 <style type="text/css">
-  #proxy_url, #civimail_external_optout {
+  #proxy_url, #custom_mailing_base {
     width: 350px;
   }
 

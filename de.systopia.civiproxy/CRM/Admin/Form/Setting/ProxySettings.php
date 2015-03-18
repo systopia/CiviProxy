@@ -16,7 +16,7 @@ class CRM_Admin_Form_Setting_ProxySettings extends CRM_Admin_Form_Setting
     $this->addElement('text', 'proxy_url', ts('Proxy URL'), array('disabled' => 'disabled'));
     $this->addElement('static', 'proxy_version', ts('Proxy version'));
 
-    $this->addElement('text', 'civimail_external_optout', ts('CiviMail: External opt-out page'), array('disabled' => 'disabled'));
+    $this->addElement('text', 'custom_mailing_base', ts('Custom Subscribe/Unsubscribe Pages'), array('disabled' => 'disabled'));
 
     $this->addButtons(array(
       array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE),
@@ -28,7 +28,7 @@ class CRM_Admin_Form_Setting_ProxySettings extends CRM_Admin_Form_Setting
 
   function addRules() {
     $this->addRule('proxy_url', ts('This may only contain a valid URL'), 'onlyValidURL');
-    $this->addRule('civimail_external_optout', ts('This may only contain a valid URL'), 'onlyValidURL');
+    $this->addRule('custom_mailing_base', ts('This may only contain a valid URL'), 'onlyValidURL');
   }
 
   function preProcess() {
@@ -51,7 +51,7 @@ class CRM_Admin_Form_Setting_ProxySettings extends CRM_Admin_Form_Setting
     $this->setDefaults(array(
         'proxy_url'     => $proxyUrl,
         'proxy_version' => $proxyVersion, // watch out, this might contain an error message
-        'civimail_external_optout' => CRM_Core_BAO_Setting::getItem('CiviProxy Settings', 'civimail_extoptout')
+        'custom_mailing_base' => CRM_Core_BAO_Setting::getItem('CiviProxy Settings', 'custom_mailing_base')
       ));
   }
 
@@ -66,8 +66,13 @@ class CRM_Admin_Form_Setting_ProxySettings extends CRM_Admin_Form_Setting
     if (isset($values['proxy_url'])) {
       CRM_Core_BAO_Setting::setItem($values['proxy_url'],'CiviProxy Settings', 'proxy_url');
     }
-    if (isset($values['civimail_external_optout'])) {
-      CRM_Core_BAO_Setting::setItem($values['civimail_external_optout'],'CiviProxy Settings', 'civimail_extoptout');
+    if (isset($values['custom_mailing_base'])) {
+      // check if it is simply default ({$proxy_url}/mailing)
+      if ($values['custom_mailing_base'] == $values['proxy_url'] . '/mailing') {
+        // ...in which case we'll simply set it to ''
+        $values['custom_mailing_base'] = '';
+      }
+      CRM_Core_BAO_Setting::setItem($values['custom_mailing_base'],'CiviProxy Settings', 'custom_mailing_base');
     }
 
     // give feedback to user

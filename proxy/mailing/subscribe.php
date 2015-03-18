@@ -7,20 +7,15 @@
 | http://www.systopia.de/                                 |
 +---------------------------------------------------------*/
 
-require_once "config.php";
-require_once "proxy.php";
+require_once "../config.php";
+require_once "../proxy.php";
 
 // see if mail open tracking is enabled
-if (!$target_mail) civiproxy_http_error("Feature disabled", 405);
+if (!$target_mail_base) civiproxy_http_error("Feature disabled", 405);
 
 // basic check
-civiproxy_security_check('viewmail');
+civiproxy_security_check('mail-subscribe');
 
-// basic restraints
-$valid_parameters = array(  'id'   => 'int'  );
-$parameters = civiproxy_get_parameters($valid_parameters);
+// just forward, no parameters
+civiproxy_redirect($target_mail_base . '/subscribe', array());
 
-// check if id specified
-if (empty($parameters['id'])) civiproxy_http_error("Resource not found");
-
-civiproxy_redirect($target_mail, $parameters);

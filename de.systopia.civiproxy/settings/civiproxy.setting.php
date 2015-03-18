@@ -16,7 +16,7 @@ return array(
     'is_domain' => 1,
     'is_contact' => 0,
     'description' => 'Enables or disables the proxy',
-    'help_text' => 'TODO',
+    'help_text' => '',
   ),
   'proxy_url' => array(
     'group_name' => 'CiviProxy Settings',
@@ -28,7 +28,7 @@ return array(
     'is_domain' => 1,
     'is_contact' => 0,
     'description' => 'The URL from which the proxy will be available for requests',
-    'help_text' => 'TODO',
+    'help_text' => '',
   ),
   'proxy_version' => array(
     'group_name' => 'CiviProxy Settings',
@@ -40,6 +40,18 @@ return array(
     'is_domain' => 1,
     'is_contact' => 0,
     'description' => 'The version of the currently selected proxy',
-    'help_text' => 'TODO',
+    'help_text' => '',
+  ),
+  'custom_mailing_base' => array(
+    'group_name' => 'CiviProxy Settings',
+    'group' => 'de.systopia',
+    'name' => 'custom_mailing_base',
+    'type' => 'String',
+    'default' => "",
+    'add' => '4.3',
+    'is_domain' => 1,
+    'is_contact' => 0,
+    'description' => 'The URL can override the proxy for custom designed mailing subscribe/unsubscribe pages',
+    'help_text' => '',
   ),
  );

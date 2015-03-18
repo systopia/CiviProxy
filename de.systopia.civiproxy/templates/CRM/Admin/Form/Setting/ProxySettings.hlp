@@ -16,8 +16,8 @@
 </p>
 {/htxt}
 
-{htxt id='id-extoptout-url'}
+{htxt id='id-custom-mailing-base'}
 <p>
-  {ts}TODO #2{/ts}
+  {ts}TADDAAAA{/ts}
 </p>
 {/htxt}

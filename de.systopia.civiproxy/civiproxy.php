@@ -16,15 +16,27 @@ function civiproxy_civicrm_alterMailParams( &$params, $context ) {
   $proxy_base  = CRM_Core_BAO_Setting::getItem('CiviProxy Settings', 'proxy_url');
 
   // fields to replace:
-  $external_urls  = array('url.php', 'open.php');
   $fields2replace = array('html', 'text');
   foreach ($fields2replace as $field) {
     $value = $params[$field];
+
+    // General external functions
     $value = preg_replace("#{$system_base}sites/all/modules/civicrm/extern/url.php#i",  $proxy_base.'/url.php',      $value);
     $value = preg_replace("#{$system_base}sites/all/modules/civicrm/extern/open.php#i", $proxy_base.'/open.php',     $value);
     $value = preg_replace("#{$system_base}sites/default/files/civicrm/persist/#i",      $proxy_base.'/file.php?id=', $value);
-    $value = preg_replace("#{$system_base}civicrm/mailing/view#i",                      $proxy_base.'/mail.php',     $value);
-    $value = preg_replace("#{$system_base}civicrm/mailing/optout#i",                    $proxy_base.'/index.php',     $value);
+
+    // Mailing related functions
+    $value = preg_replace("#{$system_base}civicrm/mailing/view#i",                      $proxy_base.'/mailing/mail.php', $value);
+    $custom_mailing_base = CRM_Core_BAO_Setting::getItem('CiviProxy Settings', 'custom_mailing_base');
+    foreach ($other_mailing_functions as $function) {
+      if (empty($custom_mailing_base)) {
+        $new_url = "{$proxy_base}/mailing/{$function}.php";
+      } else {
+        $new_url = "{$custom_mailing_base}/{$function}.php";
+      }
+      $value = preg_replace("#{$system_base}civicrm/mailing/{$function}#i", $new_url, $value);
+    }
+
     $params[$field] = $value;
   }
 }
