@@ -31,12 +31,12 @@ $target_open      = $target_civicrm . '/sites/all/modules/civicrm/extern/open.ph
 $target_file      = $target_civicrm . '/sites/default/files/civicrm/persist/';
 $target_mail_view = $target_civicrm . '/civicrm/mailing/view';
 
-// target_mail_base CANNOT be "$target_civicrm . '/civicrm/mailing'", 
-//  since these pages cannot be easily proxied.
-$target_mail_base = NULL;
+// Set api-key for mail subscribe/unsubscribe user
+// Set to NULL/FALSE to disable the feature
+$mail_subscription_user_key = NULL;
 
 // CAREFUL: only enable temporarily on debug systems. Will log all queries to given PUBLIC file
-$debug           = NULL; //'debug.log';
+$debug                      = NULL; //'debug.log';
 
 
 /****************************************************************

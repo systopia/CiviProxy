@@ -21,9 +21,6 @@ $civiproxy_logo    = "<img src='{$proxy_base}/static/images/proxy-logo.png' alt=
  *                               where type can be 'int', 'string' (unchecked),
  */
 function civiproxy_redirect($url_requested, $parameters) {
-  // error_log('CALLING: '.$url_requested);
-  // error_log(print_r($parameters,1));
-
   $url = $url_requested;
   $curlSession = curl_init();
 
@@ -158,17 +155,16 @@ function civiproxy_get_parameters($valid_parameters) {
         $value = number_format($value, 2, '.', '');
       } elseif ($type == 'hex') {
         // hex code
-        if (!preg_match("#^[0-9a-f]*$#gi", $value)) {
-          error_log("CiviProxy: removed invalid hex parameter");
+        if (!preg_match("#^[0-9a-f]*$#i", $value)) {
+          error_log("CiviProxy: removed invalid hex parameter: " . $value);
           $value = '';
         }
       } elseif ($type == 'email') {
         // valid email
-        // TODO: regex email address
-        // if (!preg_match("#^[0-9a-f]*$#gi", $value)) {
-        //   error_log("CiviProxy: removed invalid hex parameter");
-        //   $value = '';
-        // }
+        if (!preg_match("#^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$#i", $value)) {
+          error_log("CiviProxy: removed invalid email parameter: " . $value);
+          $value = '';
+        }
       } elseif (is_array($type)) {
         // this is a list of valid options
         $requested_value = $value;

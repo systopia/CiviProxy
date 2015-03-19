@@ -12,20 +12,70 @@ require "../proxy.php";
 // see if mailing subscribe feature is enabled
 if (empty($mail_subscription_user_key)) civiproxy_http_error("Feature disabled", 405);
 
-// get the groups you could subscribe to
-$group_query = civicrm_api3('Group', 'get', array( 'visibility' => 'Public Pages',
-                                                   'is_hidden'  => 0,
-                                                   'is_active'  => 1,
-                                                   'api_key'    => $mail_subscription_user_key,
-                                                    ));
+// basic check
+civiproxy_security_check('mail-subscribe');
 
+// LOAD VISIBLE GROUPS
+$group_query = civicrm_api3('Group', 'get', 
+                          array( 'visibility' => 'Public Pages',
+                                 'is_hidden'  => 0,
+                                 'is_active'  => 1,
+                                 'api_key'    => $mail_subscription_user_key,
+                                ));
 if (!empty($group_query['is_error'])) {
   civiproxy_http_error($group_query['error_message'], 500);
 } else {
   $groups = $group_query['values'];
+  if (empty($groups)) {
+    civiproxy_http_error("No newsletter groups found!", 500);
+  }
 }
-error_log(print_r($groups,1));
+
+// VERIFY / CHECK PARAMETERS
+$parameter_errors = array();
+if (!empty($_REQUEST['email'])) {
+  // get parameters
+  $email = $_REQUEST['email'];
+  if (!preg_match("#^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$#i", $email)) civiproxy_http_error("'$email' is not a valid email address.", 500);
+
+  if (empty($_REQUEST['group_id'])) civiproxy_http_error("No newsletter group selected!", 500);
+  $group_id = $_REQUEST['group_id'];
+
+  // ALL FINE. SUBSCRIBE USER!
+  // first, get/create the contact
+  $contact_query = civicrm_api3('Contact', 'create', 
+                                array( 'email'        => $email,
+                                       'contact_type' => 'Individual',
+                                       'dupe_check'   => 1,
+                                       'api_key'      => $mail_subscription_user_key,
+                                ));
+  if (!empty($contact_query['is_error'])) {
+    // an error occured during contact generation/identification
+    if ($contact_query['error_code'] == 'duplicate') {
+      // there have been multiple duplicates found
+      $contact_id = $contact_query['ids'][0];
+    } else {
+      civiproxy_http_error($contact_query['error_message'], 500);
+    }
+  } else {
+    $contact_id = $contact_query['id'];
+  }
+
+  // then: subscribe
+  $subscribe_query = civicrm_api3('MailingEventSubscribe', 'create', 
+                                array( 'email'        => $email,
+                                       'contact_id'   => $contact_id,
+                                       'group_id'     => $group_id,
+                                       'api_key'      => $mail_subscription_user_key,
+                                ));
+  if (!empty($subscribe_query['is_error'])) {
+    // an error occured during the actual subscription
+    civiproxy_http_error($subscribe_query['error_message'], 500);
+  }
+
+}
 ?>
+
 
 <!DOCTYPE html>
 <html>
@@ -72,53 +122,27 @@ error_log(print_r($groups,1));
     </div>
     <div id="content" class="center">
 <?php
-/*********************************************
- **         main processing routine         **
- ********************************************/
-$parameter_errors = array();
-if (!empty($_REQUEST['email'])) {
-  // get parameters
-  $email = $_REQUEST['email'];
-  $group_ids = array();
-  foreach ($_REQUEST as $key => $value) {
-    error_log(substr($key, 0, 6));
-    if (substr($key, 0, 6) == 'group_') {
-      $group_ids[] = $value;
-    }
-  }
-
-  // TODO: verify email is valid, otherwise set $parameter_errors['email']
-  // TODO: verify at least one group is selected, otherwise set $parameter_errors['group_id']
-}
-
 if (empty($_REQUEST['email']) || !empty($parameter_errors)) {
-  // TODO: if 
-
+  // TODO: show error if no group found
+  // TODO: show error if email not valid
   print "
   <form id='subscribe' method='POST'>
     <label for='email'>Your email Address:</label>
     <input type='text' name='email'></input>
     <h3>Select the newsletter you would like to subscribe to:</h3>
-    <ul>
+    <select name='group_id'>
     ";
   foreach ($groups as $group_id => $group) {
-    print "
-      <li>
-        <input type='checkbox' name='group_{$group_id}' value='{$group_id}'>{$group['name']}</input>
-        <p>{$group['description']}</p>
-      </li>";
+    print "<option value='{$group_id}'>{$group['name']}</input>";
   }
   print "
-    </ul>
+    </select>
+    <input type='submit' value='Subscribe' />
   </form>";
-
 } else {
-
-
-  print_r($_REQUEST);
-
+  // the subscription was complete
+  print "<p>Thank you. You will receive an email asking you to confirm your subscription.</p>";
 }
-
 ?>
     </div>
   </div>
