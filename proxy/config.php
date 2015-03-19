@@ -47,9 +47,9 @@ $debug                      = NULL; //'debug.log';
 $api_key_map = array();
 $sys_key_map = array();
 
-if (file_exists("secrets.php")) {
+if (file_exists(dirname(__FILE__)."/secrets.php")) {
   // keys can also be stored in 'secrets.php'
-  require_once "secrets.php";
+  require "secrets.php";
 }
 
 // define file cache options, see http://pear.php.net/manual/en/package.caching.cache-lite.cache-lite.cache-lite.php
