@@ -7,8 +7,9 @@
 | http://www.systopia.de/                                 |
 +---------------------------------------------------------*/
 
+require "config.php";
 $civiproxy_version = '0.3';
-require_once "config.php";
+$civiproxy_logo    = "<img src='{$proxy_base}/static/images/proxy-logo.png' alt='SYSTOPIA Organisationsberatung'></img>";
 
 /**
  * this will redirect the request to another URL,
@@ -204,3 +205,40 @@ function civiproxy_http_error($message, $code = 404) {
 
   exit();
 }
+
+
+/**
+ * call the CiviCRM REST API via CURL
+ */
+function civicrm_api3($entity, $action, $data) {
+  global $target_rest, $sys_key_map;
+
+  // extract site key
+  $site_keys = array_values($sys_key_map);
+  if (empty($site_keys)) civiproxy_http_error('No site key set.');
+  
+  $query = $data;    // array copy(!)
+  $query['key']        = $site_keys[0];
+  $query['json']       = 1;
+  $query['version']    = 3;
+  $query['entity']     = $entity;
+  $query['action']     = $action;
+
+  $curl = curl_init();
+  curl_setopt($curl, CURLOPT_POST,           1);
+  curl_setopt($curl, CURLOPT_POSTFIELDS,     $query);
+  curl_setopt($curl, CURLOPT_URL,            $target_rest);
+  curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+  curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+  curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+  curl_setopt($curl, CURLOPT_SSLVERSION,     1);
+
+  $response = curl_exec($curl);
+  
+  if (curl_error($curl)){
+    civiproxy_http_error(curl_error($curl));
+  } else {
+    return json_decode($response, true);
+  }
+}
+

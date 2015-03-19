@@ -7,8 +7,7 @@
 | http://www.systopia.de/                                 |
 +---------------------------------------------------------*/
 
-require_once "config.php";
-require_once "proxy.php";
+require "proxy.php";
 ?>
 
 <!DOCTYPE html>
@@ -116,7 +115,7 @@ require_once "proxy.php";
  <body>
   <div id="container">
     <div id="info" class="center-small">
-      <a href="https://www.systopia.de/"><img src="static/images/proxy-logo.png" alt="SYSTOPIA Organisationsberatung"></img></a>
+      <a href="https://www.systopia.de/"><?php echo $civiproxy_logo;?></a>
       <p id="version">CiviProxy Version <?php echo $civiproxy_version;?></p>      
     </div>
     <div id="error-container" class="center">
