@@ -193,6 +193,7 @@ function civiproxy_get_parameters($valid_parameters) {
 function civiproxy_http_error($message, $code = 404) {
   global $civiproxy_version;
   global $error_message;
+  global $civiproxy_logo;
 
   $civiproxy_error_message = $message;
 

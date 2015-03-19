@@ -7,7 +7,8 @@
 | http://www.systopia.de/                                 |
 +---------------------------------------------------------*/
 
-require_once "../proxy.php";
+ini_set('include_path', dirname(dirname(__FILE__)));
+require "proxy.php";
 
 // see if mail open tracking is enabled
 if (!$mail_subscription_user_key) civiproxy_http_error("Feature disabled", 405);
@@ -80,7 +81,6 @@ if (!empty($group_query['is_error'])) {
   <div id="container">
     <div id="info" class="center">
       <a href="https://www.systopia.de/"><?php echo $civiproxy_logo;?></a>
-      <p id="version">Subscribe to Newsletters</p>
     </div>
     <div id="content" class="center">
       <p>Thank you. You've been re-subscribed to the newsletter.</a>

@@ -1,5 +1,0 @@
-TODO
-
-1) sanitize string values (mysql_escape_string?)
-2) better index page
-3) error page

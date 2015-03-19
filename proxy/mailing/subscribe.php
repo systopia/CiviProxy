@@ -7,7 +7,8 @@
 | http://www.systopia.de/                                 |
 +---------------------------------------------------------*/
 
-require "../proxy.php";
+ini_set('include_path', dirname(dirname(__FILE__)));
+require "proxy.php";
 
 // see if mailing subscribe feature is enabled
 if (empty($mail_subscription_user_key)) civiproxy_http_error("Feature disabled", 405);
@@ -133,7 +134,7 @@ if (empty($_REQUEST['email']) || !empty($parameter_errors)) {
     <select name='group_id'>
     ";
   foreach ($groups as $group_id => $group) {
-    print "<option value='{$group_id}'>{$group['name']}</input>";
+    print "<option value='{$group_id}'>{$group['title']}</input>";
   }
   print "
     </select>

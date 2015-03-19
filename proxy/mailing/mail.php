@@ -7,8 +7,8 @@
 | http://www.systopia.de/                                 |
 +---------------------------------------------------------*/
 
-require_once "../config.php";
-require_once "../proxy.php";
+ini_set('include_path', dirname(dirname(__FILE__)));
+require "proxy.php";
 
 // see if mail open tracking is enabled
 if (!$target_mail_view) civiproxy_http_error("Feature disabled", 405);
