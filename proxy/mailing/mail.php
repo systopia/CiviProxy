@@ -23,4 +23,4 @@ $parameters = civiproxy_get_parameters($valid_parameters);
 // check if id specified
 if (empty($parameters['id'])) civiproxy_http_error("Resource not found");
 
-civiproxy_redirect($target_mail, $parameters);
+civiproxy_redirect($target_mail_view, $parameters);
