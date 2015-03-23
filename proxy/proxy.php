@@ -49,11 +49,11 @@ function civiproxy_redirect($url_requested, $parameters) {
   curl_setopt($curlSession, CURLOPT_RETURNTRANSFER,1);
   curl_setopt($curlSession, CURLOPT_TIMEOUT, 30);
   curl_setopt($curlSession, CURLOPT_SSL_VERIFYHOST, 0);
-  curl_setopt($curlSession, CURLOPT_CAINFO, 'target.pem');
+  curl_setopt($curlSession, CURLOPT_CAINFO, dirname(__FILE__).'/target.pem');
 
   //Send the request and store the result in an array
-  $response = curl_exec($curlSession);
-
+  $response = curl_exec($curlSession);  
+    
   // Check that a connection was made
   if (curl_error($curlSession)){
     civiproxy_http_error(curl_error($curlSession), curl_errno($curlSession));
@@ -229,6 +229,7 @@ function civicrm_api3($entity, $action, $data) {
   curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
   curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
   curl_setopt($curl, CURLOPT_SSLVERSION,     1);
+  curl_setopt($curl, CURLOPT_CAINFO, dirname(__FILE__).'/target.pem');
 
   $response = curl_exec($curl);
   
