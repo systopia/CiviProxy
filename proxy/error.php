@@ -7,7 +7,7 @@
 | http://www.systopia.de/                                 |
 +---------------------------------------------------------*/
 
-require "proxy.php";
+require_once "proxy.php";
 ?>
 
 <!DOCTYPE html>

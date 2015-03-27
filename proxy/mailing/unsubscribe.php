@@ -8,7 +8,7 @@
 +---------------------------------------------------------*/
 
 ini_set('include_path', dirname(dirname(__FILE__)));
-require "proxy.php";
+require_once "proxy.php";
 
 // see if mailing subscribe feature is enabled
 if (empty($mail_subscription_user_key)) civiproxy_http_error("Feature disabled", 405);
