@@ -123,6 +123,11 @@ function civiproxy_mend_URLs(&$string) {
  * @return TRUE if allowed, FALSE if not (or quits if $quit is set)
  */
 function civiproxy_security_check($target, $quit=TRUE) {
+  // verify that we're SSL encrypted
+  if ($_SERVER['HTTPS'] != "on") {
+    civiproxy_http_error("This CiviProxy installation requires SSL encryption.", 400);
+  }  
+
   global $debug;
   if (!empty($debug)) {
     $file = fopen($debug, 'a');
