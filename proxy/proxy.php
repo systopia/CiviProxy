@@ -48,8 +48,10 @@ function civiproxy_redirect($url_requested, $parameters) {
   curl_setopt($curlSession, CURLOPT_HEADER, 1);
   curl_setopt($curlSession, CURLOPT_RETURNTRANSFER,1);
   curl_setopt($curlSession, CURLOPT_TIMEOUT, 30);
-  curl_setopt($curlSession, CURLOPT_SSL_VERIFYHOST, 0);
-  curl_setopt($curlSession, CURLOPT_CAINFO, dirname(__FILE__).'/target.pem');
+  curl_setopt($curlSession, CURLOPT_SSL_VERIFYHOST, 1);
+  if (file_exists(dirname(__FILE__).'/target.pem')) {
+    curl_setopt($curlSession, CURLOPT_CAINFO, dirname(__FILE__).'/target.pem');
+  }
 
   //Send the request and store the result in an array
   $response = curl_exec($curlSession);  
@@ -226,10 +228,11 @@ function civicrm_api3($entity, $action, $data) {
   curl_setopt($curl, CURLOPT_POSTFIELDS,     $query);
   curl_setopt($curl, CURLOPT_URL,            $target_rest);
   curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-  curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-  curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
-  curl_setopt($curl, CURLOPT_SSLVERSION,     1);
-  curl_setopt($curl, CURLOPT_CAINFO, dirname(__FILE__).'/target.pem');
+  // curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 1);
+  curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 1);
+  if (file_exists(dirname(__FILE__).'/target.pem')) {
+    curl_setopt($curlSession, CURLOPT_CAINFO, dirname(__FILE__).'/target.pem');
+  }
 
   $response = curl_exec($curl);
   
