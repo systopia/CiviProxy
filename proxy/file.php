@@ -76,7 +76,7 @@ curl_setopt($curlSession, CURLOPT_URL, $url);
 curl_setopt($curlSession, CURLOPT_HEADER, 1);
 curl_setopt($curlSession, CURLOPT_RETURNTRANSFER,1);
 curl_setopt($curlSession, CURLOPT_TIMEOUT, 30);
-curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 1);
+curl_setopt($curlSession, CURLOPT_SSL_VERIFYHOST, 1);
 if (file_exists(dirname(__FILE__).'/target.pem')) {
   curl_setopt($curlSession, CURLOPT_CAINFO, dirname(__FILE__).'/target.pem');
 }
