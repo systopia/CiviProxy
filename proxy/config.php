@@ -38,6 +38,9 @@ $mail_subscription_user_key = NULL;
 // CAREFUL: only enable temporarily on debug systems. Will log all queries to given PUBLIC file
 $debug                      = NULL; //'debug.log';
 
+// Local network interface or IP to be used for the relayed query 
+// This is usefull in some VPN configurations (see CURLOPT_INTERFACE)
+$target_interface           = NULL;
 
 /****************************************************************
  **                   File Caching Options                     **

@@ -8,7 +8,7 @@
 +---------------------------------------------------------*/
 
 require_once "config.php";
-$civiproxy_version = '0.3.1';
+$civiproxy_version = '0.3.2';
 $civiproxy_logo    = "<img src='{$proxy_base}/static/images/proxy-logo.png' alt='SYSTOPIA Organisationsberatung'></img>";
 
 /**
@@ -21,6 +21,7 @@ $civiproxy_logo    = "<img src='{$proxy_base}/static/images/proxy-logo.png' alt=
  *                               where type can be 'int', 'string' (unchecked),
  */
 function civiproxy_redirect($url_requested, $parameters) {
+  global $target_interface;
   $url = $url_requested;
   $curlSession = curl_init();
 
@@ -49,6 +50,9 @@ function civiproxy_redirect($url_requested, $parameters) {
   curl_setopt($curlSession, CURLOPT_RETURNTRANSFER,1);
   curl_setopt($curlSession, CURLOPT_TIMEOUT, 30);
   curl_setopt($curlSession, CURLOPT_SSL_VERIFYHOST, 1);
+  if (!empty($target_interface)) {
+    curl_setopt($curlSession, CURLOPT_INTERFACE, $target_interface);
+  }
   if (file_exists(dirname(__FILE__).'/target.pem')) {
     curl_setopt($curlSession, CURLOPT_CAINFO, dirname(__FILE__).'/target.pem');
   }
@@ -215,7 +219,7 @@ function civiproxy_http_error($message, $code = 404) {
  * call the CiviCRM REST API via CURL
  */
 function civicrm_api3($entity, $action, $data) {
-  global $target_rest, $sys_key_map;
+  global $target_rest, $sys_key_map, $target_interface;
 
   // extract site key
   $site_keys = array_values($sys_key_map);
@@ -228,21 +232,24 @@ function civicrm_api3($entity, $action, $data) {
   $query['entity']     = $entity;
   $query['action']     = $action;
 
-  $curl = curl_init();
-  curl_setopt($curl, CURLOPT_POST,           1);
-  curl_setopt($curl, CURLOPT_POSTFIELDS,     $query);
-  curl_setopt($curl, CURLOPT_URL,            $target_rest);
-  curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-  // curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 1);
-  curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 1);
+  $curlSession = curl_init();
+  curl_setopt($curlSession, CURLOPT_POST,           1);
+  curl_setopt($curlSession, CURLOPT_POSTFIELDS,     $query);
+  curl_setopt($curlSession, CURLOPT_URL,            $target_rest);
+  curl_setopt($curlSession, CURLOPT_RETURNTRANSFER, 1);
+  if (!empty($target_interface)) {
+    curl_setopt($curlSession, CURLOPT_INTERFACE, $target_interface);
+  }
+  // curl_setopt($curlSession, CURLOPT_SSL_VERIFYPEER, 1);
+  curl_setopt($curlSession, CURLOPT_SSL_VERIFYHOST, 1);
   if (file_exists(dirname(__FILE__).'/target.pem')) {
     curl_setopt($curlSession, CURLOPT_CAINFO, dirname(__FILE__).'/target.pem');
   }
 
-  $response = curl_exec($curl);
+  $response = curl_exec($curlSession);
   
-  if (curl_error($curl)){
-    civiproxy_http_error(curl_error($curl));
+  if (curl_error($curlSession)){
+    civiproxy_http_error(curl_error($curlSession));
   } else {
     return json_decode($response, true);
   }
