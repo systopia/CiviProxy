@@ -12,7 +12,7 @@ The basic idea is to first put your CiviCRM server into a VPN. This makes the se
 
 But what about your public web pages, donation pages, data exchange with other systems? This is where CiviProxy comes in: You get a small, secure, extra server and give it access to both, the internet and your VPN. It will act as a safe gateway for selected features of your CiviCRM that you would like to expose.
 
-[IMAGE]
+![Network Architecture](https://raw.githubusercontent.com/systopia/CiviProxy/master/docs/network.jpg)
 
 
 ## What can it do?
