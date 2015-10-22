@@ -9,7 +9,7 @@
     <email>endres@systopia.de</email>
   </maintainer>
   <releaseDate>2015-10-22</releaseDate>
-  <version>0.3.1</version>
+  <version>0.3.2</version>
   <develStage>stable</develStage>
   <compatibility>
     <ver>4.4</ver>
