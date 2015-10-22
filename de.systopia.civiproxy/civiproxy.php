@@ -5,7 +5,7 @@
 | Author: B. Endres (endres -at- systopia.de)            |
 | http://www.systopia.de/                                |
 +--------------------------------------------------------+
-| TODO: License                                          |
+| License: AGPLv3, see /LICENSE                          |
 +--------------------------------------------------------*/
 
 require_once 'civiproxy.civix.php';

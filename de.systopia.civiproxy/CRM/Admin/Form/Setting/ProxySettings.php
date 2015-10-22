@@ -1,4 +1,12 @@
 <?php
+/*-------------------------------------------------------+
+| CiviProxy                                              |
+| Copyright (C) 2015 SYSTOPIA                            |
+| Author: B. Endres (endres -at- systopia.de)            |
+| http://www.systopia.de/                                |
++--------------------------------------------------------+
+| License: AGPLv3, see /LICENSE                          |
++--------------------------------------------------------*/
 
 require_once 'CRM/Admin/Form/Setting.php';
 require_once 'CRM/Core/BAO/CustomField.php';

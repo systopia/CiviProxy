@@ -1,3 +1,12 @@
+{*-------------------------------------------------------+
+| CiviProxy                                              |
+| Copyright (C) 2015 SYSTOPIA                            |
+| Author: B. Endres (endres -at- systopia.de)            |
+| http://www.systopia.de/                                |
++--------------------------------------------------------+
+| License: AGPLv3, see /LICENSE                          |
++-------------------------------------------------------*}
+
 {htxt id='id-proxy-enabled'}
 <p>
   {ts}Activating CiviProxy will cause all resource URLs (images, URL trackers, mail open tracers, etc.) to point to the proxy.{/ts}

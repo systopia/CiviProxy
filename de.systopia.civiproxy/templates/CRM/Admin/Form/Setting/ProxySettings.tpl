@@ -1,3 +1,11 @@
+{*-------------------------------------------------------+
+| CiviProxy                                              |
+| Copyright (C) 2015 SYSTOPIA                            |
+| Author: B. Endres (endres -at- systopia.de)            |
+| http://www.systopia.de/                                |
++--------------------------------------------------------+
+| License: AGPLv3, see /LICENSE                          |
++-------------------------------------------------------*}
 <div class="crm-block crm-form-block">
   <div>
     <h3>{ts}Basic Settings{/ts}</h3>
