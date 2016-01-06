@@ -30,7 +30,9 @@ class CRM_Civiproxy_Mailer {
    *  mending the URLs contained
    */
   function send($recipients, $headers, $body) {
-    CRM_CiviProxy_Mailer::mendURLs($headers);
+    foreach ($headers as &$header) {
+      CRM_CiviProxy_Mailer::mendURLs($header);
+    }
     CRM_CiviProxy_Mailer::mendURLs($body);
     $this->mailer->send($recipients, $headers, $body);
   }
