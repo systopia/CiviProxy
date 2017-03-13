@@ -2,7 +2,7 @@
 
 Does your CiviCRM server contain confidential data on your organsiation and your constituents? Couldn't this data be used against you, to scam your donors or simply undermine your constituents' trust in you?
 
-CiviCRM ist *not* an unsafe system, but exposing the whole server with all its components to the internet yields a lot of attack vectors - for targeted attacks and scripted mass-exploits alike.
+CiviCRM is *not* an unsafe system, but exposing the whole server with all its components to the internet yields a lot of attack vectors - for targeted attacks and scripted mass-exploits alike.
 
 CiviProxy aims at minimising this exposure.
 
@@ -20,7 +20,7 @@ But what about your public web pages, donation pages, data exchange with other s
 Currently CiviProxy can expose/relay the following CiviCRM functions
 
 1. Serve resources for newsletters and mailings
-2. Cache those ressources, taking load off your CiviCRM server
+2. Cache those resources, taking load off your CiviCRM server
 3. Pass-through of tracking data on opening and click-through rates
 5. Sign-on and off of your newsletter (Webpage templates)
 6. Relay of whitelisted REST API calls for data exchange with other systems
