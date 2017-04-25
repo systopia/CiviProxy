@@ -34,9 +34,9 @@ DISCLAIMER: This software has not (yet) been audited for security.
 The best option to install CiviProxy is a simple managed webspace, that you can rent cheaply from the hoster of your choice. It should have its own IP address, but other than that there are virtually no restrictions. This approach comes with a lot of advantages:
 
  1. Since there are a multitude of clients like you on such a server, the level of security can be expected to be very high, and it should be managed and monitored by professionals 24/7.
- 
+
  2. For the same reason, the bandwith and connectivity of such a server should be very high as well.
- 
+
 
 ### Installation
 
@@ -53,15 +53,16 @@ The installation is as simple as it gets:
 There shouldn't be any requirements that any web hoster wouldn't comply with, but here they are:
 
  1. PHP 5.3+
- 2. Read/write permissions on your webspace
- 3. Reasonable amount of protection, i.e. only authorised users (you) can upload/download the files
- 4. Ideally with it's own IP address (makes configuring the VPN easier)
- 
+ 2. PHP PEAR (to install on Debian/Ubunto, run `apt-get install php-pear`).
+ 3. Read/write permissions on your webspace
+ 4. Reasonable amount of protection, i.e. only authorised users (you) can upload/download the files
+ 5. Ideally with it's own IP address (makes configuring the VPN easier)
+
 
 ## Why not an application firewall?
 
 The traditional approach to this problem would be an application firewall / reverse proxy setup. However, CiviCRM can have very complex interactions with other systems (e.g. via the API), and a malicious request can sometimes only be detected by understanding the meaning of the individual parameters.
 
-Creating firewall rules for this level of detail is very complex and is very hard to maintain. 
+Creating firewall rules for this level of detail is very complex and is very hard to maintain.
 
 For this reason we wanted to take another approach and build a simple "bridgehead" system that *understands* CiviCRM, thus making its configuration and maintenance as easy as possible.
