@@ -10,15 +10,16 @@
 require_once "config.php";
 require_once "proxy.php";
 
+// basic restraints
+$valid_parameters = array( 'id'   => 'string', 'mosaico'  => 'int' );
+$parameters = civiproxy_get_parameters($valid_parameters);
 // see if file caching is enabled
-if (!$target_file) civiproxy_http_error("Feature disabled", 405);
+if ((!$target_file && !$parameters['mosaico']) || (!$target_mosaico_file && $parameters['mosaico'])) {
+  civiproxy_http_error("Feature disabled", 405);
+}
 
 // basic check
 civiproxy_security_check('file');
-
-// basic restraints
-$valid_parameters = array( 'id'   => 'string' );
-$parameters = civiproxy_get_parameters($valid_parameters);
 
 // check if id specified
 if (empty($parameters['id'])) civiproxy_http_error("Resource not found");
@@ -66,9 +67,13 @@ if ($header && $data) {
   print $data;
   exit();
 }
-
 // if we get here, we have a cache miss => load
-$url = $target_file . $parameters['id'];
+if ($parameters['mosaico'] == 1) {
+  $url = $target_mosaico_file . $parameters['id'];
+}
+else {
+  $url = $target_file . $parameters['id'];
+}
 // error_log("CACHE MISS. LOADING $url");
 
 $curlSession = curl_init();
@@ -92,7 +97,6 @@ if (curl_error($curlSession)) {
   error_log(curl_error($curlSession));
   civiproxy_http_error(curl_error($curlSession), curl_errno($curlSession));
 }
-
 // process the results
 $content = explode("\r\n\r\n", $response, 2);
 $header  = $content[0];
@@ -107,7 +111,9 @@ $file_cache->save($body, $data_key);
 
 // and reply
 foreach ($header_lines as $header_line) {
-  header($header_line);
+  if($header_line !== 'Transfer-Encoding: chunked') {
+    header($header_line);
+  }
 }
 
 print $body;
