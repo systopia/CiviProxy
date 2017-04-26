@@ -6,7 +6,6 @@
 | Author: B. Endres (endres -at- systopia.de)             |
 | http://www.systopia.de/                                 |
 +---------------------------------------------------------*/
-
 require_once "config.php";
 require_once "proxy.php";
 
@@ -105,15 +104,20 @@ $body    = $content[1];
 // extract headers
 $header_lines = explode(chr(10), $header);
 
+// Remove chunked encoding header
+foreach ($header_lines as $k => $header_line) {
+  if(strpos($header_line,'Transfer-Encoding: chunked') !== FALSE) {
+    unset($header_lines[$k]);
+  }
+}
+
 // store the information in the cache
 $file_cache->save(json_encode($header_lines), $header_key);
 $file_cache->save($body, $data_key);
 
 // and reply
 foreach ($header_lines as $header_line) {
-  if($header_line !== 'Transfer-Encoding: chunked') {
-    header($header_line);
-  }
+  header($header_line);
 }
 
 print $body;
