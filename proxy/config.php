@@ -74,12 +74,12 @@ $file_cache_include = array(
 /****************************************************************
  **                   REST API OPTIONS                         **
  ****************************************************************/
-// whitelisting is done per IP address ($_SERVER['REMOTE_ADDR']) with a default for the generic stuff that applies to all IP addresses
-// - if a request comes in and the IP does not occur in the array, the whitelisted in 'default' are used
-// - if a request comes in and the Ip does occur in the array, the whitelisted in the IP are checked first. If nothing is
-//   found ,the 'default' ones are checked next.
+// whitelisting is done per IP address ($_SERVER['REMOTE_ADDR']) with a 'all' for the generic stuff that applies to all IP addresses
+// - if a request comes in and the IP is not a key in the array, the whitelisted in 'all' are used
+// - if a request comes in and the IP is indeed a key in the array, the whitelisted in the IP are checked first. If nothing is
+//   found ,the 'all' ones are checked next.
 $rest_allowed_actions = array(
-  'default' => array(
+  'all' => array(
     'Contact' => array(
       'getsingle' => array(
         'email' => 'string',

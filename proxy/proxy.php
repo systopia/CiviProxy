@@ -268,10 +268,10 @@ function civiproxy_get_valid_allowed_actions_key($action) {
     if (isset($rest_allowed_actions[$remote_addr][$action['entity']]) && isset($rest_allowed_actions[$remote_addr][$action['entity']][$action['action']])) {
       $valid_key = $remote_addr;
     } else {
-      $valid_key = 'default';
+      $valid_key = 'all';
     }
   } else {
-    $valid_key = 'default';
+    $valid_key = 'all';
   }
   return $valid_key;
 }
