@@ -1,0 +1,23 @@
+site_name: CiviProxy Guide
+site_description: Guide using and installing CiviProxy to manage the traffic to and from your CiviCRM installation
+repo_url: https://github.com/systopia/CiviProxy
+theme: material
+pages:
+- Introduction: index.md
+- Technical Requirements: requirements.md
+- Installing CiviProxy: installation.md
+- Configuring CiviProxy: configuration.md
+- Directing an outside application to CiviProxy: outside.md
+- Future enhancements to CiviProxy: enhancements.md
+
+markdown_extensions:
+  - attr_list
+  - admonition
+  - def_list
+  - codehilite
+  - toc:(permalink=true)
+  - pymdownx.superfences
+  - pymdownx.emoji
+
+
+
