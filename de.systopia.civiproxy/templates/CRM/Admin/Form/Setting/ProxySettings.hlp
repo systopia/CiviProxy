@@ -27,6 +27,6 @@
 
 {htxt id='id-custom-mailing-base'}
 <p>
-  {ts}TADDAAAA{/ts}
+  {ts}The path for the default unsubscribe page. You can use the default in CiviProxy or create your own and add the path here{/ts}
 </p>
 {/htxt}
