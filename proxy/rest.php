@@ -46,8 +46,12 @@ $action = civiproxy_get_parameters(array('entity' => 'string', 'action' => 'stri
 if (!isset($action['version']) || $action['version'] != 3) {
   civiproxy_rest_error("Invalid entity/action.");
 }
-if (isset($rest_allowed_actions[$action['entity']]) && isset($rest_allowed_actions[$action['entity']][$action['action']])) {
-  $valid_parameters = $rest_allowed_actions[$action['entity']][$action['action']];
+
+// get valid key for the rest_allowed_actions
+$valid_allowed_key = civiproxy_get_valid_allowed_actions_key($action);
+
+if (isset($rest_allowed_actions[$valid_allowed_key][$action['entity']]) && isset($rest_allowed_actions[$valid_allowed_key][$action['entity']][$action['action']])) {
+  $valid_parameters = $rest_allowed_actions[$valid_allowed_key][$action['entity']][$action['action']];
 } else {
   civiproxy_rest_error("Invalid entity/action.");
 }

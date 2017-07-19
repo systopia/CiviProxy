@@ -255,3 +255,24 @@ function civicrm_api3($entity, $action, $data) {
   }
 }
 
+/**
+ * Function to get the valid rest_allowed_actions key
+ *
+ * @param $action
+ * @return bool
+ */
+function civiproxy_get_valid_allowed_actions_key($action) {
+  $remote_addr = $_SERVER['REMOTE_ADDR'];
+  // check IP specific whitelisting if specified for this address
+  if (isset($rest_allowed_actions[$remote_addr])) {
+    if (isset($rest_allowed_actions[$remote_addr][$action['entity']]) && isset($rest_allowed_actions[$remote_addr][$action['entity']][$action['action']])) {
+      $valid_key = $remote_addr;
+    } else {
+      $valid_key = 'default';
+    }
+  } else {
+    $valid_key = 'default';
+  }
+  return $valid_key;
+}
+
