@@ -49,7 +49,7 @@ if (!isset($action['version']) || $action['version'] != 3) {
 
 // in release 0.4, allowed entity/actions per IP were introduced. To introduce backward compatibility,
 // the previous test is still used when no 'all' key is found in the array
-if (isset($relst_allowed_actions['all'] {
+if (isset($rest_allowed_actions['all'])) {
 	// get valid key for the rest_allowed_actions
 	$valid_allowed_key = civiproxy_get_valid_allowed_actions_key($action);
 
