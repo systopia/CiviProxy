@@ -51,7 +51,7 @@ if (!isset($action['version']) || $action['version'] != 3) {
 // the previous test is still used when no 'all' key is found in the array
 if (isset($rest_allowed_actions['all'])) {
 	// get valid key for the rest_allowed_actions
-	$valid_allowed_key = civiproxy_get_valid_allowed_actions_key($action);
+	$valid_allowed_key = civiproxy_get_valid_allowed_actions_key($action, $rest_allowed_actions);
 
 	if (isset($rest_allowed_actions[$valid_allowed_key][$action['entity']]) && isset($rest_allowed_actions[$valid_allowed_key][$action['entity']][$action['action']])) {
 		$valid_parameters = $rest_allowed_actions[$valid_allowed_key][$action['entity']][$action['action']];
