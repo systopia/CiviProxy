@@ -119,18 +119,17 @@ To be able to access your target CiviCRM with the API using REST you will need t
 !!! seealso
     Generic information on CiviCRM with REST [here](https://wiki.civicrm.org/confluence/display/CRMDOC/REST+interface)
 
-In CiviProxy you can either store the API and Site keys directly in the `config.php` file:
+In CiviProxy you can either store the API and Site keys directly in the `config.php` file or you can include a `secrets.php` file in your installation which holds your key values.
+
+Whatever method you prefer, you will have to end up with an array like the one below:
 ```php
-$api_key_map = array();
-$sys_key_map = array();
+$api_key_map = array('eR1k!tSt4321' => 'cal1Mer0#tST');
+$sys_key_map = array('1234#tsT#eR1k' => 'p1P0!tEst1Ng5678');
 ```
-or you can include a `secrets.php` file in your installation which holds your keys:
-```php
-if (file_exists(dirname(__FILE__)."/secrets.php")) {
-  // keys can also be stored in 'secrets.php'
-  require "secrets.php";
-}
-```
+As you can see you can give the application that is accessing you different keys than the ones you use to access your target CiviCRM. 
+
+So in this example I will explain to the party wanting to access my CiviProxy that they have to use the key _1234#tsT#eR1k_ and the api key _eR1k!tSt4321_. My target CiviCRM will expect site key _p1P0!tEst1Ng5678_ and the api key _cal1Mer0#tST_.
+
 ### Whitelisting API requests
 Even if you have entered your API and Site key, and the setting for the target REST is ok, you will not be able to use any API calls through CiviProxy just yet. As CiviProxy uses the **whitelisting** principle by default **no** API calls are allowed unless they have been whilelisted.
 
