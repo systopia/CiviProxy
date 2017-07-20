@@ -2,26 +2,28 @@
 !!! caution
     We assume you have a very basic understanding of PHP and editing PHP files. If you do not, it is probably a good idea to get some support from a CiviCRM expert. You can find one on [Find an Expert](https://civicrm.org/partners-contributors). 
 ## Configuration of the CiviCRM extension
-You can use CiviProxy to ensure that:
+You can use CiviProxy to do a couple of things related to mails and mailing for you.
 
-* you can still see all the stuff on the CiviMailing report like the click-throughs and bounces and such;
-* you do not want the links in your bulk mailing or individual mails to immediately feed back to your CiviCRM installation but pass through CiviProxy
-* you want your subscribe/unsubscribe links to pass through CiviProxy rather than go directly to your CiviCRM installation
+* You can still see all the stuff on the CiviMailing report like the click-throughs and bounces and such.
+* You do not want the links in your bulk mailing or individual mails to immediately feed back to your CiviCRM installation but pass through CiviProxy.
+* You want your subscribe/unsubscribe links to pass through CiviProxy rather than go directly to your CiviCRM installation.
 
-If you want to do any of these things, you will need to install and configure the CiviCRM extension **de.systopia.civiproxy** in your CiviCRM installation.
+If you want to do any of these things, you will need to install and configure the CiviCRM extension **de.systopia.civiproxy** in your CiviCRM installation. 
+
+If you have not installed the extension already, check [Installing CiviCRM](installation.md) for instructions how to.
 
 !!! note
     If you do not install the **de.systopia.civiproxy** extension you can still use CiviProxy to whitelist your API requests.
     
-Once you have installed the CiviCRM extension (check the [Installing CiviProxy](installation.md) section of this guide for instructions) you will need to configure the CiviProxy settings. To do this, go to Administer/Administration Console. You will see the CiviProxy Settings in the System Settings section of the menu as you can see below.
+Once you have installed the CiviCRM extension you will need to configure the CiviProxy settings. To do this, go to **Administer>Administration Console**. You will see the CiviProxy Settings in the System Settings section of the menu as you can see below.
 
 ![Administration Console - System Settings](img/administration_console.png)
 
 If you click on the CiviProxy Settings you will get a page with a few settings for CiviProxy. If you access the page for the first time these will be empty. The settings you can enter are:
 
-1. A checkbox to enable or disable the CiviProxy functionality with your CiviCRM mailing links.
-1. A text field where you can add the URL of your CiviProxy server. This link will be validated and the version of the CiviProxy will be shown. If the URL does not meet the validation (does not contain a valid CiviProxy installation), there will be an error message.
-1. A text field for a path to the unsubscribe page that will be used. There is a basic unsubscribe page on your CiviProxy server, the path to this page will be the default. If the default unsubscribe page is not what you would like, then you can either update the page in the CiviProxy installation on your server or create your own page and set the URL here.
+1. A checkbox CiviProxy Enabled to enable or disable the CiviProxy functionality with your CiviCRM mailing links.
+1. A text field Proxy URL where you can add the URL of your CiviProxy server. This link will be validated and the version of the CiviProxy will be shown. If the URL does not meet the validation (does not contain a valid CiviProxy installation), there will be an error message.
+1. A text field Custom Subscribe/Unsubscribe Pages for a path to the unsubscribe page that will be used. There is a basic unsubscribe page on your CiviProxy server, the path to this page will be the default. If the default unsubscribe page is not what you would like, then you can either update the page in the CiviProxy installation on your server or create your own page and set the URL here.
 
 !!! note
     If you do create your own subscription page make sure the parameters and returns and such are the same as in the default unsubscribe page!
@@ -38,14 +40,16 @@ The configuration of CiviProxy is mainly controlled with one PHP file called `co
 
 ![List of files on your CiviProxy server](img/file%20list%20proxy.png)
 ### Configuring the URL of your CiviProxy server
-First thing you need to configure is the base URL of your CiviProxy server using the `$proxy_base` variable in the `config.php` file:
+First thing you need to configure is the base URL of your CiviProxy server using the `$proxy_base` variable in the `config.php` file. As I have used a local test installation I have used `http://localhost/proxy`:
 ```php
  // this should point to the base address of the CiviProxy installation
  $proxy_base     = 'http://localhost/proxy';
 ```
 ### Configuring the link to the secure target CiviCRM
-Next thing you want to configure is what your target CiviCRM is. This is the CiviCRM installation which you want CiviProxy to police, so the one where the actual data resides and is collected from or sent to. The assumption is that this CiviCRM resides in some kind of VPN and will accept traffic only from the CiviProxy IP address (and probably a few trusted others like home workers or support people).
-You can set the URL of the target CiviCRM using the variable `$target_civirm` in the `config.php` file:
+Next thing you want to configure is what your target CiviCRM is. This is the CiviCRM installation which you want CiviProxy to police, so the one where the actual data resides and is collected from or sent to. 
+
+The assumption is that this CiviCRM resides in some kind of VPN and will accept traffic only from the CiviProxy IP address (and probably a few trusted others like home workers or support people).
+You can set the URL of the target CiviCRM using the variable `$target_civirm` in the `config.php` file. Again, I have used a local test installation:
 ```php
  // this should point to the target CiviCRM system
  $target_civicrm = 'http://localhost/ehdev';
