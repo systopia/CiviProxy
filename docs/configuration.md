@@ -149,6 +149,18 @@ $rest_allowed_actions = array(
 The example above allows using the `Contact Getsingle` API request, and will only accept the parameter `email` which will have to hold data of the type `string`. 
 
 So basically it only allows retrieving data of a single contact at a time using the email to identify the single contact.
+
+!!! caution
+    A little bit of developer background....Obviously you can use the core CiviCRM API's but you have to think carefully of the parameter sanitation. Techically what happens is that if any parameters are passed to CiviProxy that are not _allowed_, they are ignored when the API request is passed to CiviCRM. This could lead to undesired behaviour. Consider this example:
+    
+    * we have allowed the `Contact Get` API with only the parameter `email`
+    
+    * the request we get in CiviProxy has the `Contact Get` but the parameters `first_name` and `last_name`
+    
+    * because `first_name` and `last_name` are not whitelisted, they get ignored and a `Contact Get` without parameters if passed to the target CiviCRM, returning the first 25 contacts are a result...which is not what we wanted. 
+    
+    We recommend solving these situations by developing specific API's rather than using the core ones. And if you think of a good solution feel free to raise an issue or do a PR!
+    
 ### Debug setting
 CiviProxy has a `$debug` setting which allows you to add the name of a text file where all requests are send to. This can be used during the initial testing to see if everything is processed correcty. 
 ```php
