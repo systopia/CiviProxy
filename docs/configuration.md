@@ -135,20 +135,48 @@ Even if you have entered your API and Site key, and the setting for the target R
 
 Also **parameter sanitation** is used. This means that only the specified parameters are allowed, and only content data of the specified type will be allowed.
 
-You can whitelist an API request in the `config.php` file by populating the `$rest_allowed_actions` array:
+You can whitelist an API entity and action (and a set of allowed parameters) for all request from outside, but you can also whitelist an API entity and action ONLY if it comes from a specific IP address.
+
+!!! note
+    The address of the request is checked with the PHP variable `$_SERVER['REMOTE_ADDR']`
+
+In the example below you will see the possible configuration:
+
+* the API `Contact getsingle` with parameter `email` is allowed for all servers making a request to CiviProxy,
+* the API `Contact getsingle` with parameters `first_name` and `last_name` is only allowed if it is requested from IP address 123.45.678.1.
+
 ```php
 $rest_allowed_actions = array(
-  // this is an example:
-  'Contact' => array(
+  'all' => array(
+    'Contact' => array(
       'getsingle' => array(
         'email' => 'string',
       ),
     ),
-  );
+  ),
+  '123.45.678.1' => array(
+    'Contact' => array(
+      'getsingle' => array(
+        'first_name' => 'string',
+        'last_name' => 'string',
+      ),
+    ),
+  ),
+);
 ```
-The example above allows using the `Contact Getsingle` API request, and will only accept the parameter `email` which will have to hold data of the type `string`. 
 
-So basically it only allows retrieving data of a single contact at a time using the email to identify the single contact.
+!!! note
+    In earlier versions of CiviProxy this format was allowed for `$rest_allowed_actions`:
+    ```php
+    $rest_allowed_actions = array(
+    	'Contact' => array(
+    		'getsingle' => array(
+    			'email' => 'string',
+    		),
+    	),
+    );
+    ```
+    That format will still work, but is considered **deprecated** and you are encouraged to adapt to the new format described in the section above.
 
 !!! caution
     A little bit of developer background....Obviously you can use the core CiviCRM API's but you have to think carefully of the parameter sanitation. Techically what happens is that if any parameters are passed to CiviProxy that are not _allowed_, they are ignored when the API request is passed to CiviCRM. This could lead to undesired behaviour. Consider this example:
