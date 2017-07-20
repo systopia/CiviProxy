@@ -46,11 +46,25 @@ $action = civiproxy_get_parameters(array('entity' => 'string', 'action' => 'stri
 if (!isset($action['version']) || $action['version'] != 3) {
   civiproxy_rest_error("Invalid entity/action.");
 }
-if (isset($rest_allowed_actions[$action['entity']]) && isset($rest_allowed_actions[$action['entity']][$action['action']])) {
-  $valid_parameters = $rest_allowed_actions[$action['entity']][$action['action']];
+
+// in release 0.4, allowed entity/actions per IP were introduced. To introduce backward compatibility,
+// the previous test is still used when no 'all' key is found in the array
+if (isset($rest_allowed_actions['all'])) {
+	// get valid key for the rest_allowed_actions
+	$valid_allowed_key = civiproxy_get_valid_allowed_actions_key($action, $rest_allowed_actions);
+
+	if (isset($rest_allowed_actions[$valid_allowed_key][$action['entity']]) && isset($rest_allowed_actions[$valid_allowed_key][$action['entity']][$action['action']])) {
+		$valid_parameters = $rest_allowed_actions[$valid_allowed_key][$action['entity']][$action['action']];
+	} else {
+		civiproxy_rest_error("Invalid entity/action.");
+	}
 } else {
-  civiproxy_rest_error("Invalid entity/action.");
-}
+	if (isset($rest_allowed_actions[$action['entity']]) && isset($rest_allowed_actions[$action['entity']][$action['action']])) {
+		$valid_parameters = $rest_allowed_actions[$action['entity']][$action['action']];
+	} else {
+		civiproxy_rest_error("Invalid entity/action.");
+	}
+}	
 
 // extract parameters and add credentials and action data
 $parameters = civiproxy_get_parameters($valid_parameters);
