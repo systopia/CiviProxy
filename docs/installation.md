@@ -12,7 +12,7 @@ The best option for a server on which you can install CiviProxy is a simple mana
     
 Installing CiviProxy should be pretty straightforward:
 
-* Download the GitHub repository from [https://github.com/systopia/CiviProxy]().
+* Download the GitHub repository from [https://github.com/systopia/CiviProxy](https://github.com/systopia/CiviProxy).
 * In your repository are actually two relevant parts:
 
     * A CiviCRM extension called **de.systopia.civiproxy** that you can use to send mailings (newsletters) from CiviCRM. This should be installed on your target CiviCRM installation.
