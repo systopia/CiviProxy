@@ -44,7 +44,7 @@ if (empty($credentials['api_key'])) {
 // check if the call itself is allowed
 $action = civiproxy_get_parameters(array('entity' => 'string', 'action' => 'string', 'version' => 'int', 'json' => 'int', 'sequential' => 'int'));
 if (!isset($action['version']) || $action['version'] != 3) {
-  civiproxy_rest_error("Invalid entity/action.");
+  civiproxy_rest_error("API 'version' information missing.");
 }
 
 // in release 0.4, allowed entity/actions per IP were introduced. To introduce backward compatibility,
