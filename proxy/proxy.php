@@ -218,6 +218,7 @@ function civiproxy_sanitise($value, $type) {
     error_log("CiviProxy: unknown type '$type'. Ignored.");
     $value = '';
   }
+  return $value;
 }
 
 
