@@ -35,8 +35,10 @@ $target_mail_view = $target_civicrm . '/civicrm/mailing/view';
 // Set to NULL/FALSE to disable the feature
 $mail_subscription_user_key = NULL;
 
-// CAREFUL: only enable temporarily on debug systems. Will log all queries to given PUBLIC file
-$debug                      = NULL; //'debug.log';
+// CAREFUL: only enable temporarily on debug systems.
+//  Will log all queries to given PUBLIC file
+//  Also: use some random name (not this one!)
+$debug                      = NULL; //'LUXFbiaoz4dVWuAHEcuBAe7YQ4YP96rN4MCDmKj89p.log';
 
 // Local network interface or IP to be used for the relayed query
 // This is usefull in some VPN configurations (see CURLOPT_INTERFACE)

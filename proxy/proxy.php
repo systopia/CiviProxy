@@ -135,7 +135,18 @@ function civiproxy_security_check($target, $quit=TRUE) {
   global $debug;
   if (!empty($debug)) {
     $file = fopen($debug, 'a');
-    fwrite($file, "REQUEST FROM " . $_SERVER['REMOTE_ADDR'] . " ON " . date('Y-m-d H:i:s') . ' -- ' . print_r($_REQUEST,1));
+
+    // filter log data
+    $log_data = $_REQUEST;
+    if (isset($log_data['api_key'])) {
+      $log_data['api_key'] = substr($log_data['api_key'], 0, 4) . '...';
+    }
+    if (isset($log_data['key'])) {
+      $log_data['key'] = substr($log_data['key'], 0, 4) . '...';
+    }
+
+    // write log record
+    fwrite($file, "REQUEST FROM " . $_SERVER['REMOTE_ADDR'] . " ON " . date('Y-m-d H:i:s') . ' -- ' . print_r($log_data ,1));
     fclose($file);
   }
 
