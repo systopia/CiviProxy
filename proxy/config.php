@@ -30,6 +30,7 @@ $target_url       = $target_civicrm . '/sites/all/modules/civicrm/extern/url.php
 $target_open      = $target_civicrm . '/sites/all/modules/civicrm/extern/open.php';
 $target_file      = $target_civicrm . '/sites/default/files/civicrm/persist/';
 $target_mail_view = $target_civicrm . '/civicrm/mailing/view';
+$target_mosaico_file = $target_civicrm . '/civicrm/mosaico/img?src=';
 
 // Set api-key for mail subscribe/unsubscribe user
 // Set to NULL/FALSE to disable the feature
