@@ -2,7 +2,7 @@
 /*--------------------------------------------------------+
 | SYSTOPIA CiviProxy                                      |
 |  a simple proxy solution for external access to CiviCRM |
-| Copyright (C) 2015 SYSTOPIA                             |
+| Copyright (C) 2017 SYSTOPIA                             |
 | Author: B. Endres (endres -at- systopia.de)             |
 | http://www.systopia.de/                                 |
 +---------------------------------------------------------*/
@@ -11,7 +11,7 @@ require_once "config.php";
 require_once "proxy.php";
 
 // see if file caching is enabled
-if (!$target_file) civiproxy_http_error("Feature disabled", 405);
+if (!$target_mosaico) civiproxy_http_error("Feature disabled", 405);
 
 // basic check
 civiproxy_security_check('file');
@@ -68,8 +68,7 @@ if ($header && $data) {
 }
 
 // if we get here, we have a cache miss => load
-$url = $target_file . $parameters['id'];
-// error_log("CACHE MISS. LOADING $url");
+$url = $target_mosaico . $parameters['id'];
 
 $curlSession = curl_init();
 curl_setopt($curlSession, CURLOPT_URL, $url);
@@ -100,6 +99,13 @@ $body    = $content[1];
 
 // extract headers
 $header_lines = explode(chr(10), $header);
+
+// Remove chunked encoding header
+foreach ($header_lines as $k => $header_line) {
+  if(strpos($header_line,'Transfer-Encoding: chunked') !== FALSE) {
+    unset($header_lines[$k]);
+  }
+}
 
 // store the information in the cache
 $file_cache->save(json_encode($header_lines), $header_key);
