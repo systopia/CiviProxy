@@ -100,19 +100,22 @@ function civiproxy_mend_URLs(&$string) {
   global $target_rest, $target_url, $target_open, $target_file, $target_mail, $proxy_base;
 
   if ($target_rest) {
-    $string = preg_replace("#$target_rest#", $proxy_base . '/rest.php', $string);
+    $string = preg_replace("#{$target_rest}#", $proxy_base . '/rest.php', $string);
   }
   if ($target_url) {
-    $string = preg_replace("#$target_url#",  $proxy_base . '/url.php', $string);
+    $string = preg_replace("#{$target_url}#",  $proxy_base . '/url.php', $string);
   }
   if ($target_open) {
-    $string = preg_replace("#$target_open#", $proxy_base . '/open.php', $string);
+    $string = preg_replace("#{$target_open}#", $proxy_base . '/open.php', $string);
   }
   if ($target_mail) {
-    $string = preg_replace("#$target_mail#", $proxy_base . '/mail.php', $string);
+    $string = preg_replace("#{$target_mail}#", $proxy_base . '/mail.php', $string);
   }
   if ($target_file) {
-    $string = preg_replace("#$target_file#", $proxy_base . '/file.php?id=', $string);
+    $string = preg_replace("#{$target_file}#", $proxy_base . '/file.php?id=', $string);
+  }
+  if ($target_mosaico) {
+    $string = preg_replace("#{$target_mosaico}#", $proxy_base . '/mosaico.php?id=', $string);
   }
 }
 
