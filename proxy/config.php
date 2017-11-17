@@ -29,7 +29,7 @@ $target_rest      = $target_civicrm . '/sites/all/modules/civicrm/extern/rest.ph
 $target_url       = $target_civicrm . '/sites/all/modules/civicrm/extern/url.php';
 $target_open      = $target_civicrm . '/sites/all/modules/civicrm/extern/open.php';
 $target_file      = $target_civicrm . '/sites/default/files/civicrm/persist/';
-$target_mosaico   = $target_civicrm . '/civicrm/mosaico/img?src=';
+$target_mosaico   = NULL; // (disabled by default): $target_civicrm . '/civicrm/mosaico/img?src=';
 $target_mail_view = $target_civicrm . '/civicrm/mailing/view';
 
 // Set api-key for mail subscribe/unsubscribe user
