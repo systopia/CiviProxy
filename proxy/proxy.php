@@ -8,7 +8,7 @@
 +---------------------------------------------------------*/
 
 require_once "config.php";
-$civiproxy_version = '0.5.dev';
+$civiproxy_version = '0.5.1.dev';
 $civiproxy_logo    = "<img src='{$proxy_base}/static/images/proxy-logo.png' alt='SYSTOPIA Organisationsberatung'></img>";
 
 /**
@@ -97,7 +97,7 @@ function civiproxy_redirect($url_requested, $parameters) {
  *  so they will point to this proxy instead
  */
 function civiproxy_mend_URLs(&$string) {
-  global $target_rest, $target_url, $target_open, $target_file, $target_mail, $proxy_base;
+  global $target_rest, $target_url, $target_open, $target_file, $target_mail, $proxy_base, $target_mosaico;
 
   if ($target_rest) {
     $string = preg_replace("#{$target_rest}#", $proxy_base . '/rest.php', $string);
@@ -115,7 +115,9 @@ function civiproxy_mend_URLs(&$string) {
     $string = preg_replace("#{$target_file}#", $proxy_base . '/file.php?id=', $string);
   }
   if ($target_mosaico) {
-    $string = preg_replace("#{$target_mosaico}#", $proxy_base . '/mosaico.php?id=', $string);
+    // replace full, and relative URL
+    $string = preg_replace("#{$target_mosaico}#",           $proxy_base . '/mosaico.php?id=', $string);
+    $string = preg_replace("#/civicrm/mosaico/img\\?src=#", $proxy_base . '/mosaico.php?id=', $string);
   }
 }
 
