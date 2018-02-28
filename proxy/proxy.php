@@ -167,6 +167,17 @@ function civiproxy_security_check($target, $quit=TRUE) {
  *                               where type can be 'int', 'string' (unchecked),
  */
 function civiproxy_get_parameters($valid_parameters) {
+  $request = $_REQUEST;
+
+  // explode civicrm's json parameter
+  global $evaluate_json_parameter;
+  if (!emtpy($evaluate_json_parameter) && isset($request['json'])) {
+    $json_data = json_decode($request['json']);
+    if (is_array($json_data)) {
+      $request = $request + $json_data;
+    }
+  }
+
   $result = array();
   $default_sanitation = NULL;
 
@@ -177,8 +188,8 @@ function civiproxy_get_parameters($valid_parameters) {
       continue;
     }
 
-    if (isset($_REQUEST[$name])) {
-      $result[$name] = civiproxy_sanitise($_REQUEST[$name], $type);
+    if (isset($request[$name])) {
+      $result[$name] = civiproxy_sanitise($request[$name], $type);
     }
   }
 
@@ -186,7 +197,7 @@ function civiproxy_get_parameters($valid_parameters) {
   if ($default_sanitation !== NULL) {
     // i.e. we want the others too
     $remove_parameters = array('key', 'api_key', 'version', 'entity', 'action');
-    foreach ($_REQUEST as $name => $value) {
+    foreach ($request as $name => $value) {
       if (!in_array($name, $remove_parameters) && !isset($valid_parameters[$name])) {
         $result[$name] = civiproxy_sanitise($value, $default_sanitation);
       }

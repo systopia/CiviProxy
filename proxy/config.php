@@ -19,7 +19,7 @@ $target_civicrm = 'https://your.civicrm.installation.org';
 
 
 /****************************************************************
- **                      DEFAULT PATHS                         **
+ **                FEATURES / DEFAULT PATHS                    **
  **                                                            **
  **          set to NULL to disable a feature                  **
  ****************************************************************/
@@ -31,6 +31,15 @@ $target_open      = $target_civicrm . '/sites/all/modules/civicrm/extern/open.ph
 $target_file      = $target_civicrm . '/sites/default/files/civicrm/persist/';
 $target_mosaico   = NULL; // (disabled by default): $target_civicrm . '/civicrm/mosaico/img?src=';
 $target_mail_view = $target_civicrm . '/civicrm/mailing/view';
+
+/****************************************************************
+ **                    GENERAL OPTIONS                         **
+ ****************************************************************/
+
+// if you enable this, the system will also try to
+// parse a parameter called 'json' as a JSON file
+// when looking for a certain parameter
+$evaluate_json_parameter = FALSE;
 
 // Set api-key for mail subscribe/unsubscribe user
 // Set to NULL/FALSE to disable the feature
@@ -102,4 +111,3 @@ $rest_allowed_actions = array(
     ),
   ),
 );
-
