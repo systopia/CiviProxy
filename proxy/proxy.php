@@ -8,7 +8,7 @@
 +---------------------------------------------------------*/
 
 require_once "config.php";
-$civiproxy_version = '0.5.beta1';
+$civiproxy_version = '0.5.beta1+dev20';
 $civiproxy_logo    = "<img src='{$proxy_base}/static/images/proxy-logo.png' alt='SYSTOPIA Organisationsberatung'></img>";
 
 /**
@@ -165,17 +165,12 @@ function civiproxy_security_check($target, $quit=TRUE) {
  *
  * @param $valid_parameters   array '<parameter name> => '<expected type>'
  *                               where type can be 'int', 'string' (unchecked),
+ * @param $request            provides the request data to use,
+ *                               defaults to $_REQUEST
  */
-function civiproxy_get_parameters($valid_parameters) {
-  $request = $_REQUEST;
-
-  // explode civicrm's json parameter
-  global $evaluate_json_parameter;
-  if (!emtpy($evaluate_json_parameter) && isset($request['json'])) {
-    $json_data = json_decode($request['json']);
-    if (is_array($json_data)) {
-      $request = $request + $json_data;
-    }
+function civiproxy_get_parameters($valid_parameters, $request = NULL) {
+  if ($request === NULL) {
+    $request = $_REQUEST;
   }
 
   $result = array();
@@ -230,6 +225,14 @@ function civiproxy_sanitise($value, $type) {
     if (!preg_match("#^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$#i", $value)) {
       error_log("CiviProxy: removed invalid email parameter: " . $value);
       $value = '';
+    }
+  } elseif ($type == 'json') {
+    // valid json
+    $json_data = json_decode($value);
+    if ($json_data === NULL) {
+      $value = '';
+    } else {
+      $value = json_encode($value);
     }
   } elseif (is_array($type)) {
     // this is a list of valid options

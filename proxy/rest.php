@@ -64,7 +64,7 @@ if (isset($rest_allowed_actions['all'])) {
 	} else {
 		civiproxy_rest_error("Invalid entity/action.");
 	}
-}	
+}
 
 // extract parameters and add credentials and action data
 $parameters = civiproxy_get_parameters($valid_parameters);
@@ -73,6 +73,18 @@ foreach ($credentials as $key => $value) {
 }
 foreach ($action as $key => $value) {
   $parameters[$key] = $value;
+}
+
+// evaluate the JSON parameter
+global $evaluate_json_parameter;
+if ($evaluate_json_parameter) {
+  if (isset($_REQUEST['json'])) {
+    $json_data = json_decode($_REQUEST['json']);
+    if (!empty($json_data)) {
+      $json_parameters = civiproxy_get_parameters($valid_parameters, $json_data);
+      $parameters['json'] = json_encode($json_parameters);
+    }
+  }
 }
 
 // finally execute query
