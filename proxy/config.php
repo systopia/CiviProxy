@@ -19,7 +19,7 @@ $target_civicrm = 'https://your.civicrm.installation.org';
 
 
 /****************************************************************
- **                      DEFAULT PATHS                         **
+ **                FEATURES / DEFAULT PATHS                    **
  **                                                            **
  **          set to NULL to disable a feature                  **
  ****************************************************************/
@@ -31,6 +31,15 @@ $target_open      = $target_civicrm . '/sites/all/modules/civicrm/extern/open.ph
 $target_file      = $target_civicrm . '/sites/default/files/civicrm/persist/';
 $target_mosaico   = NULL; // (disabled by default): $target_civicrm . '/civicrm/mosaico/img?src=';
 $target_mail_view = $target_civicrm . '/civicrm/mailing/view';
+
+/****************************************************************
+ **                    GENERAL OPTIONS                         **
+ ****************************************************************/
+
+// This logo is shown if the proxy server is address with a web browser
+//  add your own logo here
+$civiproxy_logo    = "<img src='{$proxy_base}/static/images/proxy-logo.png' alt='SYSTOPIA Organisationsberatung'></img>";
+
 
 // Set api-key for mail subscribe/unsubscribe user
 // Set to NULL/FALSE to disable the feature
@@ -77,6 +86,12 @@ $file_cache_include = array(
 /****************************************************************
  **                   REST API OPTIONS                         **
  ****************************************************************/
+
+// if you enable this, the system will also try to
+// parse the 'json' parameter, which holds additional
+// input data according to the CiviCRM REST API specs
+$rest_evaluate_json_parameter = FALSE;
+
 // whitelisting is done per IP address ($_SERVER['REMOTE_ADDR']) with a 'all' for the generic stuff that applies to all IP addresses
 // - if a request comes in and the IP is not a key in the array, the whitelisted in 'all' are used
 // - if a request comes in and the IP is indeed a key in the array, the whitelisted in the IP are checked first. If nothing is
@@ -102,4 +117,3 @@ $rest_allowed_actions = array(
     ),
   ),
 );
-
