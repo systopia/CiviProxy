@@ -76,10 +76,10 @@ foreach ($action as $key => $value) {
 }
 
 // evaluate the JSON parameter
-global $evaluate_json_parameter;
-if ($evaluate_json_parameter) {
+global $rest_evaluate_json_parameter;
+if ($rest_evaluate_json_parameter) {
   if (isset($_REQUEST['json'])) {
-    $json_data = json_decode($_REQUEST['json']);
+    $json_data = json_decode($_REQUEST['json'], true);
     if (!empty($json_data)) {
       $json_parameters = civiproxy_get_parameters($valid_parameters, $json_data);
       $parameters['json'] = json_encode($json_parameters);

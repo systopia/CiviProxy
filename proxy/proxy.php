@@ -8,8 +8,7 @@
 +---------------------------------------------------------*/
 
 require_once "config.php";
-$civiproxy_version = '0.5.beta1+dev20';
-$civiproxy_logo    = "<img src='{$proxy_base}/static/images/proxy-logo.png' alt='SYSTOPIA Organisationsberatung'></img>";
+$civiproxy_version = '0.6.dev1';
 
 /**
  * this will redirect the request to another URL,
@@ -228,11 +227,16 @@ function civiproxy_sanitise($value, $type) {
     }
   } elseif ($type == 'json') {
     // valid json
-    $json_data = json_decode($value);
+    $json_data = json_decode($value, true);
     if ($json_data === NULL) {
       $value = '';
     } else {
       $value = json_encode($value);
+    }
+  } elseif ($type == 'array') {
+    // this should only happen _inside_ the json field
+    if (!is_array($value)) {
+      $value = '';
     }
   } elseif (is_array($type)) {
     // this is a list of valid options
