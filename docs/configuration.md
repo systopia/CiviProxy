@@ -1,6 +1,6 @@
 # How to configure CiviProxy
 !!! caution
-    We assume you have a very basic understanding of PHP and editing PHP files. If you do not, it is probably a good idea to get some support from a CiviCRM expert. You can find one on [Find an Expert](https://civicrm.org/partners-contributors). 
+    We assume you have a very basic understanding of PHP and editing PHP files. If you do not, it is probably a good idea to get some support from a CiviCRM expert. You can find one on [Find an Expert](https://civicrm.org/partners-contributors).
 ## Configuration of the CiviCRM extension
 You can use CiviProxy to do a couple of things related to mails and mailing for you.
 
@@ -8,13 +8,13 @@ You can use CiviProxy to do a couple of things related to mails and mailing for 
 * You do not want the links in your bulk mailing or individual mails to immediately feed back to your CiviCRM installation but pass through CiviProxy.
 * You want your subscribe/unsubscribe links to pass through CiviProxy rather than go directly to your CiviCRM installation.
 
-If you want to do any of these things, you will need to install and configure the CiviCRM extension **de.systopia.civiproxy** in your CiviCRM installation. 
+If you want to do any of these things, you will need to install and configure the CiviCRM extension **de.systopia.civiproxy** in your CiviCRM installation.
 
 If you have not installed the extension already, check [Installing CiviCRM](installation.md) for instructions how to.
 
 !!! note
     If you do not install the **de.systopia.civiproxy** extension you can still use CiviProxy to whitelist your API requests.
-    
+
 Once you have installed the CiviCRM extension you will need to configure the CiviProxy settings. To do this, go to **Administer>Administration Console**. You will see the CiviProxy Settings in the System Settings section of the menu as you can see below.
 
 ![Administration Console - System Settings](img/administration_console.png)
@@ -36,17 +36,21 @@ The CiviProxy server is the actual policeman that receives all requests and deci
 
 Once you have installed your CiviProxy server you need to complete a few configuration steps.
 ### The Config.php file
-The configuration of CiviProxy is mainly controlled with one PHP file called `config.php`. You will need to locate that file in your CiviProxy scripts:
+
+The configuration of CiviProxy is mainly controlled with one PHP file called `config.php`. Create this file by copying or renaming the `config.dist.php` file.
 
 ![List of files on your CiviProxy server](img/file%20list%20proxy.png)
+
 ### Configuring the URL of your CiviProxy server
+
 First thing you need to configure is the base URL of your CiviProxy server using the `$proxy_base` variable in the `config.php` file. As I have used a local test installation I have used `http://localhost/proxy`:
 ```php
  // this should point to the base address of the CiviProxy installation
  $proxy_base     = 'http://localhost/proxy';
 ```
 ### Configuring the link to the secure target CiviCRM
-Next thing you want to configure is what your target CiviCRM is. This is the CiviCRM installation which you want CiviProxy to police, so the one where the actual data resides and is collected from or sent to. 
+
+Next thing you want to configure is what your target CiviCRM is. This is the CiviCRM installation which you want CiviProxy to police, so the one where the actual data resides and is collected from or sent to.
 
 The assumption is that this CiviCRM resides in some kind of VPN and will accept traffic only from the CiviProxy IP address (and probably a few trusted others like home workers or support people).
 You can set the URL of the target CiviCRM using the variable `$target_civirm` in the `config.php` file. Again, I have used a local test installation:
@@ -92,7 +96,7 @@ If you set it to the value NULL this functionality will not be available on your
     );
     ```
     You can update these settings if you should want to.
-    
+
     You can find documentation on the caching engine used in CiviProxy [here](http://pear.php.net/manual/en/package.caching.cache-lite.cache-lite.cache-lite.php)
 ### Setting for the view unformatted mail link
 If CiviCRM sends a mail you can get a link to view the mail unformatted. CiviProxy keeps this setting in a variable `$target_mail_view` in the `config.php` file:
@@ -130,7 +134,7 @@ Whatever method you prefer, you will have to end up with an array like the one b
 $api_key_map = array('eR1k!tSt4321' => 'cal1Mer0#tST');
 $sys_key_map = array('1234#tsT#eR1k' => 'p1P0!tEst1Ng5678');
 ```
-As you can see you can give the application that is accessing you different keys than the ones you use to access your target CiviCRM. 
+As you can see you can give the application that is accessing you different keys than the ones you use to access your target CiviCRM.
 
 So in this example I will explain to the party wanting to access my CiviProxy that they have to use the key _1234#tsT#eR1k_ and the api key _eR1k!tSt4321_. My target CiviCRM will expect site key _p1P0!tEst1Ng5678_ and the api key _cal1Mer0#tST_.
 
@@ -184,17 +188,17 @@ $rest_allowed_actions = array(
 
 !!! caution
     A little bit of developer background....Obviously you can use the core CiviCRM API's but you have to think carefully of the parameter sanitation. Techically what happens is that if any parameters are passed to CiviProxy that are not _allowed_, they are ignored when the API request is passed to CiviCRM. This could lead to undesired behaviour. Consider this example:
-    
+
     * we have allowed the `Contact Get` API with only the parameter `email`
-    
+
     * the request we get in CiviProxy has the `Contact Get` but the parameters `first_name` and `last_name`
-    
-    * because `first_name` and `last_name` are not whitelisted, they get ignored and a `Contact Get` without parameters if passed to the target CiviCRM, returning the first 25 contacts are a result...which is not what we wanted. 
-    
+
+    * because `first_name` and `last_name` are not whitelisted, they get ignored and a `Contact Get` without parameters if passed to the target CiviCRM, returning the first 25 contacts are a result...which is not what we wanted.
+
     We recommend solving these situations by developing specific API's rather than using the core ones. And if you think of a good solution feel free to raise an issue or do a PR!
-    
+
 ### Debug setting
-CiviProxy has a `$debug` setting which allows you to add the name of a text file where all requests are send to. This can be used during the initial testing to see if everything is processed correcty. 
+CiviProxy has a `$debug` setting which allows you to add the name of a text file where all requests are send to. This can be used during the initial testing to see if everything is processed correcty.
 ```php
 // CAREFUL: only enable temporarily on debug systems. Will log all queries to given PUBLIC file
 $debug                      = NULL; //'debug.log';
@@ -206,7 +210,7 @@ If you set the `$debug` setting to NULL this feature will not be used.
 ### Target Interface setting
 There is a setting for a local network interface or IP to be used for relayed queries. If you have no idea what this is about, just leave it as is.
 ```php
-// Local network interface or IP to be used for the relayed query 
+// Local network interface or IP to be used for the relayed query
 // This is usefull in some VPN configurations (see CURLOPT_INTERFACE)
 $target_interface           = NULL;
 ```
