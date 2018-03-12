@@ -124,6 +124,7 @@ $callbacks = [
   'sparkpost' => [
     // 'secret' => '',
     'request_method' => 'POST',
+    'content_type' => 'application/json',
     'target_path' => 'civicrm/sparkpost/callback'
   ]
 ];

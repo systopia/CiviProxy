@@ -43,6 +43,7 @@ if(!isset($query_params['secret']) || $definition['secret'] !== $query_params['s
   civiproxy_http_error("Invalid secret", 403);
 }
 
+// Check this is a supported request method
 if(!in_array($_SERVER['REQUEST_METHOD'], ['POST'])){
   civiproxy_http_error("Unsupported request method", 501);
 }
@@ -50,6 +51,11 @@ if(!in_array($_SERVER['REQUEST_METHOD'], ['POST'])){
 // If a request method has been defined, validate it
 if(isset($definition['request_method'])){
   civiproxy_callback_validate_request_method($definition['request_method'], $_SERVER['REQUEST_METHOD']);
+}
+
+// Check this is a supported content type
+if(!in_array($_SERVER['CONTENT_TYPE'], ['application/json', 'application/x-www-form-urlencoded'])){
+  civiproxy_http_error("Unsupported content type", 501);
 }
 
 // If a content type has been defined, validate it
@@ -63,7 +69,4 @@ if(isset($validator['body'])){
 }
 
 // We have passed all the validators, forward the request
-
-// TODO for now, I have written my own method to pass on post requests. Would be
-// better to refactor / improve civiproxy_redirect()
 civiproxy_callback_redirect($definition['target_path'], $_SERVER['REQUEST_METHOD']);

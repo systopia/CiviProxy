@@ -33,6 +33,9 @@ function civiproxy_callback_validate_body_xwwwformurlencoded($expected, $actual)
   //TODO
 }
 
+// For now, I have written this 'placeholder' method to pass on post requests.
+// Sparkpost says that it works OK. Might be a good idea to refactor/improve
+// civiproxy_redirect() instead/as well.
 function civiproxy_callback_redirect($target_path, $method) {
   switch ($method) {
     case 'POST':
