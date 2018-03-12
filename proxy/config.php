@@ -103,3 +103,12 @@ $rest_allowed_actions = array(
   ),
 );
 
+$callbacks_enabled = false;
+
+$callbacks = [
+  'sparkpost' => [
+    // 'secret' => '',
+    'request_method' => 'POST',
+    'target_path' => 'civicrm/sparkpost/callback'
+  ]
+];
