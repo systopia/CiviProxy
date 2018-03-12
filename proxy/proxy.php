@@ -8,8 +8,7 @@
 +---------------------------------------------------------*/
 
 require_once "config.php";
-$civiproxy_version = '0.5.beta1';
-$civiproxy_logo    = "<img src='{$proxy_base}/static/images/proxy-logo.png' alt='SYSTOPIA Organisationsberatung'></img>";
+$civiproxy_version = '0.6.dev1';
 
 /**
  * this will redirect the request to another URL,
@@ -49,7 +48,7 @@ function civiproxy_redirect($url_requested, $parameters) {
   curl_setopt($curlSession, CURLOPT_HEADER, 1);
   curl_setopt($curlSession, CURLOPT_RETURNTRANSFER,1);
   curl_setopt($curlSession, CURLOPT_TIMEOUT, 30);
-  curl_setopt($curlSession, CURLOPT_SSL_VERIFYHOST, 1);
+  curl_setopt($curlSession, CURLOPT_SSL_VERIFYHOST, 2);
   if (!empty($target_interface)) {
     curl_setopt($curlSession, CURLOPT_INTERFACE, $target_interface);
   }
@@ -165,8 +164,14 @@ function civiproxy_security_check($target, $quit=TRUE) {
  *
  * @param $valid_parameters   array '<parameter name> => '<expected type>'
  *                               where type can be 'int', 'string' (unchecked),
+ * @param $request            provides the request data to use,
+ *                               defaults to $_REQUEST
  */
-function civiproxy_get_parameters($valid_parameters) {
+function civiproxy_get_parameters($valid_parameters, $request = NULL) {
+  if ($request === NULL) {
+    $request = $_REQUEST;
+  }
+
   $result = array();
   $default_sanitation = NULL;
 
@@ -177,8 +182,8 @@ function civiproxy_get_parameters($valid_parameters) {
       continue;
     }
 
-    if (isset($_REQUEST[$name])) {
-      $result[$name] = civiproxy_sanitise($_REQUEST[$name], $type);
+    if (isset($request[$name])) {
+      $result[$name] = civiproxy_sanitise($request[$name], $type);
     }
   }
 
@@ -186,7 +191,7 @@ function civiproxy_get_parameters($valid_parameters) {
   if ($default_sanitation !== NULL) {
     // i.e. we want the others too
     $remove_parameters = array('key', 'api_key', 'version', 'entity', 'action');
-    foreach ($_REQUEST as $name => $value) {
+    foreach ($request as $name => $value) {
       if (!in_array($name, $remove_parameters) && !isset($valid_parameters[$name])) {
         $result[$name] = civiproxy_sanitise($value, $default_sanitation);
       }
@@ -218,6 +223,19 @@ function civiproxy_sanitise($value, $type) {
     // valid email
     if (!preg_match("#^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$#i", $value)) {
       error_log("CiviProxy: removed invalid email parameter: " . $value);
+      $value = '';
+    }
+  } elseif ($type == 'json') {
+    // valid json
+    $json_data = json_decode($value, true);
+    if ($json_data === NULL) {
+      $value = '';
+    } else {
+      $value = json_encode($value);
+    }
+  } elseif ($type == 'array') {
+    // this should only happen _inside_ the json field
+    if (!is_array($value)) {
       $value = '';
     }
   } elseif (is_array($type)) {
@@ -282,7 +300,7 @@ function civicrm_api3($entity, $action, $data) {
     curl_setopt($curlSession, CURLOPT_INTERFACE, $target_interface);
   }
   // curl_setopt($curlSession, CURLOPT_SSL_VERIFYPEER, 1);
-  curl_setopt($curlSession, CURLOPT_SSL_VERIFYHOST, 1);
+  curl_setopt($curlSession, CURLOPT_SSL_VERIFYHOST, 2);
   if (file_exists(dirname(__FILE__).'/target.pem')) {
     curl_setopt($curlSession, CURLOPT_CAINFO, dirname(__FILE__).'/target.pem');
   }
