@@ -75,7 +75,7 @@ curl_setopt($curlSession, CURLOPT_URL, $url);
 curl_setopt($curlSession, CURLOPT_HEADER, 1);
 curl_setopt($curlSession, CURLOPT_RETURNTRANSFER,1);
 curl_setopt($curlSession, CURLOPT_TIMEOUT, 30);
-curl_setopt($curlSession, CURLOPT_SSL_VERIFYHOST, 1);
+curl_setopt($curlSession, CURLOPT_SSL_VERIFYHOST, 2);
 if (!empty($target_interface)) {
   curl_setopt($curlSession, CURLOPT_INTERFACE, $target_interface);
 }
