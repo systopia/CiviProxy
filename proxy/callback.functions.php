@@ -1,9 +1,13 @@
 <?php
 
 function civiproxy_callback_validate_request_method($expected, $actual){
-  if($expected != $actual){
-    civiproxy_http_error("Invalid request method.", 405);
+  if(is_array($expected) && in_array($actual, $expected)){
+    return;
   }
+  if(is_string($expected) && $expected == $actual){
+    return;
+  }
+  civiproxy_http_error("Invalid request method.", 405);
 }
 
 function civiproxy_callback_validate_content_type($expected, $actual){
