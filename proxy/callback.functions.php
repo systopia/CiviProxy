@@ -45,6 +45,9 @@ function civiproxy_callback_redirect($target_path, $method) {
     case 'POST':
       civiproxy_callback_redirect_post($target_path);
       break;
+    case 'GET':
+      civiproxy_callback_redirect_get($target_path);
+      break;
   }
   exit;
 }
@@ -57,6 +60,27 @@ function civiproxy_callback_redirect_post($target_path) {
   $ch = curl_init();
   curl_setopt($ch, CURLOPT_POST, 1);
   curl_setopt($ch, CURLOPT_POSTFIELDS, file_get_contents('php://input'));
+  curl_setopt($ch, CURLOPT_URL, $target_url);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+  curl_setopt($ch, CURLOPT_HEADER, 0);
+  $response = curl_exec($ch);
+  if (curl_error($ch)){
+    civiproxy_http_error("CURL error (" . curl_errno($ch) . ") ".curl_error($ch) , 501);
+  }
+
+  // I think that most callbacks just want a response code
+  http_response_code(curl_getinfo($ch, CURLINFO_HTTP_CODE));
+
+  // But some might be interested in the response.
+  echo $response;
+}
+
+// Change the URL, forward the body. Respond with the response
+function civiproxy_callback_redirect_get($target_path) {
+  global $target_civicrm;
+  $target_url = "$target_civicrm/{$target_path}";
+
+  $ch = curl_init();
   curl_setopt($ch, CURLOPT_URL, $target_url);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
   curl_setopt($ch, CURLOPT_HEADER, 0);

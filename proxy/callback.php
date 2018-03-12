@@ -44,7 +44,7 @@ if(!isset($query_params['secret']) || $definition['secret'] !== $query_params['s
 }
 
 // Check this is a supported request method
-if(!in_array($_SERVER['REQUEST_METHOD'], ['POST'])){
+if(!in_array($_SERVER['REQUEST_METHOD'], ['GET', 'POST'])){
   civiproxy_http_error("Unsupported request method", 501);
 }
 
