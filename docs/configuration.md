@@ -45,6 +45,10 @@ First thing you need to configure is the base URL of your CiviProxy server using
  // this should point to the base address of the CiviProxy installation
  $proxy_base     = 'http://localhost/proxy';
 ```
+
+!!! note
+    This guide assumes a Drupal7 target CiviCRM with clean URLs enabled. If this is not the case for you, you might have to adjust the URLs and/or encounter issues. If so, please report on GitHub! 
+
 ### Configuring the link to the secure target CiviCRM
 Next thing you want to configure is what your target CiviCRM is. This is the CiviCRM installation which you want CiviProxy to police, so the one where the actual data resides and is collected from or sent to. 
 
