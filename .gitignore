@@ -1,4 +1,5 @@
 secrets.php
 proxy/file_cache
+proxy/config.php
 debug.log
 .idea
