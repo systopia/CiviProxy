@@ -117,3 +117,14 @@ $rest_allowed_actions = array(
     ),
   ),
 );
+
+$callbacks_enabled = false;
+
+$callbacks = [
+  'sparkpost' => [
+    'secret' => '85c573b980c3c248f083f9ca6a175659',
+    'request_method' => 'POST', // single value or array
+    'content_type' => 'application/json',
+    'target_path' => 'civicrm/sparkpost/callback'
+  ]
+];
