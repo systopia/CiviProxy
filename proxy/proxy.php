@@ -8,7 +8,7 @@
 +---------------------------------------------------------*/
 
 require_once "config.php";
-$civiproxy_version = '0.6.dev1';
+$civiproxy_version = '0.6-dev';
 
 /**
  * this will redirect the request to another URL,
@@ -138,8 +138,6 @@ function civiproxy_security_check($target, $quit=TRUE) {
 
   global $debug;
   if (!empty($debug)) {
-    $file = fopen($debug, 'a');
-
     // filter log data
     $log_data = $_REQUEST;
     if (isset($log_data['api_key'])) {
@@ -149,13 +147,26 @@ function civiproxy_security_check($target, $quit=TRUE) {
       $log_data['key'] = substr($log_data['key'], 0, 4) . '...';
     }
 
-    // write log record
-    fwrite($file, "REQUEST FROM " . $_SERVER['REMOTE_ADDR'] . " ON " . date('Y-m-d H:i:s') . ' -- ' . print_r($log_data ,1));
-    fclose($file);
+    // log
+    civiproxy_log("REQUEST FROM " . $_SERVER['REMOTE_ADDR'] . " ON " . date('Y-m-d H:i:s') . ' -- ' . print_r($log_data ,1));
   }
 
   // TODO: implement
   return TRUE;
+}
+
+/**
+ * Log a message to the proxy log - if enabled
+ *
+ * @param $message string the log message
+ */
+function civiproxy_log($message) {
+  global $debug;
+  if (!empty($debug)) {
+    $file = fopen($debug, 'a');
+    fwrite($file, $message);
+    fclose($file);
+  }
 }
 
 
