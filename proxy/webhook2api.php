@@ -129,7 +129,8 @@ function webhook2api_processConfiguration($configuration, $post_input) {
 
       // run modifiers
       foreach ($modifiers as $modifier) {
-        // TODO:
+        // TODO: implement
+        civiproxy_log("Webhook2API.modifiers: not implemented!");
       }
 
       // set to target
@@ -142,6 +143,7 @@ function webhook2api_processConfiguration($configuration, $post_input) {
   // sanitise data
   if (!empty($configuration['parameter_sanitation']) && is_array($configuration['parameter_sanitation'])) {
     // TODO: implement
+    civiproxy_log("Webhook2API.sanitation: not implemented!");
   }
 
   // send to target REST API
@@ -161,6 +163,7 @@ function webhook2api_processConfiguration($configuration, $post_input) {
   // process result
   if (!empty($configuration['response_mapping']) && is_array($configuration['response_mapping'])) {
     // TODO: implement
+    civiproxy_log("Webhook2API.response_mapping: not implemented!");
 
   } else {
     // default behaviour:
@@ -221,7 +224,7 @@ function webhook2api_getValue($data, $path) {
 function webhook2api_setValue(&$data, $target_path, $value) {
   if (is_array($target_path)) {
     if (count($target_path) == 0) {
-      // error - bad spec
+      civiproxy_log("Webhook2API.setValue: Empty target path!");
       return;
 
     } elseif (count($target_path) == 1) {
@@ -237,7 +240,7 @@ function webhook2api_setValue(&$data, $target_path, $value) {
       if (is_array($data[$element])) {
         webhook2api_setValue($data[$element], $target_path, $value);
       } else {
-        // error - bad spec (path element is not array)
+        civiproxy_log("Webhook2API.setValue: path node is not an array!");
       }
     }
 
@@ -245,6 +248,6 @@ function webhook2api_setValue(&$data, $target_path, $value) {
     webhook2api_setValue($data, [$target_path], $value);
 
   } else {
-    // error - bad spec
+    civiproxy_log("Webhook2API.setValue: path neither string nor array!");
   }
 }

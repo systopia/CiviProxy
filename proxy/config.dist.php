@@ -111,7 +111,7 @@ $rest_allowed_actions = array(
       ),
     ),
   ),
-  '123.45.678.1' => array(
+  '123.45.67.8' => array(
     'Contact' => array(
       'getsingle' => array(
         'first_name' => 'string',
@@ -124,3 +124,35 @@ $rest_allowed_actions = array(
     ),
   ),
 );
+
+
+/****************************************************************
+ **                WebHook2API CONFIGURATIONS                  **
+ ****************************************************************/
+# remove if you don't want this feature or rename to $webhook2api to activate
+$_webhook2api = [
+    "configurations" => [
+        "default" => [
+            "name"                 => "Example",
+            "ip_sources"           => ['172.10.0.1/24', '192.168.1.1/24'],  // only accept source ID from the given range
+            "data_sources"         => ["POST/json", "REQUEST"],             // POST/json json-decodes the post data, REQUEST is PHP's $_REQUEST array
+            "sentinel"             => [["type", "equal:customer.created"]], // only execute if all of these are true
+            "entity"               => "Contact",
+            "action"               => "create",
+            "api_key"              => "api key",
+            "parameter_mapping"    => [
+                [["data", "object", "metadata", "salutation"], ["prefix_id"]],
+                [["data", "object", "metadata", "first_name"], ["first_name"]],
+                [["data", "object", "metadata", "last_name"],  ["last_name"]],
+                [["data", "object", "metadata", "street"],     ["street_address"]],
+                [["data", "object", "metadata", "zip_code"],   ["postal_code"]],
+                [["data", "object", "metadata", "city"],       ["city"]],
+                [["data", "object", "metadata", "country"],    ["country_id"]],
+                [["data", "object", "metadata", "telephone"],  ["phone"]],
+                [["data", "object", "metadata", "birthday"],   ["birth_date"]],
+                [["data", "object", "metadata", "email"],      ["email"]]
+            ],
+            "parameter_sanitation" => [],
+        ]
+    ]
+];
