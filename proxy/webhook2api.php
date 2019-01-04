@@ -153,6 +153,9 @@ function webhook2api_processConfiguration($configuration, $post_input) {
     civiproxy_log("Webhook2API[{$configuration['name']}]: Missing api_key.");
     return ["Configuration error", 403];
   }
+  $params['api_key'] = $configuration['api_key'];
+
+  // run API call
   $result = civicrm_api3($configuration['entity'], $configuration['action'], $params);
 
   // process result
