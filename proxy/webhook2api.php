@@ -110,6 +110,7 @@ function webhook2api_processConfiguration($configuration, $post_input) {
       $result = webhook2api_callCiviApi($configuration, $d);
       if(isset($result['internal_error'])) {
         // internal communication Error occured. Aborting process
+        civiproxy_log("Webhook2API[{$configuration['name']}]: internal error occured: " . json_encode($result['internal_error']));
         return $result['internal_error'];
       }
       if (!empty($result['values']['http_code'])) {
@@ -123,6 +124,7 @@ function webhook2api_processConfiguration($configuration, $post_input) {
     $result = webhook2api_callCiviApi($configuration, $data);
     if(isset($result['internal_error'])) {
       // internal communication Error occured. Aborting process
+      civiproxy_log("Webhook2API[{$configuration['name']}]: internal error occured: " . json_encode($result['internal_error']));
       return $result['internal_error'];
     }
     if (!empty($result['values']['http_code'])) {
@@ -131,15 +133,20 @@ function webhook2api_processConfiguration($configuration, $post_input) {
       $http_code = 403;
     }
   }
+  if ($http_code != '200') {
+    // we received and parsed the webhook event successfully, but an error occured with civicrm:
+    civiproxy_log("Webhook2API[{$configuration['name']}]: Internal CiviCRM Error. Error Code: {$http_code}. Full Message: " . json_encode($result));
+  }
 
   // process result
   if (!empty($configuration['response_mapping']) && is_array($configuration['response_mapping'])) {
     // TODO: implement
     //error_log("Webhook2API.response_mapping: not implemented!");
+    http_response_code('200');
 
   } else {
     // default behaviour:
-    http_response_code($http_code);
+    http_response_code('200');
   }
   // all done
   exit();
