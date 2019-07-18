@@ -112,8 +112,8 @@ function webhook2api_processConfiguration($configuration, $post_input) {
         // internal communication Error occured. Aborting process
         return $result['internal_error'];
       }
-      if (!empty($result['http_code'])) {
-        $http_code = $result['http_code'];
+      if (!empty($result['values']['http_code'])) {
+        $http_code = $result['values']['http_code'];
       } else {
         $http_code = 403;
         break;
@@ -125,8 +125,8 @@ function webhook2api_processConfiguration($configuration, $post_input) {
       // internal communication Error occured. Aborting process
       return $result['internal_error'];
     }
-    if (!empty($result['http_code'])) {
-      $http_code = $result['http_code'];
+    if (!empty($result['values']['http_code'])) {
+      $http_code = $result['values']['http_code'];
     } else {
       $http_code = 403;
     }
