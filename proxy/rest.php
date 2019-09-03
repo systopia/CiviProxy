@@ -52,10 +52,8 @@ if (!isset($action['version']) || $action['version'] != 3) {
 if (isset($rest_allowed_actions['all'])) {
 	// get valid key for the rest_allowed_actions
 	$valid_allowed_key = civiproxy_get_valid_allowed_actions_key($action, $rest_allowed_actions);
-
-	if (isset($rest_allowed_actions[$valid_allowed_key][$action['entity']]) && isset($rest_allowed_actions[$valid_allowed_key][$action['entity']][$action['action']])) {
-		$valid_parameters = $rest_allowed_actions[$valid_allowed_key][$action['entity']][$action['action']];
-	} else {
+  $valid_parameters = civiproxy_retrieve_api_parameters($valid_allowed_key, $action['entity'], $action['action'], $rest_allowed_actions);
+	if (!$valid_parameters) {
 		civiproxy_rest_error("Invalid entity/action.");
 	}
 } else {
@@ -80,7 +78,7 @@ global $rest_evaluate_json_parameter;
 if ($rest_evaluate_json_parameter) {
   if (isset($_REQUEST['json'])) {
     $json_data = json_decode($_REQUEST['json'], true);
-    if (!empty($json_data)) {
+    if (!empty($json_data) && is_array($json_data)) {
       $json_parameters = civiproxy_get_parameters($valid_parameters, $json_data);
       $parameters['json'] = json_encode($json_parameters);
     }
