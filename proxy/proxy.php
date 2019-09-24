@@ -8,7 +8,7 @@
 +---------------------------------------------------------*/
 
 require_once "config.php";
-$civiproxy_version = '0.6.dev1';
+$civiproxy_version = '0.6-dev';
 
 /**
  * this will redirect the request to another URL,
@@ -138,8 +138,6 @@ function civiproxy_security_check($target, $quit=TRUE) {
 
   global $debug;
   if (!empty($debug)) {
-    $file = fopen($debug, 'a');
-
     // filter log data
     $log_data = $_REQUEST;
     if (isset($log_data['api_key'])) {
@@ -149,13 +147,26 @@ function civiproxy_security_check($target, $quit=TRUE) {
       $log_data['key'] = substr($log_data['key'], 0, 4) . '...';
     }
 
-    // write log record
-    fwrite($file, "REQUEST FROM " . $_SERVER['REMOTE_ADDR'] . " ON " . date('Y-m-d H:i:s') . ' -- ' . print_r($log_data ,1));
-    fclose($file);
+    // log
+    civiproxy_log("REQUEST FROM " . $_SERVER['REMOTE_ADDR'] . " ON " . date('Y-m-d H:i:s') . ' -- ' . print_r($log_data ,1));
   }
 
   // TODO: implement
   return TRUE;
+}
+
+/**
+ * Log a message to the proxy log - if enabled
+ *
+ * @param $message string the log message
+ */
+function civiproxy_log($message) {
+  global $debug;
+  if (!empty($debug)) {
+    $file = fopen($debug, 'a');
+    fwrite($file, $message);
+    fclose($file);
+  }
 }
 
 
@@ -186,7 +197,6 @@ function civiproxy_get_parameters($valid_parameters, $request = NULL) {
       $result[$name] = civiproxy_sanitise($request[$name], $type);
     }
   }
-
   // process wildcard elements
   if ($default_sanitation !== NULL) {
     // i.e. we want the others too
@@ -325,7 +335,7 @@ function civiproxy_get_valid_allowed_actions_key($action, $rest_allowed_actions)
   $remote_addr = $_SERVER['REMOTE_ADDR'];
   // check IP specific whitelisting if specified for this address
   if (isset($rest_allowed_actions[$remote_addr])) {
-    if (isset($rest_allowed_actions[$remote_addr][$action['entity']]) && isset($rest_allowed_actions[$remote_addr][$action['entity']][$action['action']])) {
+    if (civiproxy_validate_api_entity_and_action($remote_addr, $action['entity'], $action['action'], $rest_allowed_actions)) {
       $valid_key = $remote_addr;
     } else {
       $valid_key = 'all';
@@ -335,3 +345,82 @@ function civiproxy_get_valid_allowed_actions_key($action, $rest_allowed_actions)
   }
   return $valid_key;
 }
+
+/**
+ * Function to check whether the api entity and api action are valid for the remote address.
+ * This function does a case insensitive comparison.
+ *
+ * @param $remote_addr
+ *   'all', or the remote address.
+ * @param $api_entity
+ *   The api entity.
+ * @param $api_action
+ *   The api action.
+ * @param $rest_allowed_actions
+ *   The array with the allowed actions.
+ * @return bool
+ */
+function civiproxy_validate_api_entity_and_action($remote_addr, $api_entity, $api_action, $rest_allowed_actions) {
+  if (!isset($rest_allowed_actions[$remote_addr])) {
+    return false;
+  }
+
+  $api_entity = strtolower($api_entity);
+  $api_action = strtolower($api_action);
+  if (isset($rest_allowed_actions[$remote_addr][$api_entity]) && isset($rest_allowed_actions[$remote_addr][$api_entity][$api_action])) {
+    return true;
+  }
+
+  // Did not find the lower case variant.
+  // loop through the array
+  foreach($rest_allowed_actions[$remote_addr] as $allowed_entity => $allowed_actions) {
+    if (strtolower($allowed_entity) == $api_entity) {
+      foreach($allowed_actions as $allowed_action => $fields) {
+        if (strtolower($allowed_action) == $api_action) {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}
+
+/**
+ * Function to retrieve the valid parameters of an api call
+ * This function does a case insensitive comparison.
+ *
+ * @param $remote_addr
+ *   'all', or the remote address.
+ * @param $api_entity
+ *   The api entity.
+ * @param $api_action
+ *   The api action.
+ * @param $rest_allowed_actions
+ *   The array with the allowed actions.
+ * @return array()|null
+ **/
+function civiproxy_retrieve_api_parameters($remote_addr, $api_entity, $api_action, $rest_allowed_actions) {
+  if (!isset($rest_allowed_actions[$remote_addr])) {
+    return null;
+  }
+
+  $api_entity = strtolower($api_entity);
+  $api_action = strtolower($api_action);
+  if (isset($rest_allowed_actions[$remote_addr][$api_entity]) && isset($rest_allowed_actions[$remote_addr][$api_entity][$api_action])) {
+    return $rest_allowed_actions[$remote_addr][$api_entity][$api_action];
+  }
+
+  // Did not find the lower case variant.
+  // loop through the array
+  foreach($rest_allowed_actions[$remote_addr] as $allowed_entity => $allowed_actions) {
+    if (strtolower($allowed_entity) == $api_entity) {
+      foreach($allowed_actions as $allowed_action => $parameters) {
+        if (strtolower($allowed_action) == $api_action) {
+          return $parameters;
+        }
+      }
+    }
+  }
+  return null;
+}
+
