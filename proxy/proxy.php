@@ -96,7 +96,7 @@ function civiproxy_redirect($url_requested, $parameters) {
  *  so they will point to this proxy instead
  */
 function civiproxy_mend_URLs(&$string) {
-  global $target_rest, $target_url, $target_open, $target_file, $target_mail, $proxy_base, $target_mosaico;
+  global $target_rest, $target_url, $target_open, $target_file, $target_mail, $proxy_base, $target_mosaico, $target_civicrm;
 
   if ($target_rest) {
     $string = preg_replace("#{$target_rest}#", $proxy_base . '/rest.php', $string);
@@ -115,8 +115,8 @@ function civiproxy_mend_URLs(&$string) {
   }
   if ($target_mosaico) {
     // replace full, and relative URL
-    $string = preg_replace("#{$target_mosaico}#",           $proxy_base . '/mosaico.php?id=', $string);
-    $string = preg_replace("#/civicrm/mosaico/img\\?src=#", $proxy_base . '/mosaico.php?id=', $string);
+    // $string = preg_replace("#{$target_mosaico}#",           $proxy_base . '/mosaico.php?id=', $string);
+    $string = preg_replace("#{$target_civicrm}/civicrm/mosaico/img\?src=#", $proxy_base . '/mosaico.php?id=', $string);
   }
 }
 
