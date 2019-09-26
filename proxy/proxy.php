@@ -231,7 +231,7 @@ function civiproxy_sanitise($value, $type) {
     }
   } elseif ($type == 'email') {
     // valid email
-    if (!preg_match("#^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$#i", $value)) {
+    if (!preg_match("#^[_a-z0-9-]+[._a-z0-9-+]*@[a-z0-9-]+[.a-z0-9-]*\.[a-z]{2,3}$#i", $value)) {
       error_log("CiviProxy: removed invalid email parameter: " . $value);
       $value = '';
     }
