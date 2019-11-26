@@ -112,6 +112,11 @@ function civiproxy_mend_URLs(&$string) {
   }
   if ($target_file) {
     $string = preg_replace("#{$target_file}#", $proxy_base . '/file.php?id=', $string);
+    // https://github.com/systopia/CiviProxy/issues/38
+    // fix for relative
+    if ($target_mosaico) {
+      $string = preg_replace("#src=\"\/sites\/default\/files\/civicrm\/persist\/#", 'src="' . $proxy_base . '/file.php?id=', $string);
+    }
   }
   if ($target_mosaico) {
     // replace full, and relative URL
