@@ -53,10 +53,11 @@ class CRM_Civiproxy_Mailer {
     $proxy_base  = CRM_Core_BAO_Setting::getItem('CiviProxy Settings', 'proxy_url');
 
     // General external functions
-    $value = preg_replace("#{$system_base}sites/all/modules/civicrm/extern/url.php#i",  $proxy_base.'/url.php',         $value);
-    $value = preg_replace("#{$system_base}sites/all/modules/civicrm/extern/open.php#i", $proxy_base.'/open.php',        $value);
-    $value = preg_replace("#{$system_base}sites/default/files/civicrm/persist/#i",      $proxy_base.'/file.php?id=',    $value);
-    $value = preg_replace("#{$system_base}civicrm/mosaico/img\?src=#i",                 $proxy_base.'/mosaico.php?id=', $value);
+    $value = preg_replace("#{$system_base}sites/all/modules/civicrm/extern/url.php#i",                $proxy_base.'/url.php',         $value);
+    $value = preg_replace("#{$system_base}sites/all/modules/civicrm/extern/open.php#i",               $proxy_base.'/open.php',        $value);
+    $value = preg_replace("#{$system_base}sites/default/files/civicrm/persist/#i",                    $proxy_base.'/file.php?id=',    $value);
+    $value = preg_replace("#{$system_base}civicrm/mosaico/img\?src=#i",                               $proxy_base.'/mosaico.php?id=', $value);
+    $value = preg_replace("#{$system_base}civicrm/mosaico/img\?method=placeholder(&|&amp;)params=#i", $proxy_base.'/mosaico.php?ph=', $value);
 
     // Mailing related functions
     $value = preg_replace("#{$system_base}civicrm/mailing/view#i",                      $proxy_base.'/mailing/mail.php', $value);

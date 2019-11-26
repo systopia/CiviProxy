@@ -17,16 +17,26 @@ if (!$target_mosaico) civiproxy_http_error("Feature disabled", 405);
 civiproxy_security_check('file');
 
 // basic restraints
-$valid_parameters = array( 'id'   => 'string' );
+$valid_parameters = array('id' => 'string', 'ph' => 'string');
 $parameters = civiproxy_get_parameters($valid_parameters);
 
-// check if id specified
-if (empty($parameters['id'])) civiproxy_http_error("Resource not found");
+// check if id or ph
+if (!empty($parameters['id'])) {
+  // that's a regular image resource
+  $type = 'image';
+  $reqd = $parameters['id'];
+} elseif (!empty($parameters['ph'])) {
+  // that's a placeholder
+  $type = 'placeholder';
+  $reqd = $parameters['ph'];
+} else {
+  civiproxy_http_error("Resource not found");
+}
 
 // check restrictions
 if (!empty($file_cache_exclude)) {
   foreach ($file_cache_exclude as $pattern) {
-    if (preg_match($pattern, $parameters['id'])) {
+    if (preg_match($pattern, $reqd)) {
       civiproxy_http_error("Invalid Resource", 403);
     }
   }
@@ -34,7 +44,7 @@ if (!empty($file_cache_exclude)) {
 if (!empty($file_cache_include)) {
   $accept_id = FALSE;
   foreach ($file_cache_include as $pattern) {
-    if (preg_match($pattern, $parameters['id'])) {
+    if (preg_match($pattern, $reqd)) {
       $accept_id = TRUE;
     }
   }
@@ -50,8 +60,8 @@ require_once('Cache/Lite.php');
 $file_cache = new Cache_Lite($file_cache_options);
 
 // look up the required resource
-$header_key = 'header&' . $parameters['id'];
-$data_key   = 'data&'   . $parameters['id'];
+$header_key = 'header&' . $reqd;
+$data_key   = 'data&'   . $reqd;
 
 $header = $file_cache->get($header_key);
 $data   = $file_cache->get($data_key);
@@ -68,8 +78,16 @@ if ($header && $data) {
 }
 
 // if we get here, we have a cache miss => load
-$url = $target_mosaico . $parameters['id'];
+if ($type == 'image') {
+  // that's a regular image resource
+  $url = $target_mosaico . $reqd;
+} else {
+  // that's a placeholder
+  $target_placeholder = str_replace('img?src=', 'img?method=placeholder&params=', $target_mosaico);
+  $url = $target_placeholder . $reqd;
+}
 
+// run the query
 $curlSession = curl_init();
 curl_setopt($curlSession, CURLOPT_URL, $url);
 curl_setopt($curlSession, CURLOPT_HEADER, 1);
