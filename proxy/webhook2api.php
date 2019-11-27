@@ -143,10 +143,11 @@ function webhook2api_processConfiguration($configuration, $post_input) {
     // TODO: implement
     //error_log("Webhook2API.response_mapping: not implemented!");
     http_response_code('200');
-
+    civiproxy_log("Webhook successfull, response mapped.");
   } else {
     // default behaviour:
     http_response_code('200');
+    civiproxy_log("Webhook successfull.");
   }
   // all done
   exit();
