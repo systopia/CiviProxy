@@ -10,12 +10,23 @@
 
 require_once 'civiproxy.civix.php';
 
+use \Symfony\Component\DependencyInjection\ContainerBuilder;
+
 /**
  * We will provide our own Mailer (wrapping the original one).
  * so we can mend all the URLs in outgoing emails
  */
 function civiproxy_civicrm_alterMailer(&$mailer, $driver, $params) {
   $mailer = new CRM_Civiproxy_Mailer($mailer);
+}
+
+/**
+ * Implements hook_civicrm_container()
+ *
+ * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_container/
+ */
+function civiproxy_civicrm_container(ContainerBuilder $container) {
+  $container->addCompilerPass(new Civi\CiviProxy\CompilerPass());
 }
 
 /**

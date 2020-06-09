@@ -50,7 +50,7 @@ First thing you need to configure is the base URL of your CiviProxy server using
 ```
 
 !!! note
-    This guide assumes a Drupal7 target CiviCRM with clean URLs enabled. If this is not the case for you, you might have to adjust the URLs and/or encounter issues. If so, please report on GitHub! 
+    This guide assumes a Drupal7 target CiviCRM with clean URLs enabled. If this is not the case for you, you might have to adjust the URLs and/or encounter issues. If so, please report on GitHub!
 
 ### Configuring the link to the secure target CiviCRM
 
@@ -75,11 +75,15 @@ $target_open      = $target_civicrm . '/sites/all/modules/civicrm/extern/open.ph
 ```
 If you set it to the value NULL this functionality will not be available on your CiviProxy server.
 ### Setting for the location of images and included files in your mail(ing)
-CiviCRM stores images and attachments you include in your (bulk) mail in a specific folder. In CiviProxy the name of this folder is stored in variable `$target_file` in the `config.php` file:
+CiviCRM stores images and attachments you include in your (bulk) mail in a specific folder. In CiviProxy the name of this folder is stored in variable `$target_static_file` in the `config.php` file:
 ```php
-$target_file      = $target_civicrm . '/sites/default/files/civicrm/persist/';
+$target_download_file      = $target_civicrm . '/civicrm/file';
+$target_static_file      = $target_civicrm . '/sites/default/files/civicrm/persist/';
 ```
 If you set it to the value NULL this functionality will not be available on your CiviProxy server.
+
+The `$target_download_file` is used for downloading files from custom file fields (or the contact image).
+The `$target_static_file` is used for downloading images in mailings.
 
 !!! note
     By default CiviProxy will cache the files so it does not have to file from CiviCRM for each individual mail that is part of a bulk mailing. The default settings can be found in the `config.php` file:

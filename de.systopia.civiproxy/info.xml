@@ -19,4 +19,7 @@
   <civix>
     <namespace>CRM/Civiproxy</namespace>
   </civix>
+  <classloader>
+    <psr4 prefix="Civi\" path="Civi" />
+  </classloader>
 </extension>

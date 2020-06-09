@@ -96,7 +96,7 @@ function civiproxy_redirect($url_requested, $parameters) {
  *  so they will point to this proxy instead
  */
 function civiproxy_mend_URLs(&$string) {
-  global $target_rest, $target_url, $target_open, $target_file, $target_mail, $proxy_base, $target_mosaico, $target_civicrm;
+  global $target_rest, $target_url, $target_open, $target_static_file, $target_mail, $proxy_base, $target_mosaico, $target_civicrm;
 
   if ($target_rest) {
     $string = preg_replace("#{$target_rest}#", $proxy_base . '/rest.php', $string);
@@ -110,8 +110,8 @@ function civiproxy_mend_URLs(&$string) {
   if ($target_mail) {
     $string = preg_replace("#{$target_mail}#", $proxy_base . '/mail.php', $string);
   }
-  if ($target_file) {
-    $string = preg_replace("#{$target_file}#", $proxy_base . '/file.php?id=', $string);
+  if ($target_static_file) {
+    $string = preg_replace("#{$target_static_file}#", $proxy_base . '/file.php?id=', $string);
     // https://github.com/systopia/CiviProxy/issues/38
     // fix for relative
     if ($target_mosaico) {
