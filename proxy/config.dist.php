@@ -33,8 +33,8 @@ $target_civicrm = 'https://your.civicrm.installation.org';
 
 // default paths, override if you want. Set to NULL to disable
 $target_rest      = $target_civicrm . '/sites/all/modules/civicrm/extern/rest.php';
-$target_url       = $target_civicrm . '/sites/all/modules/civicrm/extern/url.php';
-$target_open      = $target_civicrm . '/sites/all/modules/civicrm/extern/open.php';
+$target_url       = $target_civicrm . '/civicrm/mailing/url';
+$target_open      = $target_civicrm . '/civicrm/mailing/open';
 $target_file      = $target_civicrm . '/sites/default/files/civicrm/persist/';
 $target_mosaico   = NULL; // (disabled by default): $target_civicrm . '/civicrm/mosaico/img?src=';
 $target_mail_view = $target_civicrm . '/civicrm/mailing/view';
