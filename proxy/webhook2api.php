@@ -32,7 +32,6 @@ if (!empty($_REQUEST['id']) && isset($webhook2api['configurations'][$_REQUEST['i
 
 // read some input
 $post_input = @file_get_contents('php://input');
-error_log("DEBUG: " . json_encode($post_input));
 
 // MAIN: iterate through all (eligible) configurations
 $last_error = ["No handler found", 501];
@@ -85,12 +84,10 @@ function webhook2api_processConfiguration($configuration, $post_input) {
   // gather source data
   $data = [];
   if (!empty($configuration['data_sources']) && is_array($configuration['data_sources'])) {
-    error_log(json_encode($configuration));
     foreach ($configuration['data_sources'] as $data_source) {
       switch ($data_source) {
         case 'POST/json': # JSON data in POST field
           $more_data = json_decode($post_input, TRUE);
-          error_log(json_encode($more_data));
           $data = array_merge_recursive($data, $more_data);
           break;
         case 'REQUEST': # simple request parameters
@@ -109,8 +106,8 @@ function webhook2api_processConfiguration($configuration, $post_input) {
     foreach ($data as $d) {
       $result = webhook2api_callCiviApi($configuration, $d);
       if(isset($result['internal_error'])) {
-        // internal communication Error occured. Aborting process
-        civiproxy_log("Webhook2API[{$configuration['name']}]: internal error occured: " . json_encode($result['internal_error']));
+        // internal communication Error occurred. Aborting process
+        civiproxy_log("Webhook2API[{$configuration['name']}]: internal error occurred: " . json_encode($result['internal_error']));
         return $result['internal_error'];
       }
       if (!empty($result['values']['http_code'])) {
@@ -123,8 +120,8 @@ function webhook2api_processConfiguration($configuration, $post_input) {
   } else {
     $result = webhook2api_callCiviApi($configuration, $data);
     if(isset($result['internal_error'])) {
-      // internal communication Error occured. Aborting process
-      civiproxy_log("Webhook2API[{$configuration['name']}]: internal error occured: " . json_encode($result['internal_error']));
+      // internal communication Error occurred. Aborting process
+      civiproxy_log("Webhook2API[{$configuration['name']}]: internal error occurred: " . json_encode($result['internal_error']));
       return $result['internal_error'];
     }
     if (!empty($result['values']['http_code'])) {
@@ -134,20 +131,19 @@ function webhook2api_processConfiguration($configuration, $post_input) {
     }
   }
   if ($http_code != '200') {
-    // we received and parsed the webhook event successfully, but an error occured with civicrm:
+    // we received and parsed the webhook event successfully, but an error occurred with civicrm:
     civiproxy_log("Webhook2API[{$configuration['name']}]: Internal CiviCRM Error. Error Code: {$http_code}. Full Message: " . json_encode($result));
   }
 
   // process result
   if (!empty($configuration['response_mapping']) && is_array($configuration['response_mapping'])) {
     // TODO: implement
-    //error_log("Webhook2API.response_mapping: not implemented!");
     http_response_code('200');
-    civiproxy_log("Webhook successfull, response mapped.");
+    civiproxy_log("Webhook successful, response mapped.");
   } else {
     // default behaviour:
     http_response_code('200');
-    civiproxy_log("Webhook successfull.");
+    civiproxy_log("Webhook successful.");
   }
   // all done
   exit();
@@ -178,7 +174,7 @@ function webhook2api_callCiviApi($configuration, $data) {
       } else {
         echo "Error";
         // unknown instruction
-        //        //error_log("Webhook2API[{$configuration['name']}]: don't understad sentinel '{$check}'. Ignored.");
+        civiproxy_log("Webhook2API[{$configuration['name']}]: don't understand sentinel '{$check}'. Ignored.");
       }
     }
   }
@@ -197,7 +193,8 @@ function webhook2api_callCiviApi($configuration, $data) {
       // run modifiers
       foreach ($modifiers as $modifier) {
         // TODO: implement
-        //error_log("Webhook2API.modifiers: not implemented!");
+
+        civiproxy_log("Webhook2API.modifiers: not implemented!");
       }
 
       // set to target
@@ -210,16 +207,16 @@ function webhook2api_callCiviApi($configuration, $data) {
   // sanitise data
   if (!empty($configuration['parameter_sanitation']) && is_array($configuration['parameter_sanitation'])) {
     // TODO: implement
-    //error_log("Webhook2API.sanitation: not implemented!");
+    civiproxy_log("Webhook2API.sanitation: not implemented!");
   }
 
   // send to target REST API
   if (empty($configuration['entity']) || empty($configuration['action'])) {
-    //error_log("Webhook2API[{$configuration['name']}]: Missing entity/action.");
+    civiproxy_log("Webhook2API[{$configuration['name']}]: Missing entity/action.");
     return ["internal_error" => "Configuration error", 403];
   }
   if (empty($configuration['api_key'])) {
-    //error_log("Webhook2API[{$configuration['name']}]: Missing api_key.");
+    civiproxy_log("Webhook2API[{$configuration['name']}]: Missing api_key.");
     return ["internal_error" => "Configuration error", 403];
   }
   $params['api_key'] = $configuration['api_key'];
