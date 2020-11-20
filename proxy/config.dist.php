@@ -63,7 +63,7 @@ $mail_subscription_user_key = NULL;
 $debug                      = NULL; //'LUXFbiaoz4dVWuAHEcuBAe7YQ4YP96rN4MCDmKj89p.log';
 
 // Local network interface or IP to be used for the relayed query
-// This is usefull in some VPN configurations (see CURLOPT_INTERFACE)
+// This is useful in some VPN configurations (see CURLOPT_INTERFACE)
 $target_interface           = NULL;
 
 /****************************************************************
