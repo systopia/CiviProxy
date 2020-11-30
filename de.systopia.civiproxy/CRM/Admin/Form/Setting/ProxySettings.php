@@ -105,9 +105,9 @@ class CRM_Admin_Form_Setting_ProxySettings extends CRM_Admin_Form_Setting
     if($response === FALSE) {
       return array('is_error' => 1, 'message' => sprintf(ts('Error: cannot access "%s"'), $url));
     }else{
-      $result = preg_match("/<p id=\"version\">CiviProxy Version ([0-9]+\.[0-9]+|[0-9]+\.[0-9]+\.[0-9]+)<\/p>/", $response, $output_array);
+      $result = preg_match("/<p id=\"version\">CiviProxy Version (([0-9]+\.[0-9]+|[0-9]+\.[0-9]+\.[0-9]+)(?:-[0-9A-Za-z-]+)?)<\/p>/", $response, $output_array);
       if ($result === FALSE || $result === 0){
-        return array('is_error' => 1, 'message' => sprintf(ts('Error: failed to parse version information'), $url));
+        return array('is_error' => 1, 'message' => sprintf(ts('Error: failed to parse version information: (%s)'), $url));
       }else{
         return array('is_error' => 0, 'version' => $output_array[1]);
       }

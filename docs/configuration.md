@@ -65,13 +65,13 @@ You can set the URL of the target CiviCRM using the variable `$target_civirm` in
 ### Setting for the click tracking url
 There is a setting in CiviCRM which is used for tracking the clicks in your mailing. On your CiviProxy server this setting is captured in the variable `$target_url` in the `config.php` file:
 ```php
-$target_url       = $target_civicrm . '/sites/all/modules/civicrm/extern/url.php';
+$target_url       = $target_civicrm . '/civicrm/mailing/url';
 ```
 If you set it to the value NULL this functionality will not be available on your CiviProxy server.
 ### Setting for the open tracking
 CiviCRM tracks if a mailing has been opened in a certain way. CiviProxy has this setting in the variable `$target_open` in the `config.php` file:
 ```php
-$target_open      = $target_civicrm . '/sites/all/modules/civicrm/extern/open.php';
+$target_open      = $target_civicrm . '/civicrm/mailing/url/open.php';
 ```
 If you set it to the value NULL this functionality will not be available on your CiviProxy server.
 ### Setting for the location of images and included files in your mail(ing)

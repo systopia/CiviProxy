@@ -33,12 +33,17 @@ $target_civicrm = 'https://your.civicrm.installation.org';
 
 // default paths, override if you want. Set to NULL to disable
 $target_rest      = $target_civicrm . '/sites/all/modules/civicrm/extern/rest.php';
-$target_url       = $target_civicrm . '/sites/all/modules/civicrm/extern/url.php';
-$target_open      = $target_civicrm . '/sites/all/modules/civicrm/extern/open.php';
 $target_download_file = $target_civicrm . '/civicrm/file';
 $target_static_file = $target_civicrm . '/sites/default/files/civicrm/persist/';
 $target_mosaico   = NULL; // (disabled by default): $target_civicrm . '/civicrm/mosaico/img?src=';
 $target_mail_view = $target_civicrm . '/civicrm/mailing/view';
+$target_url       = $target_civicrm . '/civicrm/mailing/url';
+$target_open      = $target_civicrm . '/civicrm/mailing/open';
+
+// CAUTION: use the following for CiviCRM < 5.27
+$target_url       = $target_civicrm . '/sites/all/modules/civicrm/extern/url.php';
+$target_open      = $target_civicrm . '/sites/all/modules/civicrm/extern/open.php';
+
 
 /****************************************************************
  **                    GENERAL OPTIONS                         **
@@ -59,7 +64,7 @@ $mail_subscription_user_key = NULL;
 $debug                      = NULL; //'LUXFbiaoz4dVWuAHEcuBAe7YQ4YP96rN4MCDmKj89p.log';
 
 // Local network interface or IP to be used for the relayed query
-// This is usefull in some VPN configurations (see CURLOPT_INTERFACE)
+// This is useful in some VPN configurations (see CURLOPT_INTERFACE)
 $target_interface           = NULL;
 
 /****************************************************************
