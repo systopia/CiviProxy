@@ -21,6 +21,7 @@ $civiproxy_version = '0.6-dev';
  */
 function civiproxy_redirect($url_requested, $parameters) {
   global $target_interface;
+  global $target_civicrm_auth;
   $url = $url_requested;
   $curlSession = curl_init();
 
@@ -51,6 +52,9 @@ function civiproxy_redirect($url_requested, $parameters) {
   curl_setopt($curlSession, CURLOPT_SSL_VERIFYHOST, 2);
   if (!empty($target_interface)) {
     curl_setopt($curlSession, CURLOPT_INTERFACE, $target_interface);
+  }
+  if (isset($target_civicrm_auth) and !empty($target_civicrm_auth)) {
+    curl_setopt($ch, CURLOPT_USERPWD, $target_civicrm_auth);
   }
   if (file_exists(dirname(__FILE__).'/target.pem')) {
     curl_setopt($curlSession, CURLOPT_CAINFO, dirname(__FILE__).'/target.pem');
