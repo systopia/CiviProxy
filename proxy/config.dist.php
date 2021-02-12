@@ -24,6 +24,9 @@ $proxy_base     = 'https://proxy.yourdomain.org';
 // this should point to the target CiviCRM system
 $target_civicrm = 'https://your.civicrm.installation.org';
 
+//if CiviCRM is behind a htaccess authentication, you may set username:password. if empty no auth is used
+//$target_civicrm_auth = 'username:password';
+
 
 /****************************************************************
  **                FEATURES / DEFAULT PATHS                    **
