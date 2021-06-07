@@ -1,6 +1,6 @@
 {*-------------------------------------------------------+
 | CiviProxy                                              |
-| Copyright (C) 2015 SYSTOPIA                            |
+| Copyright (C) 2015-2021 SYSTOPIA                       |
 | Author: B. Endres (endres -at- systopia.de)            |
 | http://www.systopia.de/                                |
 +--------------------------------------------------------+

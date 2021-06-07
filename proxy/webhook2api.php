@@ -2,7 +2,7 @@
 /*--------------------------------------------------------+
 | SYSTOPIA CiviProxy                                      |
 |  a simple proxy solution for external access to CiviCRM |
-| Copyright (C) 2019 SYSTOPIA                             |
+| Copyright (C) 2019-2021 SYSTOPIA                        |
 | Author: B. Endres (endres -at- systopia.de)             |
 | http://www.systopia.de/                                 |
 +---------------------------------------------------------*/

@@ -2,13 +2,13 @@
 /*--------------------------------------------------------+
 | SYSTOPIA CiviProxy                                      |
 |  a simple proxy solution for external access to CiviCRM |
-| Copyright (C) 2015 SYSTOPIA                             |
+| Copyright (C) 2015-2021 SYSTOPIA                        |
 | Author: B. Endres (endres -at- systopia.de)             |
 | http://www.systopia.de/                                 |
 +---------------------------------------------------------*/
 
 require_once "config.php";
-$civiproxy_version = '0.6-dev';
+$civiproxy_version = '0.6-dev-be59f15';
 
 /**
  * this will redirect the request to another URL,
