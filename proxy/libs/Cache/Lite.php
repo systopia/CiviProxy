@@ -294,7 +294,7 @@ class Cache_Lite
     * @param array $options options
     * @access public
     */
-    function Cache_Lite($options = array(NULL))
+    function __construct($options = array(NULL))
     {
         foreach($options as $key => $value) {
             $this->setOption($key, $value);
@@ -302,6 +302,16 @@ class Cache_Lite
         if (!isset($options['cacheDir']) && function_exists('sys_get_temp_dir')) {
         	$this->setOption('cacheDir', sys_get_temp_dir() . DIRECTORY_SEPARATOR);
         }
+    }
+
+    /**
+     * PHP4 constructor for backwards compatibility with older code
+     *
+     * @param array $options Options
+     */
+    function Cache_Lite($options = array(NULL))
+    {
+        self::__construct($options);
     }
     
     /**
@@ -554,8 +564,7 @@ class Cache_Lite
     */
     function raiseError($msg, $code)
     {
-        include_once('PEAR.php');
-        return PEAR::raiseError($msg, $code, $this->_pearErrorMode);
+        error_log("[code] $msg");
     }
     
     /**
@@ -698,8 +707,10 @@ class Cache_Lite
         $this->_touchCacheFile();
         $this->_memoryCachingArray[$this->_file] = $data;
         if ($this->_memoryCachingCounter >= $this->_memoryCachingLimit) {
-            list($key, ) = each($this->_memoryCachingArray);
+            $key = key($this->_memoryCachingArray);
+            next($this->_memoryCachingArray);
             unset($this->_memoryCachingArray[$key]);
+            
         } else {
             $this->_memoryCachingCounter = $this->_memoryCachingCounter + 1;
         }
@@ -744,7 +755,7 @@ class Cache_Lite
 	    if ($this->_fileLocking) @flock($fp, LOCK_SH);
             clearstatcache();
             $length = @filesize($this->_file);
-            $mqr = get_magic_quotes_runtime();
+            $mqr = (function_exists('get_magic_quotes_runtime') ? @get_magic_quotes_runtime() : 0);
             if ($mqr) {
                 set_magic_quotes_runtime(0);
             }
@@ -823,7 +834,7 @@ class Cache_Lite
             if ($this->_readControl) {
                 @fwrite($fp, $this->_hash($data, $this->_readControlType), 32);
             }
-            $mqr = get_magic_quotes_runtime();
+            $mqr = (function_exists('get_magic_quotes_runtime') ? @get_magic_quotes_runtime() : 0);
             if ($mqr) {
                 set_magic_quotes_runtime(0);
             }
