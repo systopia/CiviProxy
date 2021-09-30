@@ -43,6 +43,7 @@ $target_civicrm = 'https://your.civicrm.installation.org';
 $target_rest      = $target_civicrm . '/sites/all/modules/civicrm/extern/rest.php';
 $target_file      = $target_civicrm . '/sites/default/files/civicrm/persist/';
 $target_mosaico   = NULL; // (disabled by default): $target_civicrm . '/civicrm/mosaico/img?src=';
+$target_mosaico_template_url = NULL; // (disabled by default): $target_civicrm . '/wp-content/uploads/civicrm/ext/uk.co.vedaconsulting.mosaico/packages/mosaico/templates/';
 $target_mail_view = $target_civicrm . '/civicrm/mailing/view';
 $target_url       = $target_civicrm . '/civicrm/mailing/url';
 $target_open      = $target_civicrm . '/civicrm/mailing/open';

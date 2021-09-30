@@ -47,6 +47,8 @@ class CRM_Civiproxy_Mailer {
     $enabled = CRM_Core_BAO_Setting::getItem('CiviProxy Settings', 'proxy_enabled');
     if (!$enabled) return;
 
+    $mosaico = CRM_Civiproxy_Mosaico::singleton();
+
     // get the URLs
     $config      = CRM_Core_Config::singleton();
     $system_base = $config->userFrameworkBaseURL;
@@ -59,6 +61,9 @@ class CRM_Civiproxy_Mailer {
     $value = preg_replace("#{$system_base}sites/all/modules/civicrm/extern/open.php#i", $proxy_base.'/open.php',        $value);
     $value = preg_replace("#{$system_base}sites/default/files/civicrm/persist/#i",      $proxy_base.'/file.php?id=',    $value);
     $value = preg_replace("#{$system_base}civicrm/mosaico/img\?src=#i",                 $proxy_base.'/mosaico.php?id=', $value);
+    if ($mosaico->isMosaicoInstalled()) {
+      $value = preg_replace("#({$mosaico->getMosaicoExtensionUrl()}/packages/mosaico/templates/)(\S*)([\"'])#i", $proxy_base . '/mosaico.php?template_url=$2$3', $value);
+    }
 
     // Mailing related functions
     $value = preg_replace("#{$system_base}civicrm/mailing/view#i",                      $proxy_base.'/mailing/mail.php', $value);
