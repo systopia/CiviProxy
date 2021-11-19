@@ -3,19 +3,18 @@
   <file>civiproxy</file>
   <name>CiviProxy</name>
   <description>This will enable CiviProxy support for mailings</description>
-  <license></license>
+  <license>AGPL</license>
   <maintainer>
     <author>B. Endres</author>
     <email>endres@systopia.de</email>
   </maintainer>
-  <releaseDate></releaseDate>
-  <version>0.6-dev</version>
-  <develStage>dev</develStage>
+  <releaseDate>2021-11-19</releaseDate>
+  <version>0.6-beta3</version>
+  <develStage>beta</develStage>
   <compatibility>
-    <ver>4.7</ver>
     <ver>5.0</ver>
   </compatibility>
-  <comments>This is an addition to SYSTOPIA's CiviProxy security system</comments>
+  <comments>This is the companion extension to SYSTOPIA's CiviProxy security system</comments>
   <civix>
     <namespace>CRM/Civiproxy</namespace>
   </civix>
