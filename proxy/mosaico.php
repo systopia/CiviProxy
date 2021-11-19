@@ -17,30 +17,61 @@ if (!$target_mosaico) civiproxy_http_error("Feature disabled", 405);
 civiproxy_security_check('file');
 
 // basic restraints
-$valid_parameters = array( 'id'   => 'string' );
+$valid_parameters = array( 'id'   => 'string', 'template_url' => 'string' );
 $parameters = civiproxy_get_parameters($valid_parameters);
 
-// check if id specified
-if (empty($parameters['id'])) civiproxy_http_error("Resource not found");
-
-// check restrictions
-if (!empty($file_cache_exclude)) {
-  foreach ($file_cache_exclude as $pattern) {
-    if (preg_match($pattern, $parameters['id'])) {
+if (!empty($parameters['id'])) {
+  // check restrictions
+  if (!empty($file_cache_exclude)) {
+    foreach ($file_cache_exclude as $pattern) {
+      if (preg_match($pattern, $parameters['id'])) {
+        civiproxy_http_error("Invalid Resource", 403);
+      }
+    }
+  }
+  if (!empty($file_cache_include)) {
+    $accept_id = FALSE;
+    foreach ($file_cache_include as $pattern) {
+      if (preg_match($pattern, $parameters['id'])) {
+        $accept_id = TRUE;
+      }
+    }
+    if (!$accept_id) {
       civiproxy_http_error("Invalid Resource", 403);
     }
   }
-}
-if (!empty($file_cache_include)) {
-  $accept_id = FALSE;
-  foreach ($file_cache_include as $pattern) {
-    if (preg_match($pattern, $parameters['id'])) {
-      $accept_id = TRUE;
+
+  // look up the required resource
+  $header_key = 'header&' . $parameters['id'];
+  $data_key   = 'data&'   . $parameters['id'];
+  $url = $target_mosaico . $parameters['id'];
+} elseif (!empty($parameters['template_url'])) {
+  // check restrictions
+  if (!empty($file_cache_exclude)) {
+    foreach ($file_cache_exclude as $pattern) {
+      if (preg_match($pattern, $parameters['template_url'])) {
+        civiproxy_http_error("Invalid Resource", 403);
+      }
     }
   }
-  if (!$accept_id) {
-    civiproxy_http_error("Invalid Resource", 403);
+  if (!empty($file_cache_include)) {
+    $accept_id = FALSE;
+    foreach ($file_cache_include as $pattern) {
+      if (preg_match($pattern, $parameters['template_url'])) {
+        $accept_id = TRUE;
+      }
+    }
+    if (!$accept_id) {
+      civiproxy_http_error("Invalid Resource", 403);
+    }
   }
+
+  // look up the required resource
+  $header_key = 'header&' . $parameters['template_url'];
+  $data_key   = 'data&'   . $parameters['template_url'];
+  $url = $target_mosaico_template_url . $parameters['template_url'];
+} else {
+  civiproxy_http_error("Resource not found");
 }
 
 // load PEAR file cache
@@ -49,9 +80,6 @@ if (!file_exists($file_cache_options['cacheDir'])) mkdir($file_cache_options['ca
 require_once('Cache/Lite.php');
 $file_cache = new Cache_Lite($file_cache_options);
 
-// look up the required resource
-$header_key = 'header&' . $parameters['id'];
-$data_key   = 'data&'   . $parameters['id'];
 
 $header = $file_cache->get($header_key);
 $data   = $file_cache->get($data_key);
@@ -68,8 +96,6 @@ if ($header && $data) {
 }
 
 // if we get here, we have a cache miss => load
-$url = $target_mosaico . $parameters['id'];
-
 $curlSession = curl_init();
 curl_setopt($curlSession, CURLOPT_URL, $url);
 curl_setopt($curlSession, CURLOPT_HEADER, 1);
