@@ -8,9 +8,9 @@
     <author>B. Endres</author>
     <email>endres@systopia.de</email>
   </maintainer>
-  <releaseDate>2022-03-24</releaseDate>
-  <version>0.6-beta4</version>
-  <develStage>beta</develStage>
+  <releaseDate></releaseDate>
+  <version>0.6-dev</version>
+  <develStage>dev</develStage>
   <compatibility>
     <ver>5.0</ver>
   </compatibility>
