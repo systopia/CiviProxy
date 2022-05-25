@@ -17,7 +17,10 @@ if (!$target_open) civiproxy_http_error("Feature disabled", 405);
 civiproxy_security_check('open');
 
 // basic restraints
-$valid_parameters = array(  'q'   => 'int'  );
+$valid_parameters = [
+  'q'   => 'int',
+  'qid' => 'int',
+];
 
 $parameters = civiproxy_get_parameters($valid_parameters);
 civiproxy_redirect($target_open, $parameters);
