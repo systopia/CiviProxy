@@ -16,7 +16,6 @@ require_once "proxy.php";
  <head>
   <meta charset="UTF-8">
   <title>CiviProxy Version <?php echo $civiproxy_version;?></title>
-  <link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
   <style type="text/css">
     body {
       margin: 0;
