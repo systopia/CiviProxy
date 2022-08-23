@@ -15,7 +15,6 @@ require_once "proxy.php";
  <head>
   <meta charset="UTF-8">
   <title>CiviProxy Error</title>
-  <link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
   <style type="text/css">
     body {
       margin: 0;
