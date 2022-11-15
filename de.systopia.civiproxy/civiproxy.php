@@ -26,15 +26,6 @@ function civiproxy_civicrm_config(&$config) {
 }
 
 /**
- * Implementation of hook_civicrm_xmlMenu
- *
- * @param $files array(string)
- */
-function civiproxy_civicrm_xmlMenu(&$files) {
-  _civiproxy_civix_civicrm_xmlMenu($files);
-}
-
-/**
  * Implementation of hook_civicrm_install
  */
 function civiproxy_civicrm_install() {
@@ -76,40 +67,26 @@ function civiproxy_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL) {
 }
 
 /**
- * Implementation of hook_civicrm_managed
- *
- * Generate a list of entities to create/deactivate/delete when this module
- * is installed, disabled, uninstalled.
- */
-function civiproxy_civicrm_managed(&$entities) {
-  return _civiproxy_civix_civicrm_managed($entities);
-}
-
-/**
- * Implementation of hook_civicrm_caseTypes
- *
- * Generate a list of case-types
- *
- * Note: This hook only runs in CiviCRM 4.4+.
- */
-function civiproxy_civicrm_caseTypes(&$caseTypes) {
-  _civiproxy_civix_civicrm_caseTypes($caseTypes);
-}
-
-/**
 * Implementation of hook_civicrm_alterSettingsFolders
 *
 * Scan for settings in custom folder and import them
 *
 */
-function civiproxy_civicrm_alterSettingsFolders(&$metaDataFolders = NULL){
-  static $configured = FALSE;
-  if ($configured) return;
-  $configured = TRUE;
 
-  $extRoot = dirname( __FILE__ ) . DIRECTORY_SEPARATOR;
-  $extDir = $extRoot . 'settings';
-  if(!in_array($extDir, $metaDataFolders)){
-    $metaDataFolders[] = $extDir;
-  }
+/**
+ * Implements hook_civicrm_postInstall().
+ *
+ * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_postInstall
+ */
+function civiproxy_civicrm_postInstall() {
+  _civiproxy_civix_civicrm_postInstall();
+}
+
+/**
+ * Implements hook_civicrm_entityTypes().
+ *
+ * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_entityTypes
+ */
+function civiproxy_civicrm_entityTypes(&$entityTypes) {
+  _civiproxy_civix_civicrm_entityTypes($entityTypes);
 }
