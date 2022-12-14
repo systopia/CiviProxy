@@ -49,8 +49,8 @@ $target_url       = $target_civicrm . '/civicrm/mailing/url';
 $target_open      = $target_civicrm . '/civicrm/mailing/open';
 
 // CAUTION: use the following for CiviCRM < 5.27 or "Extern URL Style" = "Standalone Scripts" 
-#$target_url       = $target_civicrm . '/sites/all/modules/civicrm/extern/url.php';
-#$target_open      = $target_civicrm . '/sites/all/modules/civicrm/extern/open.php';
+//$target_url       = $target_civicrm . '/sites/all/modules/civicrm/extern/url.php';
+//$target_open      = $target_civicrm . '/sites/all/modules/civicrm/extern/open.php';
 
 
 /****************************************************************
