@@ -1,0 +1,6 @@
+# Serve
+<IfModule mod_rewrite.c>
+  RewriteEngine on
+  RewriteCond %{REQUEST_URI} ^/civicrm/ajax/api4
+  RewriteRule ^civicrm/ajax/api4/([^/]*)/([^/]*) rest4.php?entity=$1&action=$2 [QSA,B]
+</IfModule>

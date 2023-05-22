@@ -41,6 +41,8 @@ $target_civicrm = 'https://your.civicrm.installation.org';
 
 // default paths, override if you want. Set to NULL to disable
 $target_rest      = $target_civicrm . '/sites/all/modules/civicrm/extern/rest.php';
+// base URL for api4 calls. Will append entity and action path segments
+$target_rest4     = $target_civicrm . '/civicrm/ajax/api4/';
 $target_file      = $target_civicrm . '/sites/default/files/civicrm/persist/';
 $target_mosaico   = NULL; // (disabled by default): $target_civicrm . '/civicrm/mosaico/img?src=';
 $target_mosaico_template_url = NULL; // (disabled by default): $target_civicrm . '/wp-content/uploads/civicrm/ext/uk.co.vedaconsulting.mosaico/packages/mosaico/templates/';
@@ -75,6 +77,10 @@ $debug                      = NULL; //'LUXFbiaoz4dVWuAHEcuBAe7YQ4YP96rN4MCDmKj89
 // This is useful in some VPN configurations (see CURLOPT_INTERFACE)
 $target_interface           = NULL;
 
+
+/***************************************************************
+ **                Authentication Options                     **
+ ***************************************************************/
 // API and SITE keys (you may add keys here)
 $api_key_map = [
   'my_api_key'   => 'my_api_key',   // use this to allow API key
@@ -90,6 +96,19 @@ if (file_exists(dirname(__FILE__)."/secrets.php")) {
   // keys can also be stored in 'secrets.php'
   require "secrets.php";
 }
+
+// CiviCRM's API can authenticate with different flows
+// https://docs.civicrm.org/dev/en/latest/framework/authx/#flows
+// CiviProxy supports 'header', 'xheader', 'legacyrest', and 'param'.
+// These flows are supported for API4 but could be extended to API3.
+// $authx_internal_flow controls how CiviProxy sends credentials to CiviCRM, and
+// $authx_external_flow where CiviProxy looks for credentials on incoming requests.
+// The internal setting needs to have a single scalar value, but the
+// external setting can be an array of accepted flows.
+// There is no standard header for site key, so in both header and xheader
+// flows it uses X-Civi-Key
+$authx_internal_flow = 'header';
+$authx_external_flow = ['legacyrest'];
 
 
 /****************************************************************
