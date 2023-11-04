@@ -41,7 +41,8 @@ $target_civicrm = 'https://your.civicrm.installation.org';
 
 // default paths, override if you want. Set to NULL to disable
 $target_rest      = $target_civicrm . '/sites/all/modules/civicrm/extern/rest.php';
-$target_file      = $target_civicrm . '/sites/default/files/civicrm/persist/';
+$target_download_file = $target_civicrm . '/civicrm/file';
+$target_static_file = $target_civicrm . '/sites/default/files/civicrm/persist/';
 $target_mosaico   = NULL; // (disabled by default): $target_civicrm . '/civicrm/mosaico/img?src=';
 $target_mosaico_template_url = NULL; // (disabled by default): $target_civicrm . '/wp-content/uploads/civicrm/ext/uk.co.vedaconsulting.mosaico/packages/mosaico/templates/';
 $target_mail_view = $target_civicrm . '/civicrm/mailing/view';
