@@ -19,7 +19,8 @@ civiproxy_security_check('url');
 // basic restraints
 $valid_parameters = array(  'u'   => 'int',
                             'q'   => 'int',
-                            'qid' => 'int');
+                            'qid' => 'int',
+                            '*'   => 'string');
 
 $parameters = civiproxy_get_parameters($valid_parameters);
 civiproxy_redirect($target_url, $parameters);
