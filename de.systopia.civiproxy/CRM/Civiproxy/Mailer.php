@@ -53,12 +53,13 @@ class CRM_Civiproxy_Mailer {
     $config      = CRM_Core_Config::singleton();
     $system_base = $config->userFrameworkBaseURL;
     $proxy_base  = CRM_Core_BAO_Setting::getItem('CiviProxy Settings', 'proxy_url');
+    $resource_url = $config->userFrameworkResourceURL;
 
     // General external functions
     $value = preg_replace("#{$system_base}civicrm/mailing/url#i",                       $proxy_base.'/url.php',         $value);
-    $value = preg_replace("#{$system_base}sites/all/modules/civicrm/extern/url.php#i",  $proxy_base.'/url.php',         $value);
+    $value = preg_replace("#{$resource_url}extern/url.php#i",  $proxy_base.'/url.php',         $value);
     $value = preg_replace("#{$system_base}civicrm/mailing/open#i",                      $proxy_base.'/open.php',        $value);
-    $value = preg_replace("#{$system_base}sites/all/modules/civicrm/extern/open.php#i", $proxy_base.'/open.php',        $value);
+    $value = preg_replace("#{$resource_url}extern/open.php#i", $proxy_base.'/open.php',        $value);
     $value = preg_replace("#{$system_base}sites/default/files/civicrm/persist/#i",      $proxy_base.'/file.php?id=',    $value);
     $value = preg_replace("#{$system_base}civicrm/mosaico/img\?src=#i",                 $proxy_base.'/mosaico.php?id=', $value);
     $value = preg_replace("#{$system_base}civicrm/mosaico/img/\?src=#i", $proxy_base.'/mosaico.php?id=', $value);
