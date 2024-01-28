@@ -90,6 +90,148 @@ function civiproxy_redirect($url_requested, $parameters) {
   curl_close ($curlSession);
 }
 
+/**
+ * this will redirect the request to an API4 URL,
+ *  i.e. will pass the reply on to this request
+ *
+ * @see losely based on https://code.google.com/p/php-proxy/
+ *
+ * @param $url_requested string the URL to which the request should be sent
+ * @param $parameters array
+ * @param $credentials array
+ */
+function civiproxy_redirect4($url_requested, $parameters, $credentials) {
+  global $target_interface, $authx_internal_flow;
+  $url = $url_requested;
+  $curlSession = curl_init();
+  $credential_params = civiproxy_build_credential_params($credentials, $authx_internal_flow);
+  $credential_headers = civiproxy_build_credential_headers($credentials, $authx_internal_flow);
+
+  if ($_SERVER['REQUEST_METHOD'] == 'POST'){
+    // POST requests should be passed on as POST
+    curl_setopt($curlSession, CURLOPT_POST, 1);
+    $urlparams = 'params=' . urlencode(json_encode($parameters)) . $credential_params;
+    curl_setopt($curlSession, CURLOPT_POSTFIELDS, $urlparams);
+  } else {
+    // GET requests will get the parameters as url params
+    if (!empty($parameters)) {
+      $url .= '?params=' . urlencode(json_encode($parameters)) . $credential_params;
+    }
+  }
+
+  curl_setopt($curlSession, CURLOPT_HTTPHEADER, array_merge([
+    'Content-Type: application/x-www-form-urlencoded'
+  ], $credential_headers));
+  curl_setopt($curlSession, CURLOPT_URL, $url);
+  curl_setopt($curlSession, CURLOPT_HEADER, 1);
+  curl_setopt($curlSession, CURLOPT_RETURNTRANSFER,1);
+  curl_setopt($curlSession, CURLOPT_TIMEOUT, 30);
+  curl_setopt($curlSession, CURLOPT_SSL_VERIFYHOST, 2);
+  if (!empty($target_interface)) {
+    curl_setopt($curlSession, CURLOPT_INTERFACE, $target_interface);
+  }
+  if (file_exists(dirname(__FILE__).'/target.pem')) {
+    curl_setopt($curlSession, CURLOPT_CAINFO, dirname(__FILE__).'/target.pem');
+  }
+
+  //Send the request and store the result in an array
+  $response = curl_exec($curlSession);
+
+  // Check that a connection was made
+  if (curl_error($curlSession)){
+    civiproxy_http_error(curl_error($curlSession), curl_errno($curlSession));
+
+  } else {
+    //clean duplicate header that seems to appear on fastcgi with output buffer on some servers!!
+    $response = str_replace("HTTP/1.1 100 Continue\r\n\r\n","",$response);
+
+    // split header / content
+    $content = explode("\r\n\r\n", $response, 2);
+    $header = $content[0];
+    $body = $content[1];
+
+    // handle headers - simply re-outputing them
+    $header_ar = explode(chr(10), $header);
+    foreach ($header_ar as $header_line){
+      if (!preg_match("/^Transfer-Encoding/", $header_line)){
+        civiproxy_mend_URLs($header_line);
+        header(trim($header_line));
+      }
+    }
+
+    //rewrite all hard coded urls to ensure the links still work!
+    civiproxy_mend_URLs($body);
+
+    print $body;
+  }
+
+  curl_close($curlSession);
+}
+
+/**
+ * Creates a string with the API credentials to be appended to an API4 GET or POST request.
+ * When $api4_internal_auth_flow is 'header' or 'xheader', returns a blank string
+ *
+ * @param array $credentials
+ * @param string $authx_internal_flow
+ * @return string credential string, including leading '&'
+ */
+function civiproxy_build_credential_params(array $credentials, string $authx_internal_flow): string {
+  switch($authx_internal_flow) {
+    case 'legacyrest':
+      $map = ['api_key' => 'api_key', 'key' => 'key'];
+      break;
+    case 'param':
+      $map = ['api_key' => '_authx', 'key' => '_authxSiteKey'];
+      break;
+    default:
+      return '';
+  }
+  $params = [];
+  foreach($map as $credential_key => $param_name) {
+    if (isset($credentials[$credential_key])) {
+      $credential_value = $credentials[$credential_key];
+      if ($param_name === '_authx') {
+        $credential_value = 'Bearer ' . $credential_value;
+      }
+      $params[$param_name] = $credential_value;
+    }
+  }
+
+  $param_string = http_build_query($params);
+  if (!empty($param_string)) {
+    $param_string = '&' . $param_string;
+  }
+  return $param_string;
+}
+
+/**
+ * Builds an array of headers to send on an API4 request. When $api4_internal_auth_flow
+ * is 'param' or 'legacyrest', will always return an empty array.
+ *
+ * @param array $credentials
+ * @param string $authx_internal_flow
+ * @return array
+ */
+function civiproxy_build_credential_headers(array $credentials, string $authx_internal_flow): array {
+  switch($authx_internal_flow) {
+    case 'header':
+      $map = ['api_key' => 'Authorization: Bearer', 'key' => 'X-Civi-Key:'];
+      break;
+    case 'xheader':
+      $map = ['api_key' => 'X-Civi-Auth: Bearer', 'key' => 'X-Civi-Key:'];
+      break;
+    default:
+      return [];
+  }
+  $headers = [];
+  foreach($map as $credential_key => $header_prefix) {
+    if (isset($credentials[$credential_key])) {
+      $headers[] = $header_prefix . ' ' . $credentials[$credential_key];
+    }
+  }
+  return $headers;
+}
 
 /**
  * Will mend all the URLs in the string that point to the target,
@@ -131,11 +273,12 @@ function civiproxy_mend_URLs(&$string) {
  * unauthorized access quantities, etc.
  *
  * @param $target
- * @param $quit    if TRUE, quit immediately if access denied
+ * @param $quit bool if TRUE, quit immediately if access denied
+ * @param $log_headers array add these headers (sanitized) to log data
  *
  * @return TRUE if allowed, FALSE if not (or quits if $quit is set)
  */
-function civiproxy_security_check($target, $quit=TRUE) {
+function civiproxy_security_check($target, $quit=TRUE, $log_headers = []) {
   // verify that we're SSL encrypted
   if ($_SERVER['HTTPS'] != "on") {
     civiproxy_http_error("This CiviProxy installation requires SSL encryption.", 400);
@@ -145,11 +288,16 @@ function civiproxy_security_check($target, $quit=TRUE) {
   if (!empty($debug)) {
     // filter log data
     $log_data = $_REQUEST;
-    if (isset($log_data['api_key'])) {
-      $log_data['api_key'] = substr($log_data['api_key'], 0, 4) . '...';
+    $sanitize_params = ['api_key', 'key', '_authxSiteKey', '_authx'];
+    foreach ($sanitize_params as $param) {
+      if (isset($log_data[$param])) {
+        $log_data[$param] = substr($log_data[$param], 0, 4) . '...';
+      }
     }
-    if (isset($log_data['key'])) {
-      $log_data['key'] = substr($log_data['key'], 0, 4) . '...';
+
+    foreach($log_headers as $header) {
+      if (!empty($_SERVER[$header]))
+      $log_data[$header] = substr($_SERVER[$header], 0, 4) . '...';
     }
 
     // log
@@ -205,7 +353,7 @@ function civiproxy_get_parameters($valid_parameters, $request = NULL) {
   // process wildcard elements
   if ($default_sanitation !== NULL) {
     // i.e. we want the others too
-    $remove_parameters = array('key', 'api_key', 'version', 'entity', 'action');
+    $remove_parameters = array('key', 'api_key', '_authx', '_authxSiteKey', 'version', 'entity', 'action');
     foreach ($request as $name => $value) {
       if (!in_array($name, $remove_parameters) && !isset($valid_parameters[$name])) {
         $result[$name] = civiproxy_sanitise($value, $default_sanitation);
@@ -214,6 +362,26 @@ function civiproxy_get_parameters($valid_parameters, $request = NULL) {
   }
 
   return $result;
+}
+
+/**
+ * Get the value of a header on the incoming request
+ *
+ * @param string $header name of the header, in all uppercase
+ * @param string $prefix to be stripped off the value of the header
+ * @return string|null value of the header, or null if not found.
+ */
+function civiproxy_get_header($header, $prefix = ''): ?string {
+  if (!empty($_SERVER['HTTP_' . $header])) {
+    $value = $_SERVER['HTTP_' . $header];
+    if ($prefix === '') {
+      return $value;
+    }
+    if (strpos($value, $prefix) === 0) {
+      return trim(substr($value, strlen($prefix)));
+    }
+  }
+  return NULL;
 }
 
 /**
