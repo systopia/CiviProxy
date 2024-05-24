@@ -16,11 +16,5 @@ if (!$target_url) civiproxy_http_error("Feature disabled", 405);
 // basic check
 civiproxy_security_check('url');
 
-// basic restraints
-$valid_parameters = array(  'u'   => 'int',
-                            'q'   => 'int',
-                            'qid' => 'int',
-                            '*'   => 'string');
-
-$parameters = civiproxy_get_parameters($valid_parameters);
+$parameters = civiproxy_get_parameters($valid_url_parameters);
 civiproxy_redirect($target_url, $parameters);

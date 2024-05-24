@@ -52,7 +52,6 @@ $target_open      = $target_civicrm . '/civicrm/mailing/open';
 #$target_url       = $target_civicrm . '/sites/all/modules/civicrm/extern/url.php';
 #$target_open      = $target_civicrm . '/sites/all/modules/civicrm/extern/open.php';
 
-
 /****************************************************************
  **                    GENERAL OPTIONS                         **
  ****************************************************************/
@@ -91,6 +90,23 @@ if (file_exists(dirname(__FILE__)."/secrets.php")) {
   require "secrets.php";
 }
 
+// Parameter whitelisting for open tracking and URL tracking
+// basic civicrm URL/open parameter are u, q and qid (as int)
+// If additional parameters are needed, best practise would be to whitelist each one as needed in
+// $valid_url_parameters and/or $valid_open_parameters.
+// Alternatively it is also possible to allow all parameters with the wildcard parameter '*' => 'string'
+$valid_url_parameters = [
+    'u'   => 'int',
+    'q'   => 'int',
+    'qid' => 'int',
+//    '*'   => 'string'     // whildcard, whitelist all url parameters
+];
+$valid_open_parameters = [
+    'u'   => 'int',
+    'q'   => 'int',
+    'qid' => 'int',
+//    '*'   => 'string'     // wildcard, whitelist *all* open parameters
+];
 
 /****************************************************************
  **                   File Caching Options                     **
