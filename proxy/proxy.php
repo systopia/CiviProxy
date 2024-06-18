@@ -8,7 +8,7 @@
 +---------------------------------------------------------*/
 
 require_once "config.php";
-$civiproxy_version = '0.6.0';
+$civiproxy_version = '0.7.0';
 
 /**
  * this will redirect the request to another URL,
