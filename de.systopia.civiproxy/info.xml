@@ -23,5 +23,10 @@
   <comments>This is the companion extension to SYSTOPIA's CiviProxy security system</comments>
   <civix>
     <namespace>CRM/Civiproxy</namespace>
+    <format>22.05.2</format>
   </civix>
+  <mixins>
+    <mixin>menu-xml@1.0.0</mixin>
+    <mixin>setting-php@1.0.0</mixin>
+  </mixins>
 </extension>
