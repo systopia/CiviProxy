@@ -17,12 +17,23 @@ class CRM_Civiproxy_Mailer {
    * this is the orginal, wrapped mailer
    */
   protected $mailer = NULL;
+  /**
+   * @var Mail Driver
+   */
+  protected $driver = NULL;
+
+  /**
+   * @var array Mail Params, currently not used
+   */
+  protected $params = [];
 
   /**
    * construct this mailer wrapping another one
    */
-  public function __construct($mailer) {
+  public function __construct($mailer, $driver, $params) {
     $this->mailer = $mailer;
+    $this->driver = $driver;
+    $this->params = $params;
   }
 
   /**
@@ -81,4 +92,11 @@ class CRM_Civiproxy_Mailer {
       $value = preg_replace("#{$system_base}civicrm/mailing/{$function}#i", $new_url, $value);
     }
   }
+
+    /**
+     * @return Mail|null
+     */
+    public function getDriver() {
+        return $this->driver;
+    }
 }

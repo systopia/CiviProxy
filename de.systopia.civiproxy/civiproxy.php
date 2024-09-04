@@ -15,7 +15,7 @@ require_once 'civiproxy.civix.php';
  * so we can mend all the URLs in outgoing emails
  */
 function civiproxy_civicrm_alterMailer(&$mailer, $driver, $params) {
-  $mailer = new CRM_Civiproxy_Mailer($mailer);
+  $mailer = new CRM_Civiproxy_Mailer($mailer, $driver, $params);
 }
 
 /**
