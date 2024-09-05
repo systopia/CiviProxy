@@ -19,7 +19,7 @@ civiproxy_security_check('mail-unsubscribe');
 // basic restraints
 $valid_parameters = array(    'jid'          => 'int',
                               'qid'          => 'int', 
-                              'h'            => 'hex');
+                              'h'            => 'string');
 $parameters = civiproxy_get_parameters($valid_parameters);
 
 // check if parameters specified
