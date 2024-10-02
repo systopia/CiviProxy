@@ -126,8 +126,8 @@ function webhook2api_processConfiguration($configuration, $post_input) {
     }
     if (!empty($result['values']['http_code'])) {
       $http_code = $result['values']['http_code'];
-    } else {
-      $http_code = 403;
+    } elseif ($result['is_error'] != 0) {
+        $http_code = 403;
     }
   }
   if ($http_code != '200') {
