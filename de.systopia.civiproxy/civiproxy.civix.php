@@ -75,44 +75,27 @@ class CRM_Civiproxy_ExtensionUtil {
     return self::CLASS_PREFIX . '_' . str_replace('\\', '_', $suffix);
   }
 
+
 }
 
 use CRM_Civiproxy_ExtensionUtil as E;
-
-function _civiproxy_civix_mixin_polyfill() {
-  if (!class_exists('CRM_Extension_MixInfo')) {
-    $polyfill = __DIR__ . '/mixin/polyfill.php';
-    (require $polyfill)(E::LONG_NAME, E::SHORT_NAME, E::path());
-  }
-}
 
 /**
  * (Delegated) Implements hook_civicrm_config().
  *
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_config
  */
-function _civiproxy_civix_civicrm_config(&$config = NULL) {
+function _civiproxy_civix_civicrm_config($config = NULL) {
   static $configured = FALSE;
   if ($configured) {
     return;
   }
   $configured = TRUE;
 
-  $template = CRM_Core_Smarty::singleton();
-
   $extRoot = __DIR__ . DIRECTORY_SEPARATOR;
-  $extDir = $extRoot . 'templates';
-
-  if (is_array($template->template_dir)) {
-    array_unshift($template->template_dir, $extDir);
-  }
-  else {
-    $template->template_dir = [$extDir, $template->template_dir];
-  }
-
   $include_path = $extRoot . PATH_SEPARATOR . get_include_path();
   set_include_path($include_path);
-  _civiproxy_civix_mixin_polyfill();
+  // Based on <compatibility>, this does not currently require mixin/polyfill.php.
 }
 
 /**
@@ -122,36 +105,7 @@ function _civiproxy_civix_civicrm_config(&$config = NULL) {
  */
 function _civiproxy_civix_civicrm_install() {
   _civiproxy_civix_civicrm_config();
-  if ($upgrader = _civiproxy_civix_upgrader()) {
-    $upgrader->onInstall();
-  }
-  _civiproxy_civix_mixin_polyfill();
-}
-
-/**
- * Implements hook_civicrm_postInstall().
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_postInstall
- */
-function _civiproxy_civix_civicrm_postInstall() {
-  _civiproxy_civix_civicrm_config();
-  if ($upgrader = _civiproxy_civix_upgrader()) {
-    if (is_callable([$upgrader, 'onPostInstall'])) {
-      $upgrader->onPostInstall();
-    }
-  }
-}
-
-/**
- * Implements hook_civicrm_uninstall().
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_uninstall
- */
-function _civiproxy_civix_civicrm_uninstall() {
-  _civiproxy_civix_civicrm_config();
-  if ($upgrader = _civiproxy_civix_upgrader()) {
-    $upgrader->onUninstall();
-  }
+  // Based on <compatibility>, this does not currently require mixin/polyfill.php.
 }
 
 /**
@@ -159,59 +113,9 @@ function _civiproxy_civix_civicrm_uninstall() {
  *
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_enable
  */
-function _civiproxy_civix_civicrm_enable() {
+function _civiproxy_civix_civicrm_enable(): void {
   _civiproxy_civix_civicrm_config();
-  if ($upgrader = _civiproxy_civix_upgrader()) {
-    if (is_callable([$upgrader, 'onEnable'])) {
-      $upgrader->onEnable();
-    }
-  }
-  _civiproxy_civix_mixin_polyfill();
-}
-
-/**
- * (Delegated) Implements hook_civicrm_disable().
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_disable
- * @return mixed
- */
-function _civiproxy_civix_civicrm_disable() {
-  _civiproxy_civix_civicrm_config();
-  if ($upgrader = _civiproxy_civix_upgrader()) {
-    if (is_callable([$upgrader, 'onDisable'])) {
-      $upgrader->onDisable();
-    }
-  }
-}
-
-/**
- * (Delegated) Implements hook_civicrm_upgrade().
- *
- * @param $op string, the type of operation being performed; 'check' or 'enqueue'
- * @param $queue CRM_Queue_Queue, (for 'enqueue') the modifiable list of pending up upgrade tasks
- *
- * @return mixed
- *   based on op. for 'check', returns array(boolean) (TRUE if upgrades are pending)
- *   for 'enqueue', returns void
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_upgrade
- */
-function _civiproxy_civix_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL) {
-  if ($upgrader = _civiproxy_civix_upgrader()) {
-    return $upgrader->onUpgrade($op, $queue);
-  }
-}
-
-/**
- * @return CRM_Civiproxy_Upgrader
- */
-function _civiproxy_civix_upgrader() {
-  if (!file_exists(__DIR__ . '/CRM/Civiproxy/Upgrader.php')) {
-    return NULL;
-  }
-  else {
-    return CRM_Civiproxy_Upgrader_Base::instance();
-  }
+  // Based on <compatibility>, this does not currently require mixin/polyfill.php.
 }
 
 /**
@@ -230,8 +134,8 @@ function _civiproxy_civix_insert_navigation_menu(&$menu, $path, $item) {
   if (empty($path)) {
     $menu[] = [
       'attributes' => array_merge([
-        'label'      => CRM_Utils_Array::value('name', $item),
-        'active'     => 1,
+        'label' => $item['name'] ?? NULL,
+        'active' => 1,
       ], $item),
     ];
     return TRUE;
@@ -294,15 +198,4 @@ function _civiproxy_civix_fixNavigationMenuItems(&$nodes, &$maxNavID, $parentID)
       _civiproxy_civix_fixNavigationMenuItems($nodes[$origKey]['child'], $maxNavID, $nodes[$origKey]['attributes']['navID']);
     }
   }
-}
-
-/**
- * (Delegated) Implements hook_civicrm_entityTypes().
- *
- * Find any *.entityType.php files, merge their content, and return.
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_entityTypes
- */
-function _civiproxy_civix_civicrm_entityTypes(&$entityTypes) {
-  $entityTypes = array_merge($entityTypes, []);
 }
