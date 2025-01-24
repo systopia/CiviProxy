@@ -1,4 +1,5 @@
 # Serve
+Options -Indexes
 <IfModule mod_rewrite.c>
   RewriteEngine on
   RewriteCond %{REQUEST_URI} ^/civicrm/ajax/api4
