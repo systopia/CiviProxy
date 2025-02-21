@@ -71,7 +71,7 @@ class CRM_Civiproxy_Mailer {
     $value = preg_replace("#{$system_base}civicrm/mailing/open#i",                      $proxy_base.'/open.php',        $value);
     $value = preg_replace("#{$system_base}sites/all/modules/civicrm/extern/open.php#i", $proxy_base.'/open.php',        $value);
     $value = preg_replace("#{$system_base}sites/default/files/civicrm/persist/#i",      $proxy_base.'/file.php?id=',    $value);
-    $value = preg_replace("#{$system_base}wp-content/uploads/civicrm/persist/contribute/images/uploads/static/#i",      $proxy_base.'/file.php?id=',    $value);
+    $value = preg_replace("#{$system_base}wp-content/uploads/civicrm/persist/#i",      $proxy_base.'/file.php?id=',    $value);
     $value = preg_replace("#{$system_base}civicrm/mosaico/img\?src=#i",                 $proxy_base.'/mosaico.php?id=', $value);
     $value = preg_replace("#{$system_base}civicrm/mosaico/img/\?src=#i",                $proxy_base.'/mosaico.php?id=', $value);
     if ($mosaico->isMosaicoInstalled()) {
