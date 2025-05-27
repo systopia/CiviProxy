@@ -1,10 +1,22 @@
 # Technical Requirements
 
-There shouldn't be any requirements that any web hoster wouldn't comply with, but here they are:
+## Proxy Server (Public-Facing)
 
- 1. PHP 5.3+
- 2. PHP PEAR (to install on Debian/Ubuntu, run `apt-get install php-pear`)
- 3. The `php-curl` module
- 4. Read/write permissions on your webspace
- 5. Reasonable amount of protection, i.e. only authorised users (you) can upload/download the files
- 6. Ideally with it's own IP address (makes configuring the VPN easier)
+- Simple managed webspace with dedicated IP address
+- PHP 7.4+ (PHP 8.0+ recommended)
+- PHP cURL extension enabled
+- HTTPS/SSL support
+- Basic web server (Apache/Nginx)
+
+## CiviCRM Server (Private/Protected)
+
+- Existing CiviCRM 5.0+ installation
+- Located in VPN or private network
+- Firewall allowing connections only from proxy server IP
+- API access enabled (depending on your use case)
+
+## Network Architecture
+
+- **Proxy Server**: Internet-accessible, minimal attack surface
+- **CiviCRM Server**: Protected network, accessible only via proxy server IP and internal networks
+- **Communication**: HTTPS between proxy and CiviCRM server
