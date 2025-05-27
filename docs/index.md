@@ -34,7 +34,7 @@ The security advantages in a nutshell :thumbsup:
 * CiviProxy uses **whitelisting**. This means it starts with the principle _nothing is allowed_ and then lets you configure what is allowed, rather than the other way around.
 * CiviProxy uses **parameter sanitation**, meaning that only named parameters are allowed, and then only with the allowed content type (string, integer etc.).
 ## What can it do?
-Currently CiviProxy can expose/relay the following CiviCRM functions
+Features include:
 
 1. Serve resources for newsletters and mailings.
 1. Cache those resources, taking load off your CiviCRM server.
