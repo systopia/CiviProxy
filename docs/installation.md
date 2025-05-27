@@ -18,7 +18,12 @@ Installing CiviProxy should be pretty straightforward:
     * A CiviCRM extension called **de.systopia.civiproxy** that you need to install on your CiviCRM site.
     * A **proxy** folder with the scripts that you need to install on your CiviProxy server.
 
-## Installing the CiviCRM extension on your target CiviCRM
+## Installing the CiviCRM extension on your CiviCRM
+
+**Prerequisites:**
+- Existing CiviCRM installation (5.0+) running in protected environment
+- CiviCRM accessible from proxy server IP address
+
 Follow the [general instructions to install extensions]([url](https://docs.civicrm.org/sysadmin/en/latest/customize/extensions/#how-to-install-an-extension)) in CiviCRM. (Again, the extension consists _only_ of the directory called de.systopia.civiproxy!)
 
 See [Configuring CiviProxy](configuration.md) for futher settings you need to make.
