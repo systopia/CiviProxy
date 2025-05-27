@@ -46,7 +46,9 @@ Currently CiviProxy can expose/relay the following CiviCRM functions
 3. Support for Mosaico
 4. Logging
 5. Webhook and callback support
+
 ⚠️ This software has not (yet) been audited for security.
+
 ## Why not an application firewall?
 The traditional approach to this problem would be an application firewall / reverse proxy setup. However, CiviCRM can have very complex interactions with other systems (e.g. via the API), and a malicious request can sometimes only be detected by understanding the meaning of the individual parameters.
 
