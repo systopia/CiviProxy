@@ -11,30 +11,41 @@ ini_set('include_path', dirname(dirname(__FILE__)));
 require_once "proxy.php";
 
 // see if mail open tracking is enabled
-if (!$mail_subscription_user_key) civiproxy_http_error("Feature disabled", 405);
+if (!$mail_subscription_user_key) {
+  civiproxy_http_error("Feature disabled", 405);
+}
 
 // basic check
 civiproxy_security_check('mail-confirm');
 
 // basic restraints
-$valid_parameters = array(    'sid'          => 'int',
-                              'cid'          => 'int', 
-                              'h'            => 'string');
+$valid_parameters = [
+  'sid' => 'int',
+  'cid' => 'int',
+  'h' => 'string',
+];
 $parameters = civiproxy_get_parameters($valid_parameters);
 
 // check if parameters specified
-if (empty($parameters['sid'])) civiproxy_http_error("Missing/invalid parameter 'sid'.");
-if (empty($parameters['cid'])) civiproxy_http_error("Missing/invalid parameter 'cid'.");
-if (empty($parameters['h']))   civiproxy_http_error("Missing/invalid parameter 'h'.");
+if (empty($parameters['sid'])) {
+  civiproxy_http_error("Missing/invalid parameter 'sid'.");
+}
+if (empty($parameters['cid'])) {
+  civiproxy_http_error("Missing/invalid parameter 'cid'.");
+}
+if (empty($parameters['h'])) {
+  civiproxy_http_error("Missing/invalid parameter 'h'.");
+}
 
 // PERFORM SUBSCRIBE ON POST REQUEST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $group_query = civicrm_api3('MailingEventConfirm', 'create',
-    array( 'subscribe_id'   => $parameters['sid'],
-      'contact_id'     => $parameters['cid'],
-      'hash'           => $parameters['h'],
-      'api_key'        => $mail_subscription_user_key,
-    ));
+    [
+      'subscribe_id' => $parameters['sid'],
+      'contact_id' => $parameters['cid'],
+      'hash' => $parameters['h'],
+      'api_key' => $mail_subscription_user_key,
+    ]);
   if (!empty($group_query['is_error'])) {
     civiproxy_http_error($group_query['error_message'], 500);
   }
@@ -47,9 +58,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <!DOCTYPE html>
 <html>
- <head>
+<head>
   <meta charset="UTF-8">
-  <title>CiviProxy Version <?php echo $civiproxy_version;?></title>
+  <title>CiviProxy Version <?php echo $civiproxy_version; ?></title>
   <style type="text/css">
     body {
       margin: 0;
@@ -61,8 +72,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     .container {
-        position: relative;
-        width: 100%;
+      position: relative;
+      width: 100%;
     }
 
     .center {
@@ -82,27 +93,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       text-align: center;
       width: 462px;
     }
-    
+
   </style>
- </head>
- <body>
-  <div id="container">
-    <div id="info" class="center">
-      <a href="https://www.systopia.de/"><?php echo $civiproxy_logo;?></a>
-    </div>
-    <div id="content" class="center">
-      <?php if (!empty($success)): ?>
-        <p>Thank you. You are now subscribed to the newsletter.</p>
-      <?php else: ?>
-        <p>Please confirm your newsletter subscription.</p>
+</head>
+<body>
+<div id="container">
+  <div id="info" class="center">
+    <a href="https://www.systopia.de/"><?php echo $civiproxy_logo; ?></a>
+  </div>
+  <div id="content" class="center">
+    <?php if (!empty($success)): ?>
+      <p>Thank you. You are now subscribed to the newsletter.</p>
+    <?php else: ?>
+      <p>Please confirm your newsletter subscription.</p>
       <form method="post" action="">
-        <input type="hidden" name="sid" value="<?= htmlspecialchars($parameters['sid']) ?>">
-        <input type="hidden" name="cid" value="<?= htmlspecialchars($parameters['cid']) ?>">
-        <input type="hidden" name="h" value="<?= htmlspecialchars($parameters['h']) ?>">
+        <input type="hidden" name="sid"
+               value="<?= htmlspecialchars($parameters['sid']) ?>">
+        <input type="hidden" name="cid"
+               value="<?= htmlspecialchars($parameters['cid']) ?>">
+        <input type="hidden" name="h"
+               value="<?= htmlspecialchars($parameters['h']) ?>">
         <button type="submit" class="btn">Yes, subscribe</button>
       </form>
     <?php endif; ?>
-    </div>
   </div>
- </body>
+</div>
+</body>
 </html>

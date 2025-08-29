@@ -11,21 +11,31 @@ ini_set('include_path', dirname(dirname(__FILE__)));
 require_once "proxy.php";
 
 // see if mailing subscribe feature is enabled
-if (empty($mail_subscription_user_key)) civiproxy_http_error("Feature disabled", 405);
+if (empty($mail_subscription_user_key)) {
+  civiproxy_http_error("Feature disabled", 405);
+}
 
 // basic check
 civiproxy_security_check('mail-unsubscribe');
 
 // basic restraints
-$valid_parameters = array(    'jid'          => 'int',
-                              'qid'          => 'int', 
-                              'h'            => 'string');
+$valid_parameters = [
+  'jid' => 'int',
+  'qid' => 'int',
+  'h' => 'string',
+];
 $parameters = civiproxy_get_parameters($valid_parameters);
 
 // check if parameters specified
-if (empty($parameters['jid'])) civiproxy_http_error("Missing/invalid parameter 'jid'.");
-if (empty($parameters['qid'])) civiproxy_http_error("Missing/invalid parameter 'qid'.");
-if (empty($parameters['h']))   civiproxy_http_error("Missing/invalid parameter 'h'.");
+if (empty($parameters['jid'])) {
+  civiproxy_http_error("Missing/invalid parameter 'jid'.");
+}
+if (empty($parameters['qid'])) {
+  civiproxy_http_error("Missing/invalid parameter 'qid'.");
+}
+if (empty($parameters['h'])) {
+  civiproxy_http_error("Missing/invalid parameter 'h'.");
+}
 
 // PERFORM UNSUBSCRIBE ON POST REQUEST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -48,9 +58,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <!DOCTYPE html>
 <html>
- <head>
+<head>
   <meta charset="UTF-8">
-  <title>CiviProxy Version <?php echo $civiproxy_version;?></title>
+  <title>CiviProxy Version <?php echo $civiproxy_version; ?></title>
   <style type="text/css">
     body {
       margin: 0;
@@ -62,8 +72,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     .container {
-        position: relative;
-        width: 100%;
+      position: relative;
+      width: 100%;
     }
 
     .center {
@@ -83,27 +93,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       text-align: center;
       width: 462px;
     }
-    
+
   </style>
- </head>
- <body>
-  <div id="container">
-    <div id="info" class="center">
-      <a href="https://www.systopia.de/"><?php echo $civiproxy_logo;?></a>
-    </div>
-    <div id="content" class="center">
-      <?php if (!empty($success)): ?>
-        <p>Thank you. You have been successfully unsubscribed.</p>
-      <?php else: ?>
-        <p>Please confirm your newsletter unsubscription.</p>
-        <form method="post" action="">
-          <input type="hidden" name="jid" value="<?= htmlspecialchars($parameters['jid']) ?>">
-          <input type="hidden" name="qid" value="<?= htmlspecialchars($parameters['qid']) ?>">
-          <input type="hidden" name="h" value="<?= htmlspecialchars($parameters['h']) ?>">
-          <button type="submit" class="btn">Yes, unsubscribe</button>
-        </form>
-      <?php endif; ?>
-    </div>
+</head>
+<body>
+<div id="container">
+  <div id="info" class="center">
+    <a href="https://www.systopia.de/"><?php echo $civiproxy_logo; ?></a>
   </div>
- </body>
+  <div id="content" class="center">
+    <?php if (!empty($success)): ?>
+      <p>Thank you. You have been successfully unsubscribed.</p>
+    <?php else: ?>
+      <p>Please confirm your newsletter unsubscription.</p>
+      <form method="post" action="">
+        <input type="hidden" name="jid"
+               value="<?= htmlspecialchars($parameters['jid']) ?>">
+        <input type="hidden" name="qid"
+               value="<?= htmlspecialchars($parameters['qid']) ?>">
+        <input type="hidden" name="h"
+               value="<?= htmlspecialchars($parameters['h']) ?>">
+        <button type="submit" class="btn">Yes, unsubscribe</button>
+      </form>
+    <?php endif; ?>
+  </div>
+</div>
+</body>
 </html>
