@@ -27,15 +27,20 @@ if (empty($parameters['sid'])) civiproxy_http_error("Missing/invalid parameter '
 if (empty($parameters['cid'])) civiproxy_http_error("Missing/invalid parameter 'cid'.");
 if (empty($parameters['h']))   civiproxy_http_error("Missing/invalid parameter 'h'.");
 
-// PERFORM UNSUBSCRIBE
-$group_query = civicrm_api3('MailingEventConfirm', 'create', 
-                          array( 'subscribe_id'   => $parameters['sid'],
-                                 'contact_id'     => $parameters['cid'],
-                                 'hash'           => $parameters['h'],
-                                 'api_key'        => $mail_subscription_user_key,
-                                ));
-if (!empty($group_query['is_error'])) {
-  civiproxy_http_error($group_query['error_message'], 500);
+// PERFORM SUBSCRIBE ON POST REQUEST
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  $group_query = civicrm_api3('MailingEventConfirm', 'create',
+    array( 'subscribe_id'   => $parameters['sid'],
+      'contact_id'     => $parameters['cid'],
+      'hash'           => $parameters['h'],
+      'api_key'        => $mail_subscription_user_key,
+    ));
+  if (!empty($group_query['is_error'])) {
+    civiproxy_http_error($group_query['error_message'], 500);
+  }
+  else {
+    $success = TRUE;
+  }
 }
 ?>
 
@@ -49,6 +54,10 @@ if (!empty($group_query['is_error'])) {
     body {
       margin: 0;
       padding: 0;
+    }
+
+    .btn {
+      padding: 10px;
     }
 
     .container {
@@ -82,7 +91,17 @@ if (!empty($group_query['is_error'])) {
       <a href="https://www.systopia.de/"><?php echo $civiproxy_logo;?></a>
     </div>
     <div id="content" class="center">
-      <p>Thank you. You are now subscribed to the newsletter.</a>
+      <?php if (!empty($success)): ?>
+        <p>Thank you. You are now subscribed to the newsletter.</p>
+      <?php else: ?>
+        <p>Please confirm your newsletter subscription.</p>
+      <form method="post" action="">
+        <input type="hidden" name="sid" value="<?= htmlspecialchars($parameters['sid']) ?>">
+        <input type="hidden" name="cid" value="<?= htmlspecialchars($parameters['cid']) ?>">
+        <input type="hidden" name="h" value="<?= htmlspecialchars($parameters['h']) ?>">
+        <button type="submit" class="btn">Yes, subscribe</button>
+      </form>
+    <?php endif; ?>
     </div>
   </div>
  </body>

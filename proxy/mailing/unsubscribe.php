@@ -27,15 +27,21 @@ if (empty($parameters['jid'])) civiproxy_http_error("Missing/invalid parameter '
 if (empty($parameters['qid'])) civiproxy_http_error("Missing/invalid parameter 'qid'.");
 if (empty($parameters['h']))   civiproxy_http_error("Missing/invalid parameter 'h'.");
 
-// PERFORM UNSUBSCRIBE
-$group_query = civicrm_api3('MailingEventUnsubscribe', 'create', 
-                          array( 'job_id'         => $parameters['jid'],
-                                 'event_queue_id' => $parameters['qid'],
-                                 'hash'           => $parameters['h'],
-                                 'api_key'        => $mail_subscription_user_key,
-                                ));
-if (!empty($group_query['is_error'])) {
-  civiproxy_http_error($group_query['error_message'], 500);
+// PERFORM UNSUBSCRIBE ON POST REQUEST
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  $group_query = civicrm_api3('MailingEventUnsubscribe', 'create',
+    [
+      'job_id' => $parameters['jid'],
+      'event_queue_id' => $parameters['qid'],
+      'hash' => $parameters['h'],
+      'api_key' => $mail_subscription_user_key,
+    ]);
+  if (!empty($group_query['is_error'])) {
+    civiproxy_http_error($group_query['error_message'], 500);
+  }
+  else {
+    $success = TRUE;
+  }
 }
 ?>
 
@@ -49,6 +55,10 @@ if (!empty($group_query['is_error'])) {
     body {
       margin: 0;
       padding: 0;
+    }
+
+    .btn {
+      padding: 10px;
     }
 
     .container {
@@ -82,7 +92,17 @@ if (!empty($group_query['is_error'])) {
       <a href="https://www.systopia.de/"><?php echo $civiproxy_logo;?></a>
     </div>
     <div id="content" class="center">
-      <p>Thank you. You have been successfully unsubscribed.</a>
+      <?php if (!empty($success)): ?>
+        <p>Thank you. You have been successfully unsubscribed.</p>
+      <?php else: ?>
+        <p>Please confirm your newsletter unsubscription.</p>
+        <form method="post" action="">
+          <input type="hidden" name="jid" value="<?= htmlspecialchars($parameters['jid']) ?>">
+          <input type="hidden" name="qid" value="<?= htmlspecialchars($parameters['qid']) ?>">
+          <input type="hidden" name="h" value="<?= htmlspecialchars($parameters['h']) ?>">
+          <button type="submit" class="btn">Yes, unsubscribe</button>
+        </form>
+      <?php endif; ?>
     </div>
   </div>
  </body>
