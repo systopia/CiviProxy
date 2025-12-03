@@ -84,6 +84,11 @@ $debug                      = NULL; //'LUXFbiaoz4dVWuAHEcuBAe7YQ4YP96rN4MCDmKj89
 // This is useful in some VPN configurations (see CURLOPT_INTERFACE)
 $target_interface           = NULL;
 
+// The API key to acces the CiviProxy api
+// The CiviProxy api lets CiviCRM connect to proxy to do stuff. Such as reading the log.
+// Set NULL to disable. 
+$proxy_api_key              = NULL; // 'SomeRandomKey' When NULL this functionality is disabled.
+
 
 /***************************************************************
  **                Authentication Options                     **
