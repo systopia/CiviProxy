@@ -153,6 +153,7 @@ function civiproxy_redirect4($url_requested, $parameters, $credentials) {
   curl_setopt($curlSession, CURLOPT_RETURNTRANSFER,1);
   curl_setopt($curlSession, CURLOPT_TIMEOUT, 30);
   curl_setopt($curlSession, CURLOPT_SSL_VERIFYHOST, 2);
+  curl_setopt($curlSession, CURLOPT_FAILONERROR, true);
   if (!empty($target_interface)) {
     curl_setopt($curlSession, CURLOPT_INTERFACE, $target_interface);
   }
