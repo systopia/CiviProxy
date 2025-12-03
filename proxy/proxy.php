@@ -10,6 +10,11 @@
 require_once "config.php";
 $civiproxy_version = '1.1.0-dev';
 
+use systopia\CiviProxy\CiviProxy;
+use systopia\CiviProxy\Events\finishRedirect;
+use systopia\CiviProxy\Events\prepareRedirect;
+use systopia\CiviProxy\Events\redirectError;
+
 /**
  * this will redirect the request to another URL,
  *  i.e. will pass the reply on to this request
@@ -49,6 +54,7 @@ function civiproxy_redirect($url_requested, $parameters) {
   curl_setopt($curlSession, CURLOPT_RETURNTRANSFER,1);
   curl_setopt($curlSession, CURLOPT_TIMEOUT, 30);
   curl_setopt($curlSession, CURLOPT_SSL_VERIFYHOST, 2);
+  curl_setopt($curlSession, CURLOPT_FAILONERROR, true);
   if (!empty($target_interface)) {
     curl_setopt($curlSession, CURLOPT_INTERFACE, $target_interface);
   }
@@ -56,11 +62,26 @@ function civiproxy_redirect($url_requested, $parameters) {
     curl_setopt($curlSession, CURLOPT_CAINFO, dirname(__FILE__).'/target.pem');
   }
 
+  $prepareRedirect = new prepareRedirect($url, $parameters, $curlSession, 3);
+  CiviProxy::dispatchEvent($prepareRedirect);
+
+  if ($prepareRedirect->hasRepsone) {
+    // handle headers - simply re-outputing them
+    foreach ($prepareRedirect->responseHeaders as $header_line){
+      header(trim($header_line));
+    }
+    echo $prepareRedirect->repsone;
+    curl_close ($curlSession);
+    exit();
+  }
+
   //Send the request and store the result in an array
   $response = curl_exec($curlSession);
 
   // Check that a connection was made
   if (curl_error($curlSession)){
+    $redirectError = new redirectError($curlSession);
+    CiviProxy::dispatchEvent($redirectError, 3);
     civiproxy_http_error(curl_error($curlSession), curl_errno($curlSession));
 
   } else {
@@ -72,19 +93,24 @@ function civiproxy_redirect($url_requested, $parameters) {
     $header = $content[0];
     $body = $content[1];
 
+    $finishRedirect = new finishRedirect($header, $body, $curlSession, 3);
+    CiviProxy::dispatchEvent($finishRedirect);
+
     // handle headers - simply re-outputing them
-    $header_ar = explode(chr(10), $header);
-    foreach ($header_ar as $header_line){
+    foreach ($finishRedirect->responseHeaders as $header_line){
       if (!preg_match("/^Transfer-Encoding/", $header_line)){
         civiproxy_mend_URLs($header_line);
         header(trim($header_line));
       }
     }
 
-    //rewrite all hard coded urls to ensure the links still work!
-    civiproxy_mend_URLs($body);
-
-    print $body;
+    if ($finishRedirect->hasRepsone) {
+      echo $finishRedirect->repsone;
+    } else {
+      //rewrite all hard coded urls to ensure the links still work!
+      civiproxy_mend_URLs($body);
+      print $body;
+    }
   }
 
   curl_close ($curlSession);
@@ -134,11 +160,26 @@ function civiproxy_redirect4($url_requested, $parameters, $credentials) {
     curl_setopt($curlSession, CURLOPT_CAINFO, dirname(__FILE__).'/target.pem');
   }
 
+  $prepareRedirect = new prepareRedirect($url, $parameters, $curlSession, 3);
+  CiviProxy::dispatchEvent($prepareRedirect);
+
+  if ($prepareRedirect->hasRepsone) {
+    // handle headers - simply re-outputing them
+    foreach ($prepareRedirect->responseHeaders as $header_line){
+      header(trim($header_line));
+    }
+    echo $prepareRedirect->repsone;
+    curl_close ($curlSession);
+    exit();
+  }
+
   //Send the request and store the result in an array
   $response = curl_exec($curlSession);
 
   // Check that a connection was made
   if (curl_error($curlSession)){
+    $redirectError = new redirectError($curlSession, 4);
+    CiviProxy::dispatchEvent($redirectError);
     civiproxy_http_error(curl_error($curlSession), curl_errno($curlSession));
 
   } else {

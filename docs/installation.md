@@ -16,7 +16,7 @@ Installing CiviProxy should be pretty straightforward:
 * In the repository, there are actually two relevant parts:
 
     * A CiviCRM extension called **de.systopia.civiproxy** that you need to install on your CiviCRM site.
-    * A **proxy** folder with the scripts that you need to install on your CiviProxy server.
+    * A **proxy**, **plugins** and **src** folders with the scripts that you need to install on your CiviProxy server. And the **composer.json** and **composer.lock** files.
 
 ## Installing the CiviCRM extension on your CiviCRM
 
@@ -30,7 +30,10 @@ See [Configuring CiviProxy](configuration.md) for futher settings you need to ma
 
 ## Installing the Proxy scripts your your CiviProxy server
 
-1. Copy the **proxy** folder into the webspace you want to use for CiviProxy.
-2. Create a `config.php` file using `config.dist.php` as a template.
+1. Copy the **proxy**, **plugins**, and **src** folders into the webspace you want to use for CiviProxy. 
+2. Copy the **composer.json** and **comnposer.lock** files into the webspace you want to use for CiviProxy.
+3. The webroot of your webserver should point to the proxy directory.
+4. Create a `config.php` file using `config.dist.php` as a template.
+5. Run in your webspace the command `composer install`
 
 See [Configuring CiviProxy](configuration.md) for details on what you need to include in the `config.php` file.

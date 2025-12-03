@@ -1,0 +1,35 @@
+{
+    "name": "systopia/civiproxy",
+    "description": "CiviProxy is a tool to set up a security proxy server specifically for your CiviCRM instance. It uses whitelisting and parameter sanitation to allow only legitimate requests to pass through.",
+    "license": "GPL-3.0-only",
+    "authors": [
+        {
+            "name": "Björn Endres",
+            "email": "endres@systopia.de"
+        },
+        {
+            "name": "Phil Batroff",
+            "email": "batroff@systopia.de"
+        },
+        {
+            "name": "Jens Schuppe",
+            "email": "schuppe@systopia.de"
+        },
+        {
+            "name": "Jaap Jansma",
+            "email": "jaap.jansma@civicoop.org"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {},
+    "autoload": {
+      "psr-4": {
+          "systopia\\CiviProxy\\":"src",  
+          "systopia\\CiviProxy\\plugin\\Logger\\": "plugins/Logger"
+      },
+      "files": [
+        "proxy/proxy.php",
+        "proxy/checks.php"
+      ]
+    }
+}

@@ -55,6 +55,14 @@ $target_open      = $target_civicrm . '/civicrm/mailing/open';
 //$target_open      = $target_civicrm . '/sites/all/modules/civicrm/extern/open.php';
 
 /****************************************************************
+ **                    Plugins                                 **
+ ****************************************************************/
+$plugins = [
+  //'\systopia\CiviProxy\plugin\Logger\Plugin',
+  // Add your plugins here by adding the name of the Plugin Class
+];
+
+/****************************************************************
  **                    GENERAL OPTIONS                         **
  ****************************************************************/
 
