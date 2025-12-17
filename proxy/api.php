@@ -10,17 +10,19 @@
 require_once "config.php";
 require_once "../vendor/autoload.php";
 
-use systopia\CiviProxy\Api\Response;
-use systopia\CiviProxy\CiviProxy;
+use Systopia\CiviProxy\Api\Request;
+use Systopia\CiviProxy\Api\Response;
+use Systopia\CiviProxy\CiviProxy;
 
 // see if CiviProxy API is enabled
-if (!$proxy_api_key) civiproxy_http_error("Feature disabled", 405);
+if (!$proxyApiKey) civiproxy_http_error("Feature disabled", 405);
 
 if (!isset($_REQUEST['action'])) {
   civiproxy_rest_error("Incorrect call.");
 }
 
-$return = CiviProxy::callApi($_REQUEST['action']);
+$request = new Request($_GET, $_POST, $_FILES, [], $_COOKIE);
+$return = CiviProxy::instance()->callApi($request);
 if ($return instanceof Response) {
   http_response_code($return->httpCode);
   foreach($return->headers as $header_line) {

@@ -7,7 +7,7 @@
 | http://www.systopia.de/                                 |
 +---------------------------------------------------------*/
 
-namespace systopia\CiviProxy\Api;
+namespace Systopia\CiviProxy\Api;
 
 class JsonResponse extends Response {
 
@@ -17,7 +17,7 @@ class JsonResponse extends Response {
   public function __construct($response) {
     $this->response = json_encode($response);
     $this->headers[] = 'Content-Type: application/json';
-    $this->httpCode = '200';
+    $this->httpCode = 200;
   }
 
 }

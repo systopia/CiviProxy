@@ -7,7 +7,19 @@
 | http://www.systopia.de/                                 |
 +---------------------------------------------------------*/
 
-namespace systopia\CiviProxy\Api;
+namespace Systopia\CiviProxy\Api;
+
+use DateTimeZone;
+use Lcobucci\Clock\SystemClock;
+use Lcobucci\JWT\JwtFacade;
+use Lcobucci\JWT\Signer\Ecdsa\Sha256;
+use Lcobucci\JWT\Signer\Key\InMemory;
+use Lcobucci\JWT\UnencryptedToken;
+use Lcobucci\JWT\Validation\Constraint\HasClaim;
+use Lcobucci\JWT\Validation\Constraint\HasClaimWithValue;
+use Lcobucci\JWT\Validation\Constraint\LooseValidAt;
+use Lcobucci\JWT\Validation\Constraint\RelatedTo;
+use Lcobucci\JWT\Validation\Constraint\SignedWith;
 
 class Api {
 
@@ -16,124 +28,78 @@ class Api {
   public function __construct(array $plugins) {
     foreach($plugins as $plugin) {
       foreach($plugin->getApiActionDefinitions() as $apiName => $apiDefinition) {
-        $listener = $apiDefinition[0];
+        $handler = $apiDefinition[0];
         $params = [];
         if (isset($apiDefinition[1])) {
           $params = $apiDefinition[1];
         }
-        if (\is_array($listener) && isset($listener[0]) && $listener[0] instanceof \Closure && 2 >= \count($listener)) {
-          $listener[0] = $listener[0]();
-          $listener[1] = $listener[1] ?? '__invoke';
+        if (array(key_exists(strtolower($apiName), $this->apiDefinitions))) {
+          $existingApi = $this->apiDefinitions[strtolower($apiName)];
+          throw new InvalidApiException('API '. $apiName . 'already exists in ' . implode("::", $existingApi[0]));
         }
-        $this->apiDefinitions[strtolower($apiName)] = [[$plugin, $listener], $params];
+        $this->apiDefinitions[strtolower($apiName)] = [[$plugin, $handler], $params];
       }
     }
   }
 
-  public function callApi($action) {
-    global $proxy_api_key;
-    if (!$proxy_api_key || !is_string($proxy_api_key) || !strlen($proxy_api_key)) {
-      return null;
+  public function callApi(Request $request): Response {
+    global $proxyApiKey;
+    if (!$proxyApiKey || !is_string($proxyApiKey) || !strlen($proxyApiKey)) {
+      return new ErrorResponse('Not Implemented', 501);
     }
-    if (isset($this->apiDefinitions[strtolower($action)])) {
+
+    $action = strtolower($request->get('action') ?? '');
+    if ($action == '') {
+      return new ErrorResponse('Invalid API invocation', 500);
+    }
+
+    $xCiviAuth = $request->getHeader('X_CIVI_AUTH');
+    if (strpos($xCiviAuth, 'Bearer ')!==0) {
+      return new ErrorResponse('Access Denied', 403);
+    }
+    $jwt = substr($xCiviAuth, 7);
+    if (isset($this->apiDefinitions[$action])) {
       $params = [];
-      foreach($this->apiDefinitions[strtolower($action)][1] as $param) {
-        if (isset($_REQUEST[$param])) {
-          $params[$param] = $_REQUEST[$param];
+      foreach($this->apiDefinitions[$action][1] as $param) {
+        if ($request->hasParameter($param)) {
+          $params[$param] = $request->get($param);
         }
       }
-      if (!$this->verifyJWT($proxy_api_key, $params)) {
-        return new ErrorResponse('Access Denied', '403');
+      if (!$this->verifyJWT($jwt, $proxyApiKey, $request->get('action'), $params)) {
+        return new ErrorResponse('Access Denied', 403);
       }
-      $listener = $this->apiDefinitions[strtolower($action)][0];
-      return call_user_func($listener, $params);
+      $handler = $this->apiDefinitions[$action][0];
+      $response = call_user_func($handler, $params);
+      if ($response instanceof Response) {
+        return $response;
+      }
+      return new ErrorResponse('Invalid response received', 500);
     }
   }
 
   /**
    * Verifies the JWT header
-   * @param string $key
+   * @param string $jwt
+   * @param string $proxyApiKey
+   * @param string $apiAction
    * @param array $requiredClaims
    */
-  private function verifyJWT(string $key, array $requiredClaims): bool {
-    $token = civiproxy_get_header('X_CIVI_AUTH');
-    if (strpos($token, 'Bearer ')!==0) {
+  private function verifyJWT(string $jwt, string $proxyApiKey, string $apiAction, array $requiredClaims): bool {
+    $timezone = date_default_timezone_get();
+    $signedWith = new SignedWith(new Sha256(), InMemory::plainText($proxyApiKey));
+    $validAt = new LooseValidAt(new SystemClock(new DateTimeZone($timezone)), new \DateInterval('PT5M'));
+    $constraints[] = new RelatedTo($apiAction);
+    $constraints[] = new HasClaim('exp');
+    foreach($requiredClaims as $claim => $expectedValue) {
+      $constraints[] = new HasClaimWithValue($claim, $expectedValue);
+    }
+    $jwtFacade = new JwtFacade();
+    try {
+      $token = $jwtFacade->parse($jwt, $signedWith, $validAt, ...$constraints);
+    } catch (\Exception $e) {
       return FALSE;
     }
-    $token = substr($token, 7);
-    $sections = explode('.', $token);
-    if (count($sections) !== 3) {
-        return FALSE;
-    }
-    [$header, $payload, $signature] = $sections;
-
-    if ($remainder = strlen($header) % 4) {
-      $paddingLength = 4 - $remainder;
-      $header .= str_repeat('=', $paddingLength);
-    }
-    $decodedHeader = base64_decode(strtr($header, '-_', '+/'));
-    $decodedHeader = json_decode($decodedHeader, TRUE);
-    if ($decodedHeader === false || !isset($decodedHeader['typ']) || $decodedHeader['typ'] !='JWT') {
-      return FALSE;
-    }
-    if (!isset($decodedHeader['alg']) || $decodedHeader['alg'] != 'HS256') {
-      // We only accept the hmac Sha 256 algorithm.
-      return FALSE;
-    }
-
-    if ($remainder = strlen($signature) % 4) {
-      $paddingLength = 4 - $remainder;
-      $signature .= str_repeat('=', $paddingLength);
-    }
-    $signature = base64_decode(strtr($signature, '-_', '+/'));
-
-    $verifiedSignature = hash_hmac('sha256',"$header.$payload", $key, TRUE);
-    if ($verifiedSignature != $signature) {
-      return FALSE;
-    }
-
-    if ($remainder = strlen($payload) % 4) {
-      $paddingLength = 4 - $remainder;
-      $payload .= str_repeat('=', $paddingLength);
-    }
-    $payload = base64_decode(strtr($payload, '-_', '+/'));
-    $claims = json_decode($payload, TRUE);
-    if (json_last_error() !== JSON_ERROR_NONE) {
-      return FALSE;
-    }
-    if (!is_array($claims)) {
-      return FALSE;
-    }
-    if (!isset($claims['exp']) || !isset($claims['sub'])) {
-      return FALSE;
-    }
-    foreach($claims as $key => $value) {
-      switch ($key) {
-        case 'exp':
-          if ((time() - 300) > $value) {
-            // The token is expired.
-            // We have a skew of 5 minutes (300 seconds)
-            return FALSE;
-          }
-          break;
-        case 'sub':
-          if (!isset($_REQUEST['action']) || $_REQUEST['action'] != $value) {
-            // The subject of the token is the name of the api action.
-            // If those are not the same fail the request.
-            return FALSE;
-          }
-          break;
-        default:
-          // Other claims are about values in the $_REQUEST.
-          if (!isset($_REQUEST[$key]) || $_REQUEST[$key] != $value) {
-            return FALSE;
-          }
-          unset($requiredClaims[$key]);
-          break;    
-      }
-    }
-    if (count($requiredClaims)) {
-      // There are required claims over in the JWT token.
+    if (!$token instanceof UnencryptedToken) {
       return FALSE;
     }
     return TRUE;

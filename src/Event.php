@@ -7,7 +7,7 @@
 | http://www.systopia.de/                                 |
 +---------------------------------------------------------*/
 
-namespace systopia\CiviProxy;
+namespace Systopia\CiviProxy;
 
 class Event {
 

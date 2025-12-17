@@ -7,9 +7,12 @@
 | http://www.systopia.de/                                 |
 +---------------------------------------------------------*/
 
-namespace systopia\CiviProxy;
+namespace Systopia\CiviProxy;
 
-use systopia\CiviProxy\Api\Api;
+use Systopia\CiviProxy\Api\Api;
+use Systopia\CiviProxy\Api\Request;
+use Systopia\CiviProxy\Api\Response;
+use Systopia\CiviProxy\Plugin\PluginNotFoundException;
 
 class CiviProxy {
 
@@ -20,20 +23,21 @@ class CiviProxy {
 
   private $plugins = [];
 
-  private $apiFactory;
+  /**
+   * @var Systopia\CiviProxy\Api\Api
+   */
+  private $api;
 
-  private $eventListeners = [];
-
-  private $sortedListeners = [];
+  /**
+   * @var Systopia\CiviProxy\EventDispatcher
+   */
+  private $eventDispatcher;
 
   /**
    * @return CiviProxy
    */
-  public static function getInstance() {
-    if (!self::$instance) {
-      self::$instance = new CiviProxy();
-    }
-    return self::$instance;
+  public static function instance() {
+    return self::$instance ??= new self();
   }
 
   private function __construct()
@@ -44,83 +48,31 @@ class CiviProxy {
   private function initializePlugins() {
     global $plugins;
     foreach($plugins as $pluginClass) {
-      if (class_exists($pluginClass)) {
-        $plugin = new $pluginClass();
-        foreach ($plugin->getSubscribedEvents() as $eventName => $params) {
-          if (\is_string($params)) {
-            $this->addListener($eventName, [$plugin, $params]);
-          } elseif (\is_string($params[0])) {
-            $this->addListener($eventName, [$plugin, $params[0]], $params[1] ?? 0);
-          } else {
-            foreach ($params as $listener) {
-              $this->addListener($eventName, [$plugin, $listener[0]], $listener[1] ?? 0);
-            }
-          }
-        }
-        $this->plugins[] = $plugin;
+      if (!class_exists($pluginClass)) {
+        throw new PluginNotFoundException($pluginClass);
       }
+      $this->plugins[] = new $pluginClass();
     }
   }
 
-  public function addListener(string $eventName, $listener, int $priority = 0) {
-    $this->eventListeners[$eventName][$priority][] = $listener;
-    unset($this->sortedListeners[$eventName]);
-  }
-
-  public static function callApi($action) {
-    $civiproxy = CiviProxy::getInstance();
-    if (!$civiproxy->apiFactory) {
-      $civiproxy->apiFactory = new Api($civiproxy->plugins);
-    }
-    return $civiproxy->apiFactory->callApi($action);
+  /**
+   * Call the api
+   * 
+   * @param Request $request
+   */
+  public function callApi(Request $request): Response {
+    $this->api ??= new Api($this->plugins);
+    return $this->api->callApi($request);
   }
 
   /**
    * @param object $event
    */
-  public static function dispatchEvent($event) {
-    $eventName = get_class($event);
-
-    $civiproxy = CiviProxy::getInstance();
-
-    if (empty($civiproxy->eventListeners[$eventName])) {
-      return;
-    }
-
-    if (!isset($civiproxy->sorted[$eventName])) {
-      $civiproxy->sortListeners($eventName);
-    }
-    $stoppable = $event instanceof Event;
-
-    foreach ($civiproxy->sortedListeners[$eventName] as $listener) {
-      if ($stoppable && $event->isPropagationStopped()) {
-          break;
-      }
-      $listener($event);
-    }
+  public function dispatchEvent($event) {
+    $this->eventDispatcher ??= new EventDispatcher($this->plugins);
+    $this->eventDispatcher->dispatchEvent($event);
   }
 
-      /**
-     * Sorts the internal list of listeners for the given event by priority.
-     */
-    private function sortListeners(string $eventName)
-    {
-      if (empty($this->eventListeners[$eventName])) {
-        $this->sortedListeners[$eventName] = [];
-      } 
-      krsort($this->eventListeners[$eventName]);
-      $this->sortedListeners[$eventName] = [];
-
-      foreach ($this->eventListeners[$eventName] as &$listeners) {
-        foreach ($listeners as $k => &$listener) {
-          if (\is_array($listener) && isset($listener[0]) && $listener[0] instanceof \Closure && 2 >= \count($listener)) {
-            $listener[0] = $listener[0]();
-            $listener[1] = $listener[1] ?? '__invoke';
-          }
-          $this->sortedListeners[$eventName][] = $listener;
-        }
-      }
-    }
 
 
 }

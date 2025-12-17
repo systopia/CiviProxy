@@ -7,18 +7,12 @@
 | http://www.systopia.de/                                 |
 +---------------------------------------------------------*/
 
-namespace Systopia\CiviProxy\Api;
+namespace Systopia\CiviProxy\Plugin;
 
-class ErrorResponse extends Response {
+class PluginNotFoundException extends \Exception {
 
-    /**
-   * @param string $error_message
-   * @param int $httpCode
-   */
-  public function __construct($error_message, $httpCode = 500) {
-    $this->response = json_encode(['is_error' => '1', 'error_message' => $error_message]);
-    $this->headers[] = 'Content-Type: application/json';
-    $this->httpCode = $httpCode;
+  public function __construct(string $pluginClassName) {
+    parent::__construct('Plugin ' . $pluginClassName . ' could not be found. Is this a configuration issue in your config.php?');
   }
 
 }

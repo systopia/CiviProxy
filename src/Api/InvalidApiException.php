@@ -9,32 +9,6 @@
 
 namespace Systopia\CiviProxy\Api;
 
-class Response {
-
-  /**
-   * @var array
-   */
-  public $headers = [];
-
-  /**
-   * @var string
-   */
-  public $response = '';
-
-  /**
-   * @var int
-   */
-  public $httpCode = 200;
-
-  /**
-   * @param string $response
-   * @param array $headers
-   * @param int $httpCode
-   */
-  public function __construct($response, $headers = [], $httpCode = 200) {
-    $this->response = $response;
-    $this->headers = $headers;
-    $this->httpCode = $httpCode;
-  }
+class InvalidApiException extends \Exception {
 
 }

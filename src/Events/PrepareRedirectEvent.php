@@ -7,11 +7,11 @@
 | http://www.systopia.de/                                 |
 +---------------------------------------------------------*/
 
-namespace systopia\CiviProxy\Events;
+namespace Systopia\CiviProxy\Events;
 
-use systopia\CiviProxy\Event;
+use Systopia\CiviProxy\Event;
 
-class prepareRedirect extends Event {
+class PrepareRedirectEvent extends Event {
 
   /**
    * @var string
@@ -24,19 +24,19 @@ class prepareRedirect extends Event {
   public $parameters;
 
   /**
-   * @var \CurlHandle
+   * @var string
    */
-  public $curlHandle;
+  public $body;
 
   /**
    * @var bool
    */
-  public $hasRepsone = false;
+  public $hasResponse = FALSE;
 
   /**
    * @var string
    */
-  public $repsone;
+  public $response;
 
     /**
    * @var array
@@ -51,11 +51,11 @@ class prepareRedirect extends Event {
    * @param \CurlHandle $curl
    * @param int $apiVersion
    */
-  public function __construct($url, $parameters, $curl, $apiVersion = 3)
+  public function __construct($url, $parameters, $body, $apiVersion = 3)
   {
     $this->url = $url;
     $this->parameters = $parameters;
-    $this->curlHandle = $curl;
+    $this->body = $body;
     $this->apiVersion = $apiVersion;
   }
 

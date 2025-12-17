@@ -58,8 +58,8 @@ $target_open      = $target_civicrm . '/civicrm/mailing/open';
  **                    Plugins                                 **
  ****************************************************************/
 $plugins = [
-  //'\systopia\CiviProxy\plugin\Logger\Plugin',
-  // Add your plugins here by adding the name of the Plugin Class
+  //'\Systopia\CiviProxy\Plugin\Logger\Plugin',
+  // Add your plugins here by adding the fully qualified class name of the Plugin Class
 ];
 
 /****************************************************************
@@ -87,7 +87,7 @@ $target_interface           = NULL;
 // The API key to acces the CiviProxy api
 // The CiviProxy api lets CiviCRM connect to proxy to do stuff. Such as reading the log.
 // Set NULL to disable. 
-$proxy_api_key              = NULL; // 'SomeRandomKey' When NULL this functionality is disabled.
+$proxyApiKey              = NULL; // 'SomeRandomKey' When NULL this functionality is disabled.
 
 
 /***************************************************************

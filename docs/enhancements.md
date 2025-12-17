@@ -14,13 +14,13 @@ Create a `src` directory in your package. Create a file `MyDummyPlugin.php` in t
 
 // You can give your plugin any namespace.
 // As long as it matches the autoloader in your composer.json file
-namepsace Systopia/CiviproxyDummyPlugin
+namespace Systopia/CiviproxyDummyPlugin
 
-use systopia\CiviProxy\Api\JsonResponse;
-use systopia\CiviProxy\Events\finishRedirect;
-use systopia\CiviProxy\Events\prepareRedirect;
-use systopia\CiviProxy\Events\redirectError;
-use systopia\CiviProxy\PluginInterface;
+use Systopia\CiviProxy\Api\JsonResponse;
+use Systopia\CiviProxy\Events\finishRedirect;
+use Systopia\CiviProxy\Events\prepareRedirect;
+use Systopia\CiviProxy\Events\redirectError;
+use Systopia\CiviProxy\PluginInterface;
 
 class MyDummyPlugin implments PluginInterface {
 

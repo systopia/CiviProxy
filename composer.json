@@ -21,11 +21,13 @@
         }
     ],
     "minimum-stability": "stable",
-    "require": {},
+    "require": {
+        "lcobucci/jwt": "^5.6",
+        "lcobucci/clock": "^3.5"
+    },
     "autoload": {
       "psr-4": {
-          "systopia\\CiviProxy\\":"src",  
-          "systopia\\CiviProxy\\plugin\\Logger\\": "plugins/Logger"
+          "Systopia\\CiviProxy\\": "src"
       },
       "files": [
         "proxy/proxy.php",

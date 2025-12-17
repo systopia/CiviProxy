@@ -7,26 +7,40 @@
 | http://www.systopia.de/                                 |
 +---------------------------------------------------------*/
 
-namespace systopia\CiviProxy\Events;
+namespace Systopia\CiviProxy\Events;
 
-use systopia\CiviProxy\Event;
+use Systopia\CiviProxy\Event;
 
-class redirectError extends Event {
+class RedirectErrorEvent extends Event {
 
   /**
-   * @var \CurlHandle
+   * @var int
    */
-  public $curlHandle;
+  public $httpCode;
+
+  /**
+   * @var string
+   */
+  public $error = '';
+
+  /**
+   * @var int
+   */
+  public $errorCode = 0;
 
   public $apiVersion = 3;
 
   /**
-   * @param \CurlHandle $curl
+   * @param string $httpCode
+   * @param string $error
+   * @param int $errorCode
    * @param int $apiVersion
    */
-  public function __construct($curl, $apiVersion = 3)
+  public function __construct($httpCode, $error = '', $errorCode = 0, $apiVersion = 3)
   {
-    $this->curlHandle = $curl;
+    $this->httpCode = $httpCode;
+    $this->error = $error;
+    $this->errorCode = $errorCode;
     $this->apiVersion = $apiVersion;
   }
 
