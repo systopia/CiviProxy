@@ -12,10 +12,9 @@ namespace Systopia\CiviProxy\Api;
 use DateTimeZone;
 use Lcobucci\Clock\SystemClock;
 use Lcobucci\JWT\JwtFacade;
-use Lcobucci\JWT\Signer\Ecdsa\Sha256;
+use Systopia\CiviProxy\JWT\Sha256;
 use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\UnencryptedToken;
-use Lcobucci\JWT\Validation\Constraint\HasClaim;
 use Lcobucci\JWT\Validation\Constraint\HasClaimWithValue;
 use Lcobucci\JWT\Validation\Constraint\LooseValidAt;
 use Lcobucci\JWT\Validation\Constraint\RelatedTo;
@@ -33,7 +32,7 @@ class Api {
         if (isset($apiDefinition[1])) {
           $params = $apiDefinition[1];
         }
-        if (array(key_exists(strtolower($apiName), $this->apiDefinitions))) {
+        if (array_key_exists(strtolower($apiName), $this->apiDefinitions)) {
           $existingApi = $this->apiDefinitions[strtolower($apiName)];
           throw new InvalidApiException('API '. $apiName . 'already exists in ' . implode("::", $existingApi[0]));
         }
@@ -75,6 +74,7 @@ class Api {
       }
       return new ErrorResponse('Invalid response received', 500);
     }
+    return new ErrorResponse('Not Implemented', 501);
   }
 
   /**
@@ -89,7 +89,6 @@ class Api {
     $signedWith = new SignedWith(new Sha256(), InMemory::plainText($proxyApiKey));
     $validAt = new LooseValidAt(new SystemClock(new DateTimeZone($timezone)), new \DateInterval('PT5M'));
     $constraints[] = new RelatedTo($apiAction);
-    $constraints[] = new HasClaim('exp');
     foreach($requiredClaims as $claim => $expectedValue) {
       $constraints[] = new HasClaimWithValue($claim, $expectedValue);
     }

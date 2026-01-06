@@ -21,7 +21,7 @@ if (!isset($_REQUEST['action'])) {
   civiproxy_rest_error("Incorrect call.");
 }
 
-$request = new Request($_GET, $_POST, $_FILES, [], $_COOKIE);
+$request = new Request($_GET, $_POST, $_FILES, $_SERVER, $_COOKIE);
 $return = CiviProxy::instance()->callApi($request);
 if ($return instanceof Response) {
   http_response_code($return->httpCode);

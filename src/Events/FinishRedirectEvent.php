@@ -41,13 +41,16 @@ class FinishRedirectEvent extends Event {
   public $apiVersion = 3;
 
   /**
-   * @param array $responseHeaders
+   * @param array|string $responseHeaders
    * @param string $responseBody
    * @param int $httpCode
    * @param int $apiVersion
    */
   public function __construct($responseHeaders, $responseBody, $httpCode = 200, $apiVersion = 3)
   {
+    if (is_string($responseHeaders)) {
+      $responseHeaders = explode(chr(10), $responseHeaders);
+    }
     $this->responseHeaders = $responseHeaders;
     $this->responseBody = $responseBody;
     $this->httpCode = $httpCode;
