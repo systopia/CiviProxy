@@ -158,7 +158,50 @@ $file_cache_include = [
         //'#.+[.](png|jpe?g|gif)#i'           // only media files
     ];
 
+/****************************************************************
+ **                   Logger Plugin Options                    **
+ ****************************************************************/
 
+ // Make sure you enabled the logger in the plugin sections.
+$loggerPluginConfiguration = [
+  'primaryLogger' => 'redis', // redis
+  'fallbackLogger' => 'filesystem',
+  'redis' => [
+    'host' => '10.5.0.69', // or socket: /var/run/redis.sock
+    'port' => '', // Leave empty to use default 6379
+    'stream' => 'civiproxy', // The name of the list is where the messages are stored
+    // Use an array like ['pass' => 'password'] for password only authentication. 
+    // Use ['user' => 'username', 'pass' => 'password'] for authentication with usename and password.
+    // Use [] for no authentication.
+    'auth' => [], 
+    'timeout' => '0.5', // Set time out in seconds (float). 0 means use default timeout
+  ],
+  'filesystem' => [
+    'directory' => dirname(__FILE__) . DIRECTORY_SEPARATOR . 'logs',
+    'archive' => dirname(__FILE__) . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . 'archive',
+    'keep_archive' => 1, // Remove log files from archive after 1 day
+    'rotation' => [
+      'enabled' => true,
+      'max_calls_per_file' => 100,
+      'max_time_per_file' => 3600, // 1 hour
+    ],
+  ],
+  // List of api entities & action to log (or queue)
+  'entities' => [
+    [
+      'entity' => 'Contact',
+      'action' => '*', // Provide the name of the action or * means any action.
+      'queueOnly' => FALSE, // When this TRUE we do not connect to CiviCRM but we do log the call. Also provide a queueResponse
+      'queueReponse' => [],
+    ],
+    [
+      'entity' => 'Email',
+      'action' => '*', // Provide the name of the action or * means any action.
+      'queueOnly' => TRUE, // When this TRUE we do not connect to CiviCRM but we do log the call. Also provide a queueResponse
+      'queueReponse' => ['is_error' => '0'],
+    ],
+  ]
+];
 
 /****************************************************************
  **                   REST API OPTIONS                         **
