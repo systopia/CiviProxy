@@ -11,27 +11,13 @@ namespace Systopia\CiviProxy\Api;
 
 class Response {
 
-  /**
-   * @var array
-   */
-  public $headers = [];
+  public array $headers = [];
 
-  /**
-   * @var string
-   */
-  public $response = '';
+  public string $response = '';
 
-  /**
-   * @var int
-   */
-  public $httpCode = 200;
+  public int $httpCode = 200;
 
-  /**
-   * @param string $response
-   * @param array $headers
-   * @param int $httpCode
-   */
-  public function __construct($response, $headers = [], $httpCode = 200) {
+  public function __construct(string $response, array $headers = [], int $httpCode = 200) {
     $this->response = $response;
     $this->headers = $headers;
     $this->httpCode = $httpCode;

@@ -11,13 +11,12 @@ namespace Systopia\CiviProxy\Api;
 
 class JsonResponse extends Response {
 
-  /**
-   * @param string $response
-   */
-  public function __construct($response) {
-    $this->response = json_encode($response);
-    $this->headers[] = 'Content-Type: application/json';
-    $this->httpCode = 200;
+  public function __construct(string|array $response, int $httpCode = 200) {
+    parent::__construct(
+      json_encode($response),
+      ['Content-Type: application/json'],
+      $httpCode
+    );
   }
 
 }

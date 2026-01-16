@@ -9,6 +9,8 @@
 
 namespace Systopia\CiviProxy\Api;
 
-class InvalidApiException extends \Exception {
+use Exception;
+
+class InvalidApiException extends Exception {
 
 }

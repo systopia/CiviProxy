@@ -9,16 +9,10 @@
 
 namespace Systopia\CiviProxy\Api;
 
-class ErrorResponse extends Response {
+class ErrorResponse extends JsonResponse {
 
-    /**
-   * @param string $error_message
-   * @param int $httpCode
-   */
-  public function __construct($error_message, $httpCode = 500) {
-    $this->response = json_encode(['is_error' => '1', 'error_message' => $error_message]);
-    $this->headers[] = 'Content-Type: application/json';
-    $this->httpCode = $httpCode;
+  public function __construct(string $errorMessage, int $httpCode = 500) {
+    parent::__construct(['is_error' => '1', 'error_message' => $errorMessage], $httpCode);
   }
 
 }

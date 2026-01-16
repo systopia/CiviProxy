@@ -13,37 +13,19 @@ use Systopia\CiviProxy\Event;
 
 class RedirectErrorEvent extends Event {
 
-  /**
-   * @var int
-   */
-  public $httpCode;
+  public int $httpCode;
 
-  /**
-   * @var string
-   */
-  public $error = '';
+  public string $error = '';
 
-  /**
-   * @var int
-   */
-  public $errorCode = 0;
+  public int $errorCode = 0;
 
-  public $apiVersion = 3;
+  public int $apiVersion = 3;
 
-  /**
-   * @param string $httpCode
-   * @param string $error
-   * @param int $errorCode
-   * @param int $apiVersion
-   */
-  public function __construct($httpCode, $error = '', $errorCode = 0, $apiVersion = 3)
-  {
+  public function __construct(int $httpCode, string $error = '', int $errorCode = 0, int $apiVersion = 3) {
     $this->httpCode = $httpCode;
     $this->error = $error;
     $this->errorCode = $errorCode;
     $this->apiVersion = $apiVersion;
   }
-
-
 
 }

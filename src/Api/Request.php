@@ -23,14 +23,13 @@ class Request {
 
   public array $cookies = [];
 
-  public function __construct(array $query, array $request=[], array $files=[], array $server = [], array $cookies=[])
-  {
+  public function __construct(array $query, array $request = [], array $files = [], array $server = [], array $cookies = []) {
     $this->query = $query;
     $this->request = $request;
     $this->files = $files;
     $this->server = $server;
-    foreach($server as $header => $headerValue) {
-      if (stripos($header, 'HTTP_')===0) {
+    foreach ($server as $header => $headerValue) {
+      if (stripos($header, 'HTTP_') === 0) {
         $this->headers[substr($header, 5)] = $headerValue;
       }
     }

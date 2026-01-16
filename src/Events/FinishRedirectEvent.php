@@ -13,41 +13,19 @@ use Systopia\CiviProxy\Event;
 
 class FinishRedirectEvent extends Event {
 
-  /**
-   * @var string
-   */
-  public $responseBody;
+  public string $responseBody;
 
-  /**
-   * @var array
-   */
-  public $responseHeaders = [];
+  public array $responseHeaders = [];
 
-  /**
-   * @var int
-   */
-  public $httpCode;
+  public int $httpCode;
 
-  /**
-   * @var bool
-   */
-  public $hasResponse = FALSE;
+  public bool $hasResponse = FALSE;
 
-  /**
-   * @var string
-   */
-  public $response;
+  public string $response;
 
-  public $apiVersion = 3;
+  public int $apiVersion = 3;
 
-  /**
-   * @param array|string $responseHeaders
-   * @param string $responseBody
-   * @param int $httpCode
-   * @param int $apiVersion
-   */
-  public function __construct($responseHeaders, $responseBody, $httpCode = 200, $apiVersion = 3)
-  {
+  public function __construct(array|string $responseHeaders, string $responseBody, int $httpCode = 200, int $apiVersion = 3) {
     if (is_string($responseHeaders)) {
       $responseHeaders = explode(chr(10), $responseHeaders);
     }
@@ -56,7 +34,5 @@ class FinishRedirectEvent extends Event {
     $this->httpCode = $httpCode;
     $this->apiVersion = $apiVersion;
   }
-
-
 
 }

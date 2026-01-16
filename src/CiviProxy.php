@@ -16,38 +16,27 @@ use Systopia\CiviProxy\Plugin\PluginNotFoundException;
 
 class CiviProxy {
 
-  /**
-   * @var CiviProxy
-   */
-  private static $instance;
+  private static self $instance;
 
-  private $plugins = [];
+  private array $plugins = [];
 
-  /**
-   * @var Systopia\CiviProxy\Api\Api
-   */
-  private $api;
+  private Api $api;
+
+  private EventDispatcher $eventDispatcher;
 
   /**
-   * @var Systopia\CiviProxy\EventDispatcher
+   * @throws \Systopia\CiviProxy\Plugin\PluginNotFoundException
    */
-  private $eventDispatcher;
-
-  /**
-   * @return CiviProxy
-   */
-  public static function instance() {
-    return self::$instance ??= new self();
-  }
-
-  private function __construct()
-  {
+  private function __construct() {
     $this->initializePlugins();
   }
 
-  private function initializePlugins() {
+  /**
+   * @throws \Systopia\CiviProxy\Plugin\PluginNotFoundException
+   */
+  private function initializePlugins(): void {
     global $plugins;
-    foreach($plugins as $pluginClass) {
+    foreach ($plugins as $pluginClass) {
       if (!class_exists($pluginClass)) {
         throw new PluginNotFoundException($pluginClass);
       }
@@ -56,23 +45,23 @@ class CiviProxy {
   }
 
   /**
-   * Call the api
-   * 
-   * @param Request $request
+   * @return \Systopia\CiviProxy\CiviProxy
+   */
+  public static function instance(): self {
+    return self::$instance ??= new self();
+  }
+
+  /**
+   * @throws \Systopia\CiviProxy\Api\InvalidApiException
    */
   public function callApi(Request $request): Response {
     $this->api ??= new Api($this->plugins);
     return $this->api->callApi($request);
   }
 
-  /**
-   * @param object $event
-   */
-  public function dispatchEvent($event) {
+  public function dispatchEvent(Event $event): void {
     $this->eventDispatcher ??= new EventDispatcher($this->plugins);
     $this->eventDispatcher->dispatchEvent($event);
   }
-
-
 
 }

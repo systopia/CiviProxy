@@ -9,10 +9,14 @@
 
 namespace Systopia\CiviProxy\Plugin;
 
-class PluginNotFoundException extends \Exception {
+use Exception;
+
+class PluginNotFoundException extends Exception {
 
   public function __construct(string $pluginClassName) {
-    parent::__construct('Plugin ' . $pluginClassName . ' could not be found. Is this a configuration issue in your config.php?');
+    parent::__construct(
+      'Plugin ' . $pluginClassName . ' could not be found. Is this a configuration issue in your config.php?'
+    );
   }
 
 }

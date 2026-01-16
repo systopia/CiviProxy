@@ -11,13 +11,8 @@ namespace Systopia\CiviProxy;
 
 class Event {
 
-  /**
-   * Stop the propragation of the event.
-   * 
-   * @return bool
-   */
-  public function isPropagationStopped() {
+  public function isPropagationStopped(): bool {
     return FALSE;
   }
-  
+
 }

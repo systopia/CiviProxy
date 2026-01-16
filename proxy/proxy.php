@@ -35,7 +35,7 @@ function civiproxy_redirect($url_requested, $parameters) {
     foreach ($parameters as $key=>$value) {
       $postinfo .= $key.'='.urlencode($value).'&';
     }
-    rtrim($postinfo,'&');
+    $postinfo = rtrim($postinfo,'&');
     curl_setopt ($curlSession, CURLOPT_POST, 1);
     curl_setopt ($curlSession, CURLOPT_POSTFIELDS, $postinfo);
   } else {
@@ -81,9 +81,9 @@ function civiproxy_redirect($url_requested, $parameters) {
 
   // Check that a connection was made
   if (curl_error($curlSession)){
-    $erroCode = curl_errno($curlSession);
+    $errorCode = curl_errno($curlSession);
     $error = curl_error($curlSession);
-    $redirectError = new RedirectErrorEvent($httpCode, $error, $erroCode, 3);
+    $redirectError = new RedirectErrorEvent($httpCode, $error, $errorCode, 3);
     CiviProxy::instance()->dispatchEvent($redirectError);
     civiproxy_http_error(curl_error($curlSession), curl_errno($curlSession));
 
@@ -184,9 +184,9 @@ function civiproxy_redirect4($url_requested, $parameters, $credentials) {
 
   // Check that a connection was made
   if (curl_error($curlSession)){
-    $erroCode = curl_errno($curlSession);
+    $errorCode = curl_errno($curlSession);
     $error = curl_error($curlSession);
-    $redirectError = new RedirectErrorEvent($httpCode, $error, $erroCode, 4);
+    $redirectError = new RedirectErrorEvent($httpCode, $error, $errorCode, 4);
     CiviProxy::instance()->dispatchEvent($redirectError);
     civiproxy_http_error(curl_error($curlSession), curl_errno($curlSession));
 
@@ -201,7 +201,7 @@ function civiproxy_redirect4($url_requested, $parameters, $credentials) {
     $body = $content[1];
 
     $finishRedirect = new FinishRedirectEvent($headers, $body, $httpCode, 4);
-    CiviProxy::instance()->dispatchEvent($finishRedirect);    
+    CiviProxy::instance()->dispatchEvent($finishRedirect);
     foreach ($finishRedirect->responseHeaders as $headerLine){
       if (!preg_match("/^Transfer-Encoding/", $headerLine)){
         civiproxy_mend_URLs($headerLine);

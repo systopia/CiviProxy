@@ -9,24 +9,29 @@
 
 namespace Systopia\CiviProxy\Api;
 
+use DateInterval;
 use DateTimeZone;
 use Lcobucci\Clock\SystemClock;
 use Lcobucci\JWT\JwtFacade;
-use Systopia\CiviProxy\JWT\Sha256;
 use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\UnencryptedToken;
 use Lcobucci\JWT\Validation\Constraint\HasClaimWithValue;
 use Lcobucci\JWT\Validation\Constraint\LooseValidAt;
 use Lcobucci\JWT\Validation\Constraint\RelatedTo;
 use Lcobucci\JWT\Validation\Constraint\SignedWith;
+use Systopia\CiviProxy\JWT\Sha256;
+use Exception;
 
 class Api {
 
-  private $apiDefinitions = [];
+  private array $apiDefinitions = [];
 
+  /**
+   * @throws \Systopia\CiviProxy\Api\InvalidApiException
+   */
   public function __construct(array $plugins) {
-    foreach($plugins as $plugin) {
-      foreach($plugin->getApiActionDefinitions() as $apiName => $apiDefinition) {
+    foreach ($plugins as $plugin) {
+      foreach ($plugin->getApiActionDefinitions() as $apiName => $apiDefinition) {
         $handler = $apiDefinition[0];
         $params = [];
         if (isset($apiDefinition[1])) {
@@ -34,7 +39,7 @@ class Api {
         }
         if (array_key_exists(strtolower($apiName), $this->apiDefinitions)) {
           $existingApi = $this->apiDefinitions[strtolower($apiName)];
-          throw new InvalidApiException('API '. $apiName . 'already exists in ' . implode("::", $existingApi[0]));
+          throw new InvalidApiException('API ' . $apiName . 'already exists in ' . implode("::", $existingApi[0]));
         }
         $this->apiDefinitions[strtolower($apiName)] = [[$plugin, $handler], $params];
       }
@@ -53,13 +58,13 @@ class Api {
     }
 
     $xCiviAuth = $request->getHeader('X_CIVI_AUTH');
-    if (strpos($xCiviAuth, 'Bearer ')!==0) {
+    if (!str_starts_with($xCiviAuth, 'Bearer ')) {
       return new ErrorResponse('Access Denied', 403);
     }
     $jwt = substr($xCiviAuth, 7);
     if (isset($this->apiDefinitions[$action])) {
       $params = [];
-      foreach($this->apiDefinitions[$action][1] as $param) {
+      foreach ($this->apiDefinitions[$action][1] as $param) {
         if ($request->hasParameter($param)) {
           $params[$param] = $request->get($param);
         }
@@ -78,24 +83,21 @@ class Api {
   }
 
   /**
-   * Verifies the JWT header
-   * @param string $jwt
-   * @param string $proxyApiKey
-   * @param string $apiAction
-   * @param array $requiredClaims
+   * Verifies the JWT header.
    */
   private function verifyJWT(string $jwt, string $proxyApiKey, string $apiAction, array $requiredClaims): bool {
     $timezone = date_default_timezone_get();
     $signedWith = new SignedWith(new Sha256(), InMemory::plainText($proxyApiKey));
-    $validAt = new LooseValidAt(new SystemClock(new DateTimeZone($timezone)), new \DateInterval('PT5M'));
+    $validAt = new LooseValidAt(new SystemClock(new DateTimeZone($timezone)), new DateInterval('PT5M'));
     $constraints[] = new RelatedTo($apiAction);
-    foreach($requiredClaims as $claim => $expectedValue) {
+    foreach ($requiredClaims as $claim => $expectedValue) {
       $constraints[] = new HasClaimWithValue($claim, $expectedValue);
     }
     $jwtFacade = new JwtFacade();
     try {
       $token = $jwtFacade->parse($jwt, $signedWith, $validAt, ...$constraints);
-    } catch (\Exception $e) {
+    }
+    catch (Exception $e) {
       return FALSE;
     }
     if (!$token instanceof UnencryptedToken) {

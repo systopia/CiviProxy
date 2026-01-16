@@ -13,52 +13,25 @@ use Systopia\CiviProxy\Event;
 
 class PrepareRedirectEvent extends Event {
 
-  /**
-   * @var string
-   */
-  public $url;
+  public string $url;
 
-  /**
-   * @var array
-   */
-  public $parameters;
+  public array $parameters;
 
-  /**
-   * @var string
-   */
-  public $body;
+  public string $body;
 
-  /**
-   * @var bool
-   */
-  public $hasResponse = FALSE;
+  public bool $hasResponse = FALSE;
 
-  /**
-   * @var string
-   */
-  public $response;
+  public string $response;
 
-    /**
-   * @var array
-   */
-  public $responseHeaders = [];
+  public array $responseHeaders = [];
 
-  public $apiVersion = 3;
+  public int $apiVersion = 3;
 
-  /**
-   * @param string $url
-   * @param array $parameters
-   * @param \CurlHandle $curl
-   * @param int $apiVersion
-   */
-  public function __construct($url, $parameters, $body, $apiVersion = 3)
-  {
+  public function __construct(string $url, array $parameters, string $body, int $apiVersion = 3) {
     $this->url = $url;
     $this->parameters = $parameters;
     $this->body = $body;
     $this->apiVersion = $apiVersion;
   }
-
-
 
 }
