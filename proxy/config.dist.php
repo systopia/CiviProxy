@@ -55,6 +55,14 @@ $target_open      = $target_civicrm . '/civicrm/mailing/open';
 //$target_open      = $target_civicrm . '/sites/all/modules/civicrm/extern/open.php';
 
 /****************************************************************
+ **                    Plugins                                 **
+ ****************************************************************/
+$plugins = [
+  //'\Systopia\CiviProxy\Plugin\Logger\Plugin',
+  // Add your plugins here by adding the fully qualified class name of the Plugin Class
+];
+
+/****************************************************************
  **                    GENERAL OPTIONS                         **
  ****************************************************************/
 
@@ -75,6 +83,11 @@ $debug                      = NULL; //'LUXFbiaoz4dVWuAHEcuBAe7YQ4YP96rN4MCDmKj89
 // Local network interface or IP to be used for the relayed query
 // This is useful in some VPN configurations (see CURLOPT_INTERFACE)
 $target_interface           = NULL;
+
+// The API key to acces the CiviProxy api
+// The CiviProxy api lets CiviCRM connect to proxy to do stuff. Such as reading the log.
+// Set NULL to disable. 
+$proxyApiKey              = NULL; // 'SomeRandomKey' When NULL this functionality is disabled.
 
 
 /***************************************************************

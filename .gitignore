@@ -1,5 +1,7 @@
 secrets.php
 proxy/file_cache
 proxy/config.php
+vendor
 debug.log
+composer.lock
 .idea

@@ -8,8 +8,7 @@
 +---------------------------------------------------------*/
 
 require_once "config.php";
-require_once "proxy.php";
-require_once "checks.php";
+require_once "../vendor/autoload.php";
 
 // see if REST API is enabled
 if (!$target_rest) civiproxy_http_error("Feature disabled", 405);
