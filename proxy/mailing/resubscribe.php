@@ -11,49 +11,69 @@ ini_set('include_path', dirname(dirname(__FILE__)));
 require_once "proxy.php";
 
 // see if mail open tracking is enabled
-if (!$mail_subscription_user_key) civiproxy_http_error("Feature disabled", 405);
+if (!$mail_subscription_user_key) {
+  civiproxy_http_error("Feature disabled", 405);
+}
 
 // basic check
 civiproxy_security_check('mail-resubscribe');
 
 // basic restraints
-$valid_parameters = array(    'jid'          => 'int',
-                              'qid'          => 'int', 
-                              'h'            => 'string');
+$valid_parameters = [
+  'jid' => 'int',
+  'qid' => 'int',
+  'h' => 'string',
+];
 $parameters = civiproxy_get_parameters($valid_parameters);
 
 // check if parameters specified
-if (empty($parameters['jid'])) civiproxy_http_error("Missing/invalid parameter 'jid'.");
-if (empty($parameters['qid'])) civiproxy_http_error("Missing/invalid parameter 'qid'.");
-if (empty($parameters['h']))   civiproxy_http_error("Missing/invalid parameter 'h'.");
+if (empty($parameters['jid'])) {
+  civiproxy_http_error("Missing/invalid parameter 'jid'.");
+}
+if (empty($parameters['qid'])) {
+  civiproxy_http_error("Missing/invalid parameter 'qid'.");
+}
+if (empty($parameters['h'])) {
+  civiproxy_http_error("Missing/invalid parameter 'h'.");
+}
 
-// PERFORM UNSUBSCRIBE
-$group_query = civicrm_api3('MailingEventResubscribe', 'create', 
-                          array( 'job_id'         => $parameters['jid'],
-                                 'event_queue_id' => $parameters['qid'],
-                                 'hash'           => $parameters['h'],
-                                 'api_key'        => $mail_subscription_user_key,
-                                ));
-if (!empty($group_query['is_error'])) {
-  civiproxy_http_error($group_query['error_message'], 500);
+// PERFORM RE-SUBSCRIBE ON POST REQUEST
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  $group_query = civicrm_api3('MailingEventResubscribe', 'create',
+    [
+      'job_id' => $parameters['jid'],
+      'event_queue_id' => $parameters['qid'],
+      'hash' => $parameters['h'],
+      'api_key' => $mail_subscription_user_key,
+    ]);
+  if (!empty($group_query['is_error'])) {
+    civiproxy_http_error($group_query['error_message'], 500);
+  }
+  else {
+    $success = TRUE;
+  }
 }
 ?>
 
 
 <!DOCTYPE html>
 <html>
- <head>
+<head>
   <meta charset="UTF-8">
-  <title>CiviProxy Version <?php echo $civiproxy_version;?></title>
+  <title>CiviProxy Version <?php echo $civiproxy_version; ?></title>
   <style type="text/css">
     body {
       margin: 0;
       padding: 0;
     }
 
+    .btn {
+      padding: 10px;
+    }
+
     .container {
-        position: relative;
-        width: 100%;
+      position: relative;
+      width: 100%;
     }
 
     .center {
@@ -73,17 +93,30 @@ if (!empty($group_query['is_error'])) {
       text-align: center;
       width: 462px;
     }
-    
+
   </style>
- </head>
- <body>
-  <div id="container">
-    <div id="info" class="center">
-      <a href="https://www.systopia.de/"><?php echo $civiproxy_logo;?></a>
-    </div>
-    <div id="content" class="center">
-      <p>Thank you. You've been re-subscribed to the newsletter.</a>
-    </div>
+</head>
+<body>
+<div id="container">
+  <div id="info" class="center">
+    <a href="https://www.systopia.de/"><?php echo $civiproxy_logo; ?></a>
   </div>
- </body>
+  <div id="content" class="center">
+    <?php if (!empty($success)): ?>
+      <p>Thank you. You've been re-subscribed to the newsletter.</p>
+    <?php else: ?>
+      <p>Please confirm your newsletter re-subscription.</p>
+      <form method="post" action="">
+        <input type="hidden" name="jid"
+               value="<?= htmlspecialchars($parameters['jid']) ?>">
+        <input type="hidden" name="qid"
+               value="<?= htmlspecialchars($parameters['qid']) ?>">
+        <input type="hidden" name="h"
+               value="<?= htmlspecialchars($parameters['h']) ?>">
+        <button type="submit" class="btn">Yes, re-subscribe</button>
+      </form>
+    <?php endif; ?>
+  </div>
+</div>
+</body>
 </html>
