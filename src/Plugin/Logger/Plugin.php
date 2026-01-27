@@ -37,7 +37,7 @@ class Plugin implements PluginInterface {
    */
   private $fallbackLogger;
 
-  private $isInitialized = false;
+  private $isInitialized = FALSE;
 
   /**
    * Get subscribed events.
@@ -109,7 +109,7 @@ class Plugin implements PluginInterface {
   public function onRedirectError(RedirectErrorEvent $event) {
     if ($this->data) {
       $this->data->responseCode = $event->httpCode;
-      $this->data->erroCode = $event->errorCode;
+      $this->data->errorCode = $event->errorCode;
       $this->data->error = $event->error;
       $this->data->status = Data::STATUS_ERROR;
       $this->writeLog();
@@ -172,7 +172,7 @@ class Plugin implements PluginInterface {
       $this->fallbackLogger = LoggerUtil::getLogger($loggerPluginConfiguration['fallbackLogger'], $loggerPluginConfiguration);
     }
 
-    $this->isInitialized = true;
+    $this->isInitialized = TRUE;
   }
 
 }

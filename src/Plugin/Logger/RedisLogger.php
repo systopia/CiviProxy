@@ -61,10 +61,10 @@ class RedisLogger implements LoggerInterface {
   public function writeToLog(Data $data): bool {
     $redis = $this->getRedisConnection();
     if (!$redis) {
-      return false;
+      return FALSE;
     }
     $redis->xAdd($this->stream, '*', json_encode($data->toArray()));
-    return true;
+    return TRUE;
   }
 
   public function readLog(): array
@@ -89,7 +89,7 @@ class RedisLogger implements LoggerInterface {
     return $return;
   }
 
-  protected function getRedisConnection():? \Redis {
+  protected function getRedisConnection(): ?\Redis {
     static $redis = null;
     if (!$redis) {
       $redis = new \Redis();

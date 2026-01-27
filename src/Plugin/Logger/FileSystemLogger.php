@@ -29,7 +29,7 @@ class FileSystemLogger implements LoggerInterface {
   /**
    * var bool
    */
-  protected $rotationEnabled = false;
+  protected $rotationEnabled = FALSE;
 
   /**
    * @var int
@@ -57,7 +57,7 @@ class FileSystemLogger implements LoggerInterface {
     }
 
     if (!empty($configuration['rotation']['enabled'])) {
-      $this->rotationEnabled = true;
+      $this->rotationEnabled = TRUE;
       if (array_key_exists('max_calls_per_file', $configuration['rotation'])) {
         $this->maxCallsPerFile = $configuration['rotation']['max_calls_per_file'];
       }
@@ -84,7 +84,7 @@ class FileSystemLogger implements LoggerInterface {
     $rotation = $this->getCurrentRotationInfo();
     $fh = fopen($this->directory . DIRECTORY_SEPARATOR . $rotation['file'] .'.log', 'a+');
     if (!$fh) {
-      return false;
+      return FALSE;
     }
     $stat = fstat($fh);
     if ($rotation['calls'] == 0 || empty($stat['size'])) {
@@ -98,16 +98,16 @@ class FileSystemLogger implements LoggerInterface {
     fwrite($fh, $json);
     $this->writeRotationInfo($rotation);
     fclose($fh);
-    return true;
+    return TRUE;
   }
 
   /**
    * Reads data from the log and discards the data after it is been read.
    */
   public function readLog(): array {
-    $archiveDirExists = false;
+    $archiveDirExists = FALSE;
     if ($this->archiveDirectory && file_exists($this->archiveDirectory) && is_dir($this->archiveDirectory)) {
-      $archiveDirExists = true;
+      $archiveDirExists = TRUE;
     }
     $files = glob($this->directory . DIRECTORY_SEPARATOR . '*.log');
     usort($files, function($fileA, $fileB) {
@@ -150,19 +150,19 @@ class FileSystemLogger implements LoggerInterface {
   protected function getCurrentRotationInfo(): array {
     $rotation['tstamp'] = time();
     $rotation['calls'] = 0;
-    $useExistingFile = false;
+    $useExistingFile = FALSE;
     if ($this->rotationEnabled) {
       if (file_exists($this->directory . DIRECTORY_SEPARATOR . 'log.json')) {
         $rotation = file_get_contents($this->directory . DIRECTORY_SEPARATOR . 'log.json');
         $rotation = json_decode($rotation, TRUE);
-        $useExistingFile = true;
+        $useExistingFile = TRUE;
         if (!is_array($rotation) || empty($rotation)) {
-          $useExistingFile = false;
+          $useExistingFile = FALSE;
         }
       }
       $minTstamp = time() - $this->maxTimePerFile;
       if ($rotation['calls'] >= $this->maxCallsPerFile || $rotation['tstamp'] < $minTstamp) {
-        $useExistingFile = false;
+        $useExistingFile = FALSE;
       }
     }
     if (!$useExistingFile) {
@@ -191,9 +191,9 @@ class FileSystemLogger implements LoggerInterface {
    * There is a setting how long to keep the archive.
    */
   protected function cleanArchive() {
-    $archiveDirExists = false;
+    $archiveDirExists = FALSE;
     if ($this->archiveDirectory && file_exists($this->archiveDirectory) && is_dir($this->archiveDirectory)) {
-      $archiveDirExists = true;
+      $archiveDirExists = TRUE;
     }
     if ($archiveDirExists && $this->archiveExpireTime) {
       $files = glob($this->archiveDirectory . DIRECTORY_SEPARATOR . '*.log');

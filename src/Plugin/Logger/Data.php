@@ -11,73 +11,83 @@ namespace Systopia\CiviProxy\Plugin\Logger;
 
 class Data {
 
-  const STATUS_QUEUED = 'queued';
+  public const STATUS_UNKOWN = 'unknown';
   
-  const STATUS_DONE = 'done';
+  public const STATUS_QUEUED = 'queued';
+  
+  public const STATUS_DONE = 'done';
 
-  const STATUS_HTTP_ERROR = 'http-error';
+  public const STATUS_HTTP_ERROR = 'http-error';
 
-  const STATUS_API_ERROR = 'api-error';
+  public const STATUS_API_ERROR = 'api-error';
 
-  const STATUS_ERROR = 'error';
+  public const STATUS_ERROR = 'error';
 
-  public $url;
+  public ?string $url = NULL;
 
-  public $entity;
+  public ?string $entity = NULL;
 
-  public $action;
+  public ?string $action = NULL;
 
-  public $parameters;
+  public ?array $parameters = NULL;
 
-  public $httpMethod;
+  public ?string $httpMethod = NULL;
 
-  public $httpLocation;
+  public ?string $httpLocation = NULL;
 
-  public $httpHeaders;
+  public ?array $httpHeaders = NULL;
 
-  public $httpBody;
+  public ?string $httpBody = NULL;
 
-  public $responseCode;
+  public ?int $responseCode = NULL;
 
-  public $responseHeaders;
+  public ?array $responseHeaders = NULL;
 
-  public $responseBody;
+  public ?string $responseBody = NULL;
 
-  public $responseData;
+  public ?array $responseData = NULL;
 
-  public $erroCode;
+  public ?int $errorCode = NULL;
 
-  public $error;
+  public ?string $error = NULL;
 
-  public $status;
+  public string $status = 'unknown';
 
-  public $date;
+  public ?string $date = NULL;
 
-  public $apiVersion = 3;
+  public ?int $apiVersion = 3;
 
-  public function __construct(?string $url = null, ?array $parameters)
+  public function __construct(?string $url = NULL, ?array $parameters = NULL)
   {
     $this->date = date('Y-m-d H:i:s');
-    if ($url) {
+    if (NULL !== $url) {
       $this->url = $url;
     }
-    if ($parameters) {
-      $this->parameters = $parameters;
-      if (is_array($this->parameters) && array_key_exists('key', $this->parameters)  && array_key_exists('api_key', $this->parameters)  && array_key_exists('entity', $this->parameters)  && array_key_exists('action', $this->parameters)) {
-        $this->entity = $this->parameters['entity'];
-        $this->action = $this->parameters['action'];
-        unset($this->parameters['key']);
-        unset($this->parameters['api_key']);
-        unset($this->parameters['entity']);
-        unset($this->parameters['action']);
-        unset($this->parameters['version']);
-      }
+    if (is_array($parameters)) {
       if (array_key_exists('json', $parameters)) {
-        $jsonData = json_decode($parameters['json'], true);
+        $jsonData = json_decode($parameters['json'], TRUE);
         if (is_array($jsonData)) {
           $this->parameters = $jsonData;
         }
+      } else {
+        $this->parameters = $parameters; 
       }
+      if (array_key_exists('entity', $parameters)) {
+        $this->entity = $parameters['entity'];
+      }  
+      if (array_key_exists('action', $this->parameters)) {
+        $this->action = $parameters['action'];
+      }
+      if (array_key_exists('version', $this->parameters)) {
+        $this->apiVersion = $parameters['version'];
+      }
+      unset($this->parameters['action']);
+      unset($this->parameters['entity']);
+      unset($this->parameters['version']);
+      // We do not want to log the SITE KEY nor the API KEY. 
+      // Those are sensitive data and known by the system administrator.
+      unset($this->parameters['key']);
+      unset($this->parameters['api_key']);
     }
   }
 
@@ -85,31 +95,31 @@ class Data {
     $this->sanitize();
     return [
       'date' => $this->date,
-      'status' => $this->status ?? '',
+      'status' => $this->status,
       'apiVersion' => $this->apiVersion,
-      'url' => $this->url ?? '',
+      'url' => $this->url,
       'entity' => $this->getEntity(),
       'action' => $this->getAction(),
       'parameters' => $this->parameters ?? [],
       'response' => $this->responseData ?? [],
       'request' => [
         'method' => $this->httpMethod ?? 'UNKNOWN',
-        'url' => $this->httpLocation ?? '',
+        'url' => $this->httpLocation,
         'headers' => $this->httpHeaders ?? [],
-        'body' => $this->httpBody ?? '',
-        'responseCode' => $this->responseCode ?? '',
+        'body' => $this->httpBody,
+        'responseCode' => $this->responseCode,
         'responseHeaders' => $this->responseHeaders ?? [],
-        'responseBody' => $this->responseBody ?? '', 
+        'responseBody' => $this->responseBody, 
       ],
-      'errorCode' => $this->errorCode ?? '',
-      'error' => $this->error ?? '',
+      'errorCode' => $this->errorCode,
+      'error' => $this->error,
     ];
   }
 
   protected function sanitize() {
-    if (strlen($this->responseBody) && strpos($this->responseBody, '{') === 0) {
-      $this->responseData = json_decode($this->responseBody, true);
-    } elseif (strlen($this->responseBody)) {
+    if (str_starts_with($this->responseBody, '{')) {
+      $this->responseData = json_decode($this->responseBody, TRUE);
+    } elseif ('' !== $this->responseBody) {
       $xml = simplexml_load_string($this->responseBody, "SimpleXMLElement", LIBXML_NOCDATA);
       $json = json_encode($xml);
       $data = json_decode($json,TRUE);
@@ -123,24 +133,24 @@ class Data {
     if (is_array($this->responseData) && !empty($this->responseData['error_message'])) {
       $this->error = $this->responseData['error_message'];
     }
-    if ($this->responseCode && $this->responseCode > 400) {
+    if (NULL !== $this->responseCode && $this->responseCode > 400) {
       $this->status = static::STATUS_HTTP_ERROR;
     }
   }
 
-  public function getEntity():? string {
+  public function getEntity(): ?string {
     return $this->entity;
   }
 
-  public function getAction():? string {
+  public function getAction(): ?string {
     return $this->action;
   }
 
-  public function isJsonRequest():? bool {
+  public function isJsonRequest(): ?bool {
     if (!empty($this->parameters['json'])) {
-      return true;
+      return TRUE;
     }
-    return false;
+    return FALSE;
   }
 
 }
