@@ -9,6 +9,9 @@
 
 namespace Systopia\CiviProxy\Plugin\Logger;
 
+use Systopia\CiviProxy\CiviProxy;
+use Systopia\CiviProxy\Plugin\Logger\Events\GetLoggerEvent;
+
 class LoggerUtil {
 
   /**
@@ -25,7 +28,7 @@ class LoggerUtil {
     if ($entityConfig && array_key_exists('queueOnly', $entityConfig)) {
       return $entityConfig['queueOnly'];
     }
-    return false;
+    return FALSE;
   }
 
   /**
@@ -71,16 +74,22 @@ class LoggerUtil {
    *   Configuration for the logger.
    * @return LoggerInterface
    */
-  public static function getLogger(string $type, array $configuration):? LoggerInterface {
+  public static function getLogger(string $type, array $configuration): ?LoggerInterface {
+    $logger = NULL;
     switch ($type) {
       case 'filesystem':
-        return new FileSystemLogger($configuration[$type]);
+        $logger = new FileSystemLogger($configuration[$type]);
         break;
       case 'redis':
-        return new RedisLogger($configuration[$type]);
+        $logger = new RedisLogger($configuration[$type]);
         break;
     }
-    return null;
+
+    // Call the event dispatcher so a plugin can implement their own logger.
+    // A plugin should set the logger property to their own implementation.
+    $event = new GetLoggerEvent($type, $configuration, $logger);
+    CiviProxy::instance()->dispatchEvent($event);
+    return $event->logger;
   }
 
   /**
@@ -90,7 +99,7 @@ class LoggerUtil {
    * @param array $configuration
    * @return array
    */
-  public static function getEntityConfig(Data $data, array $configuration):? array {
+  public static function getEntityConfig(Data $data, array $configuration): ?array {
     $entity = $data->getEntity();
     $action = $data->getAction();
     if (!$entity || !$action) {
