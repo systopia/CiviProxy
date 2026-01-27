@@ -11,6 +11,8 @@ namespace Systopia\CiviProxy\Plugin\Logger;
 
 use Systopia\CiviProxy\CiviProxy;
 use Systopia\CiviProxy\Plugin\Logger\Events\GetLoggerEvent;
+use Systopia\CiviProxy\Plugin\Logger\LoggerImplementation\FileSystemLogger;
+use Systopia\CiviProxy\Plugin\Logger\LoggerImplementation\RedisLogger;
 
 class LoggerUtil {
 
