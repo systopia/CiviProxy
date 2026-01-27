@@ -7,7 +7,7 @@
 | http://www.systopia.de/                                 |
 +---------------------------------------------------------*/
 
-namespace Systopia\CiviProxy\Plugin\Logger;
+namespace Systopia\CiviProxy\Plugin\Logger\LoggerImplementation;
 
 class FileSystemLogger implements LoggerInterface {
 
