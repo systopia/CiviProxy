@@ -9,6 +9,8 @@
 
 namespace Systopia\CiviProxy\Plugin\Logger\LoggerImplementation;
 
+use Systopia\CiviProxy\Plugin\Logger\Data;
+
 class FileSystemLogger implements LoggerInterface {
 
   /**
@@ -41,7 +43,6 @@ class FileSystemLogger implements LoggerInterface {
    */
   protected $maxTimePerFile = 0;
 
-
   public function __construct(array $configuration) {
     $this->directory = $configuration['directory'];
     $this->archiveDirectory = $configuration['archive'];
@@ -67,34 +68,35 @@ class FileSystemLogger implements LoggerInterface {
     }
   }
 
-  public function __destruct()
-  {
+  public function __destruct() {
     $this->cleanArchive();
   }
 
   /**
    * Writes data to the log file.
-   * 
-   * @param Data $data
+   *
+   * @param \Systopia\CiviProxy\Plugin\Logger\Data $data
+   *
    * @return bool
    *   Return true when data is sucessfully written
    */
   public function writeToLog(Data $data): bool {
-    $json = json_encode($data->toArray(),JSON_PRETTY_PRINT);
+    $json = json_encode($data->toArray(), JSON_PRETTY_PRINT);
     $rotation = $this->getCurrentRotationInfo();
-    $fh = fopen($this->directory . DIRECTORY_SEPARATOR . $rotation['file'] .'.log', 'a+');
+    $fh = fopen($this->directory . DIRECTORY_SEPARATOR . $rotation['file'] . '.log', 'a+');
     if (!$fh) {
       return FALSE;
     }
     $stat = fstat($fh);
     if ($rotation['calls'] == 0 || empty($stat['size'])) {
-      $json = '[' . $json  . ']';
-    } else {
+      $json = '[' . $json . ']';
+    }
+    else {
       $json = ',' . $json . ']';
       // Remove the last ] from the file. We add this when we will write.
-      ftruncate($fh, $stat['size']-1);
+      ftruncate($fh, $stat['size'] - 1);
     }
-    $rotation['calls'] ++;
+    $rotation['calls']++;
     fwrite($fh, $json);
     $this->writeRotationInfo($rotation);
     fclose($fh);
@@ -114,7 +116,7 @@ class FileSystemLogger implements LoggerInterface {
       return filemtime($fileA) - filemtime($fileB);
     });
     $return = [];
-    foreach($files as $file) {
+    foreach ($files as $file) {
       $contents = file_get_contents($file);
       if (substr($contents, -1) == ',') {
         $contents = substr($contents, 0, -1);
@@ -125,18 +127,20 @@ class FileSystemLogger implements LoggerInterface {
       $data = json_decode($contents, TRUE);
       $return = array_merge($return, $data);
 
-      // Archive the log file. 
+      // Archive the log file.
       if ($archiveDirExists) {
         $baseName = substr(pathinfo($file, PATHINFO_BASENAME), 0, -4);
         if (file_exists($this->archiveDirectory . DIRECTORY_SEPARATOR . $baseName . '.log')) {
           [$baseName, $i] = explode('-', $baseName);
-          do  {
+          do {
             $i++;
-          } while(file_exists($this->archiveDirectory . DIRECTORY_SEPARATOR . $baseName . '-'.$i.'.log'));
+          }
+          while (file_exists($this->archiveDirectory . DIRECTORY_SEPARATOR . $baseName . '-' . $i . '.log'));
           $baseName .= '-' . $i;
         }
         rename($file, $this->archiveDirectory . DIRECTORY_SEPARATOR . $baseName . '.log');
-      } else {
+      }
+      else {
         unlink($file);
       }
     }
@@ -168,12 +172,12 @@ class FileSystemLogger implements LoggerInterface {
     if (!$useExistingFile) {
       $filename = date('YmdHis');
       $i = 1;
-      while(file_exists($this->directory . DIRECTORY_SEPARATOR . $filename . '-'.$i.'.log')) {
+      while (file_exists($this->directory . DIRECTORY_SEPARATOR . $filename . '-' . $i . '.log')) {
         $i++;
       }
       $rotation['calls'] = 0;
       $rotation['tstamp'] = time();
-      $rotation['file'] = $filename . '-'.$i;
+      $rotation['file'] = $filename . '-' . $i;
     }
     return $rotation;
   }
@@ -186,7 +190,7 @@ class FileSystemLogger implements LoggerInterface {
 
   /**
    * Cleans the archive directory.
-   * 
+   *
    * Only remove the files which are expired.
    * There is a setting how long to keep the archive.
    */
@@ -200,7 +204,7 @@ class FileSystemLogger implements LoggerInterface {
       usort($files, function($fileA, $fileB) {
         return filemtime($fileA) - filemtime($fileB);
       });
-      foreach($files as $file) {
+      foreach ($files as $file) {
         if (filemtime($file) > $this->archiveExpireTime) {
           break;
         }

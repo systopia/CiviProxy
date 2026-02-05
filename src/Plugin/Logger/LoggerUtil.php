@@ -12,17 +12,19 @@ namespace Systopia\CiviProxy\Plugin\Logger;
 use Systopia\CiviProxy\CiviProxy;
 use Systopia\CiviProxy\Plugin\Logger\Events\GetLoggerEvent;
 use Systopia\CiviProxy\Plugin\Logger\LoggerImplementation\FileSystemLogger;
+use Systopia\CiviProxy\Plugin\Logger\LoggerImplementation\LoggerInterface;
 use Systopia\CiviProxy\Plugin\Logger\LoggerImplementation\RedisLogger;
 
 class LoggerUtil {
 
   /**
    * Returns whether the request is queued.
-   * 
+   *
    * A queued request is not send to civicrm but stored in the log.
-   * 
+   *
    * @param Data $data
    * @param array $configuration
+   *
    * @return bool
    */
   public static function isQueued(Data $data, array $configuration): bool {
@@ -35,11 +37,12 @@ class LoggerUtil {
 
   /**
    * Returns the queue response for the request.
-   * 
+   *
    * A queued request is not send to civicrm but stored in the log.
-   * 
+   *
    * @param Data $data
    * @param array $configuration
+   *
    * @return string
    */
   public static function getQueueResponse(Data $data, array $configuration): string {
@@ -58,10 +61,11 @@ class LoggerUtil {
     }
     $xml = "<?xml version=\"1.0\"?><ResultSet xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" $count>";
     if (isset($response['values'])) {
-      foreach($response['values'] as $v) {
+      foreach ($response['values'] as $v) {
         $xml .= '<Result>' . static::arrayToXml($v) . '</Result>';
       }
-    } else {
+    }
+    else {
       $xml .= '<Result>' . static::arrayToXml($response) . '</Result>';
     }
     return $xml;
@@ -69,11 +73,12 @@ class LoggerUtil {
 
   /**
    * Returns a logger.
-   * 
+   *
    * @param string $type
    *   The type of the logger.
    * @param array $configuration
    *   Configuration for the logger.
+   *
    * @return LoggerInterface
    */
   public static function getLogger(string $type, array $configuration): ?LoggerInterface {
@@ -96,18 +101,19 @@ class LoggerUtil {
 
   /**
    * Returns the configuration for this entity.
-   * 
+   *
    * @param Data $data
    * @param array $configuration
+   *
    * @return array
    */
   public static function getEntityConfig(Data $data, array $configuration): ?array {
     $entity = $data->getEntity();
     $action = $data->getAction();
     if (!$entity || !$action) {
-      return null;
+      return NULL;
     }
-    foreach($configuration['entities'] as $entityConfig) {
+    foreach ($configuration['entities'] as $entityConfig) {
       if (strtolower($entityConfig['entity']) != strtolower($entity)) {
         continue;
       }
@@ -115,7 +121,7 @@ class LoggerUtil {
         return $entityConfig;
       }
     }
-    return null;
+    return NULL;
   }
 
   /**

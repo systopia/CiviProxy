@@ -14,6 +14,7 @@ use Systopia\CiviProxy\Events\FinishRedirectEvent;
 use Systopia\CiviProxy\Events\PrepareRedirectEvent;
 use Systopia\CiviProxy\Events\RedirectErrorEvent;
 use Systopia\CiviProxy\PluginInterface;
+use Throwable;
 
 class Plugin implements PluginInterface {
 
@@ -28,12 +29,12 @@ class Plugin implements PluginInterface {
   private $pluginConfiguration;
 
   /**
-   * @var LogInterface
+   * @var \Systopia\CiviProxy\Plugin\Logger\LoggerImplementation\LoggerInterface
    */
   private $primaryLogger;
 
   /**
-   * @var LogInterface
+   * @var \Systopia\CiviProxy\Plugin\Logger\LoggerImplementation\LoggerInterface
    */
   private $fallbackLogger;
 
@@ -41,7 +42,7 @@ class Plugin implements PluginInterface {
 
   /**
    * Get subscribed events.
-   * 
+   *
    * @return array
    */
   public function getSubscribedEvents() {
@@ -54,7 +55,7 @@ class Plugin implements PluginInterface {
 
   /**
    * Get api's.
-   * 
+   *
    * @return array
    */
   public function getApiActionDefinitions() {
@@ -80,7 +81,7 @@ class Plugin implements PluginInterface {
 
   /**
    * On prepare redirect event handler.
-   * 
+   *
    * Creates the data object. Which is written to the log upon error or upon success.
    */
   public function onPrepareRedirect(PrepareRedirectEvent $event) {
@@ -103,7 +104,7 @@ class Plugin implements PluginInterface {
 
   /**
    * On redirect error event handler.
-   * 
+   *
    * Write the data to the log.
    */
   public function onRedirectError(RedirectErrorEvent $event) {
@@ -119,7 +120,7 @@ class Plugin implements PluginInterface {
 
   /**
    * On finish redirect event handler.
-   * 
+   *
    * Write the data to the log.
    */
   public function onFinishRedirect(FinishRedirectEvent $event) {
@@ -140,7 +141,7 @@ class Plugin implements PluginInterface {
   protected function writeLog() {
     $this->initializeLogger();
     $entityConfig = LoggerUtil::getEntityConfig($this->data, $this->pluginConfiguration);
-    if ($entityConfig === null) {
+    if ($entityConfig === NULL) {
       return;
     }
 
@@ -148,7 +149,8 @@ class Plugin implements PluginInterface {
       if ($this->primaryLogger && $this->primaryLogger->writeToLog($this->data)) {
         return;
       }
-    } catch (\Throwable $t) {
+    }
+    catch (Throwable $t) {
       // Do nothing
     }
 

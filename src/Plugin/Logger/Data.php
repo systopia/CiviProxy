@@ -12,9 +12,9 @@ namespace Systopia\CiviProxy\Plugin\Logger;
 class Data {
 
   public const STATUS_UNKOWN = 'unknown';
-  
+
   public const STATUS_QUEUED = 'queued';
-  
+
   public const STATUS_DONE = 'done';
 
   public const STATUS_HTTP_ERROR = 'http-error';
@@ -57,8 +57,7 @@ class Data {
 
   public ?int $apiVersion = 3;
 
-  public function __construct(?string $url = NULL, ?array $parameters = NULL)
-  {
+  public function __construct(?string $url = NULL, ?array $parameters = NULL) {
     $this->date = date('Y-m-d H:i:s');
     if (NULL !== $url) {
       $this->url = $url;
@@ -69,12 +68,13 @@ class Data {
         if (is_array($jsonData)) {
           $this->parameters = $jsonData;
         }
-      } else {
-        $this->parameters = $parameters; 
+      }
+      else {
+        $this->parameters = $parameters;
       }
       if (array_key_exists('entity', $parameters)) {
         $this->entity = $parameters['entity'];
-      }  
+      }
       if (array_key_exists('action', $this->parameters)) {
         $this->action = $parameters['action'];
       }
@@ -109,33 +109,11 @@ class Data {
         'body' => $this->httpBody,
         'responseCode' => $this->responseCode,
         'responseHeaders' => $this->responseHeaders ?? [],
-        'responseBody' => $this->responseBody, 
+        'responseBody' => $this->responseBody,
       ],
       'errorCode' => $this->errorCode,
       'error' => $this->error,
     ];
-  }
-
-  protected function sanitize() {
-    if (str_starts_with($this->responseBody, '{')) {
-      $this->responseData = json_decode($this->responseBody, TRUE);
-    } elseif ('' !== $this->responseBody) {
-      $xml = simplexml_load_string($this->responseBody, "SimpleXMLElement", LIBXML_NOCDATA);
-      $json = json_encode($xml);
-      $data = json_decode($json,TRUE);
-      if (isset($data['Result'])) {
-        $this->responseData = $data['Result'];
-      }
-    }
-    if (is_array($this->responseData) && !empty($this->responseData['is_error'])) {
-      $this->status = static::STATUS_API_ERROR;
-    }
-    if (is_array($this->responseData) && !empty($this->responseData['error_message'])) {
-      $this->error = $this->responseData['error_message'];
-    }
-    if (NULL !== $this->responseCode && $this->responseCode > 400) {
-      $this->status = static::STATUS_HTTP_ERROR;
-    }
   }
 
   public function getEntity(): ?string {
@@ -151,6 +129,29 @@ class Data {
       return TRUE;
     }
     return FALSE;
+  }
+
+  protected function sanitize() {
+    if (str_starts_with($this->responseBody, '{')) {
+      $this->responseData = json_decode($this->responseBody, TRUE);
+    }
+    elseif ('' !== $this->responseBody) {
+      $xml = simplexml_load_string($this->responseBody, "SimpleXMLElement", LIBXML_NOCDATA);
+      $json = json_encode($xml);
+      $data = json_decode($json, TRUE);
+      if (isset($data['Result'])) {
+        $this->responseData = $data['Result'];
+      }
+    }
+    if (is_array($this->responseData) && !empty($this->responseData['is_error'])) {
+      $this->status = static::STATUS_API_ERROR;
+    }
+    if (is_array($this->responseData) && !empty($this->responseData['error_message'])) {
+      $this->error = $this->responseData['error_message'];
+    }
+    if (NULL !== $this->responseCode && $this->responseCode > 400) {
+      $this->status = static::STATUS_HTTP_ERROR;
+    }
   }
 
 }

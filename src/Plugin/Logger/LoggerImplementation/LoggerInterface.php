@@ -7,14 +7,17 @@
 | http://www.systopia.de/                                 |
 +---------------------------------------------------------*/
 
-namespace Systopia\CiviProxy\Plugin\Logger;
+namespace Systopia\CiviProxy\Plugin\Logger\LoggerImplementation;
+
+use Systopia\CiviProxy\Plugin\Logger\Data;
 
 interface LoggerInterface {
 
   /**
    * Writes data to the log file.
-   * 
+   *
    * @param Data $data
+   *
    * @return bool
    *   Return true when data is sucessfully written
    */

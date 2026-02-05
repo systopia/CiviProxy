@@ -10,7 +10,7 @@
 namespace Systopia\CiviProxy\Plugin\Logger\Events;
 
 use Systopia\CiviProxy\Event;
-use Systopia\CiviProxy\Plugin\Logger\LoggerInterface;
+use Systopia\CiviProxy\Plugin\Logger\LoggerImplementation\LoggerInterface;
 
 class GetLoggerEvent extends Event {
 
@@ -18,10 +18,9 @@ class GetLoggerEvent extends Event {
 
   public array $configuration = [];
 
-  public ?LoggerInterface $logger = null;
+  public ?LoggerInterface $logger = NULL;
 
-  public function __construct(string $type, array $configuration, ?LoggerInterface $logger = null)
-  {
+  public function __construct(string $type, array $configuration, ?LoggerInterface $logger = NULL) {
     $this->type = $type;
     $this->configuration = $configuration;
     $this->logger = $logger;

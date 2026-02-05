@@ -11,6 +11,7 @@ namespace Systopia\CiviProxy\Api;
 
 use DateInterval;
 use DateTimeZone;
+use Exception;
 use Lcobucci\Clock\SystemClock;
 use Lcobucci\JWT\JwtFacade;
 use Lcobucci\JWT\Signer\Key\InMemory;
@@ -20,7 +21,6 @@ use Lcobucci\JWT\Validation\Constraint\LooseValidAt;
 use Lcobucci\JWT\Validation\Constraint\RelatedTo;
 use Lcobucci\JWT\Validation\Constraint\SignedWith;
 use Systopia\CiviProxy\JWT\Sha256;
-use Exception;
 
 class Api {
 

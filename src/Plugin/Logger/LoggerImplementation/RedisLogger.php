@@ -9,6 +9,8 @@
 
 namespace Systopia\CiviProxy\Plugin\Logger\LoggerImplementation;
 
+use Redis;
+
 class RedisLogger implements LoggerInterface {
 
   /**
@@ -53,8 +55,9 @@ class RedisLogger implements LoggerInterface {
 
   /**
    * Writes data to the Redis log.
-   * 
+   *
    * @param Data $data
+   *
    * @return bool
    *   Return true when data is sucessfully written
    */
@@ -67,8 +70,7 @@ class RedisLogger implements LoggerInterface {
     return TRUE;
   }
 
-  public function readLog(): array
-  {
+  public function readLog(): array {
     $return = [];
     $redis = $this->getRedisConnection();
     if ($redis) {
@@ -89,21 +91,21 @@ class RedisLogger implements LoggerInterface {
     return $return;
   }
 
-  protected function getRedisConnection(): ?\Redis {
-    static $redis = null;
+  protected function getRedisConnection(): ?Redis {
+    static $redis = NULL;
     if (!$redis) {
-      $redis = new \Redis();
+      $redis = new Redis();
       if (!$redis->connect($this->host, $this->port, $this->timeout)) {
-        $redis = null;
-        return null;
+        $redis = NULL;
+        return NULL;
       }
       if (!empty($this->auth)) {
         if (!$redis->auth($this->auth)) {
-          $redis = null;
-          return null;
+          $redis = NULL;
+          return NULL;
         }
       }
-    } 
+    }
     return $redis;
   }
 

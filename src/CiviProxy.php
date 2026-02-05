@@ -32,19 +32,6 @@ class CiviProxy {
   }
 
   /**
-   * @throws \Systopia\CiviProxy\Plugin\PluginNotFoundException
-   */
-  private function initializePlugins(): void {
-    global $plugins;
-    foreach ($plugins as $pluginClass) {
-      if (!class_exists($pluginClass)) {
-        throw new PluginNotFoundException($pluginClass);
-      }
-      $this->plugins[] = new $pluginClass();
-    }
-  }
-
-  /**
    * @return \Systopia\CiviProxy\CiviProxy
    */
   public static function instance(): self {
@@ -62,6 +49,19 @@ class CiviProxy {
   public function dispatchEvent(Event $event): void {
     $this->eventDispatcher ??= new EventDispatcher($this->plugins);
     $this->eventDispatcher->dispatchEvent($event);
+  }
+
+  /**
+   * @throws \Systopia\CiviProxy\Plugin\PluginNotFoundException
+   */
+  private function initializePlugins(): void {
+    global $plugins;
+    foreach ($plugins as $pluginClass) {
+      if (!class_exists($pluginClass)) {
+        throw new PluginNotFoundException($pluginClass);
+      }
+      $this->plugins[] = new $pluginClass();
+    }
   }
 
 }
