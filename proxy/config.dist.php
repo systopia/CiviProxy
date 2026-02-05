@@ -158,7 +158,61 @@ $file_cache_include = [
         //'#.+[.](png|jpe?g|gif)#i'           // only media files
     ];
 
+/****************************************************************
+ **                   Logger Plugin Options                    **
+ ****************************************************************/
 
+ // Make sure you enabled the logger in the plugin sections.
+$loggerPluginConfiguration = [
+  // redis
+  'primaryLogger' => 'redis',
+  'fallbackLogger' => 'filesystem',
+  'redis' => [
+    // or socket: /var/run/redis.sock
+    'host' => '10.5.0.69',
+    // Leave empty to use default 6379
+    'port' => '',
+    // The name of the list is where the messages are stored
+    'stream' => 'civiproxy',
+    // Use an array like ['pass' => 'password'] for password only authentication. 
+    // Use ['user' => 'username', 'pass' => 'password'] for authentication with usename and password.
+    // Use [] for no authentication.
+    'auth' => [],
+    // Set time out in seconds (float). 0 means use default timeout
+    'timeout' => '0.5',
+  ],
+  'filesystem' => [
+    'directory' => dirname(__FILE__) . DIRECTORY_SEPARATOR . 'logs',
+    'archive' => dirname(__FILE__) . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . 'archive',
+    // Remove log files from archive after 1 day
+    'keep_archive' => 1,
+    'rotation' => [
+      'enabled' => true,
+      'max_calls_per_file' => 100,
+      // 1 hour
+      'max_time_per_file' => 3600,
+    ],
+  ],
+  // List of api entities & action to log (or queue)
+  'entities' => [
+    [
+      'entity' => 'Contact',
+      // Provide the name of the action or * means any action.
+      'action' => '*',
+      // When this TRUE we do not connect to CiviCRM but we do log the call. Also provide a queueResponse
+      'queueOnly' => FALSE,
+      'queueReponse' => [],
+    ],
+    [
+      'entity' => 'Email',
+      // Provide the name of the action or * means any action.
+      'action' => '*',
+      // When this TRUE we do not connect to CiviCRM but we do log the call. Also provide a queueResponse
+      'queueOnly' => TRUE,
+      'queueReponse' => ['is_error' => '0'],
+    ],
+  ]
+];
 
 /****************************************************************
  **                   REST API OPTIONS                         **
