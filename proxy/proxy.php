@@ -8,7 +8,7 @@
 +---------------------------------------------------------*/
 
 require_once "config.php";
-$civiproxy_version = '1.1.0-dev';
+$civiproxy_version = '1.1.0-beta1';
 
 use Systopia\CiviProxy\CiviProxy;
 use Systopia\CiviProxy\Events\FinishRedirectEvent;
