@@ -80,12 +80,12 @@ class Data {
       if (array_key_exists('action', $this->parameters)) {
         $this->action = $this->parameters['action'];
       } elseif (array_key_exists('action', $parameters)) {
-        $this->entity = $parameters['action'];
+        $this->action = $parameters['action'];
       }
       if (array_key_exists('version', $this->parameters)) {
         $this->apiVersion = $this->parameters['version'];
       } elseif (array_key_exists('version', $parameters)) {
-        $this->entity = $parameters['version'];
+        $this->apiVersion = $parameters['version'];
       }
       unset($this->parameters['action']);
       unset($this->parameters['entity']);
