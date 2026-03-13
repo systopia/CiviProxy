@@ -125,7 +125,9 @@ class FileSystemLogger implements LoggerInterface {
         $contents = '[' . $contents . ']';
       }
       $data = json_decode($contents, TRUE);
-      $return = array_merge($return, $data);
+      if (is_array($data)) {
+        $return = array_merge($return, $data);
+      }
 
       // Archive the log file.
       if ($archiveDirExists) {

@@ -72,13 +72,19 @@ class Data {
       else {
         $this->parameters = $parameters;
       }
-      if (array_key_exists('entity', $parameters)) {
+      if (array_key_exists('entity', $this->parameters)) {
+        $this->entity = $this->parameters['entity'];
+      } elseif (array_key_exists('entity', $parameters)) {
         $this->entity = $parameters['entity'];
       }
       if (array_key_exists('action', $this->parameters)) {
+        $this->action = $this->parameters['action'];
+      } elseif (array_key_exists('action', $parameters)) {
         $this->action = $parameters['action'];
       }
       if (array_key_exists('version', $this->parameters)) {
+        $this->apiVersion = $this->parameters['version'];
+      } elseif (array_key_exists('version', $parameters)) {
         $this->apiVersion = $parameters['version'];
       }
       unset($this->parameters['action']);

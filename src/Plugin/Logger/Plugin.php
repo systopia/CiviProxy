@@ -45,7 +45,7 @@ class Plugin implements PluginInterface {
    *
    * @return array
    */
-  public function getSubscribedEvents() {
+  public function getSubscribedEvents(): array {
     return [
       PrepareRedirectEvent::class => 'onPrepareRedirect',
       RedirectErrorEvent::class => 'onRedirectError',
@@ -58,7 +58,7 @@ class Plugin implements PluginInterface {
    *
    * @return array
    */
-  public function getApiActionDefinitions() {
+  public function getApiActionDefinitions(): array {
     return [
       'readlog' => ['invokeReadLog'],
     ];
