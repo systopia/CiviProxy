@@ -57,6 +57,8 @@ class Data {
 
   public ?int $apiVersion = 3;
 
+  public $isJsonRequest = FALSE;
+
   public function __construct(?string $url = NULL, ?array $parameters = NULL) {
     $this->date = date('Y-m-d H:i:s');
     if (NULL !== $url) {
@@ -64,6 +66,7 @@ class Data {
     }
     if (is_array($parameters)) {
       if (array_key_exists('json', $parameters)) {
+        $this->isJsonRequest = TRUE;
         $jsonData = json_decode($parameters['json'], TRUE);
         if (is_array($jsonData)) {
           $this->parameters = $jsonData;
@@ -131,10 +134,7 @@ class Data {
   }
 
   public function isJsonRequest(): ?bool {
-    if (!empty($this->parameters['json'])) {
-      return TRUE;
-    }
-    return FALSE;
+    return $this->isJsonRequest;
   }
 
   protected function sanitize() {
