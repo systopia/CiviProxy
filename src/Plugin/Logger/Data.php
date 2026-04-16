@@ -64,16 +64,14 @@ class Data {
     if (NULL !== $url) {
       $this->url = $url;
     }
+    $this->parameters = $parameters;
     if (is_array($parameters)) {
       if (array_key_exists('json', $parameters)) {
-        $this->isJsonRequest = TRUE;
+        $this->isJsonRequest = !empty($parameters['json']);
         $jsonData = json_decode($parameters['json'], TRUE);
         if (is_array($jsonData)) {
           $this->parameters = $jsonData;
         }
-      }
-      else {
-        $this->parameters = $parameters;
       }
       if (array_key_exists('entity', $this->parameters)) {
         $this->entity = $this->parameters['entity'];
