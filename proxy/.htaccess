@@ -5,3 +5,11 @@ Options -Indexes
   RewriteCond %{REQUEST_URI} ^/civicrm/ajax/api4
   RewriteRule ^civicrm/ajax/api4/([^/]*)/([^/]*) rest4.php?entity=$1&action=$2 [QSA,B]
 </IfModule>
+
+<Files config.php>
+  Deny from all
+</Files>
+
+<Files secrets.php>
+  Deny from all
+</Files>
