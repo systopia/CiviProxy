@@ -36,4 +36,9 @@ See [Configuring CiviProxy](configuration.md) for futher settings you need to ma
 4. Create a `config.php` file using `config.dist.php` as a template.
 5. Run in your webspace the command `composer install`
 
+!!! note
+    It is possible and recommended to outsource secrets into a separate file outside of the document root. By default, a
+    .htaccess file is included in the proxy directory so `config.php` and `secrets.php` are not accidentally leaked. If
+    you are using an alternative webserver, you'll have to ensure these files are protected.
+
 See [Configuring CiviProxy](configuration.md) for details on what you need to include in the `config.php` file.
