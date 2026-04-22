@@ -35,11 +35,20 @@ In the screen print below you can see the CiviProxy Settings page with the value
 The CiviProxy server is the actual policeman that receives all requests and decides if they are allowed to send data to or retrieve data from CiviCRM. It consists of a series of scripts which you need to install on the server as explained in [Installing CiviProxy](installation.md).
 
 Once you have installed your CiviProxy server you need to complete a few configuration steps.
+
 ### The Config.php file
 
 The configuration of CiviProxy is mainly controlled with one PHP file called `config.php`. Create this file by copying or renaming the `config.dist.php` file.
 
 ![List of files on your CiviProxy server](img/file%20list%20proxy.png)
+
+It is recommended to move the `config.php` file outside of the webroot, to avoid accidentally exposing configuration or secrets. You can do this by moving the `config.php` file to your preferred destiation, and adding a new `config.php` file in the original location with the following contents:
+
+```
+<?php
+
+require_once "/path/to/config.php";
+```
 
 ### Configuring the URL of your CiviProxy server
 
