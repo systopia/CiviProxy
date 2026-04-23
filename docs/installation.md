@@ -37,3 +37,12 @@ See [Configuring CiviProxy](configuration.md) for futher settings you need to ma
 5. Run in your webspace the command `composer install`
 
 See [Configuring CiviProxy](configuration.md) for details on what you need to include in the `config.php` file.
+
+## Installing via docker
+
+1. Create a `config.php` file using `config.dist.php` as a template.
+1. Build a docker image with `docker build . -t civiproxy`
+1. Run the resulting container with `docker run -d -p 8080:80 -v $CONFIG_PHP:/var/www/html/config.php --name civiproxy civiproxy`
+
+This will create a docker container listening on port 8080. It is recommended to put this container behind a reverse
+proxy for SSL handling.
