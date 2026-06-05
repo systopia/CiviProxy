@@ -1,0 +1,9 @@
+services:
+  civiproxy:
+    image: php:8.4-apache
+    volumes:
+      - ./proxy:/var/www/html
+      - ./vendor:/var/www/vendor
+      - ./plugins:/var/www/plugins
+    ports:
+      - 8080:80
