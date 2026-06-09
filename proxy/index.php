@@ -15,7 +15,7 @@ require_once "proxy.php";
 <html>
  <head>
   <meta charset="UTF-8">
-  <title>CiviProxy Version <?php echo $civiproxy_version;?></title>
+  <title>CiviProxy</title>
   <style type="text/css">
     body {
       margin: 0;
@@ -51,7 +51,7 @@ require_once "proxy.php";
   <div id="container">
     <div id="info" class="center">
       <a href="https://www.systopia.de/"><img src="static/images/proxy-logo.png" alt="SYSTOPIA Organisationsberatung"></img></a>
-      <p id="version">CiviProxy Version <?php echo $civiproxy_version;?></p>
+      <p id="version">CiviProxy</p>
     </div>
   </div>
  </body>
