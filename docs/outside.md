@@ -20,12 +20,19 @@ Between Twingle and CiviProxy, use the [legacyrest flow](https://docs.civicrm.or
 Twingle sends the parameters packed into a json parameter, for that reason you have to
 * set `$rest_evaluate_json_parameter = TRUE;` in CiviProxy's `config.php`
 
-For all data synchronisation from Twingle to CiviCRM, including Twingle shop orders, only the CiviCRM-API-Entity `TwingleDonation` and there only the action `submit` is used by Twingle. You may want to replace `'all'` in the following example by the IPs used by Twingle, if you don't already implement this restriction in your apache2 config:
+For all data synchronisation from Twingle to CiviCRM, including Twingle shop orders, only the CiviCRM-API-Entity `TwingleDonation` and there only the actions `submit` and `cancel` are used by Twingle. You may want to replace `'all'` in the following example by the IPs used by Twingle, if you don't already implement this restriction in your apache2 config:
 ```
 $rest_allowed_actions = [
   'all' => [
     'TwingleDonation' => [
       'submit' => [
+        '*' => 'string',
+      ],
+    ],
+  ],
+'all' => [
+    'TwingleDonation' => [
+      'cancel' => [
         '*' => 'string',
       ],
     ],
