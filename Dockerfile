@@ -1,8 +1,15 @@
 # You may find this Dockerfile useful in development or production
 # From the CiviProxy directory
-# * Build a docker image with `docker build . -t civiproxy`
-# * Run a development container with `run -d -p 4050:80 -v $PWD/proxy:/var/www/html --name civiproxy civiproxy`
+# See docs/installation.md for instructions
 
-FROM php:7-apache
+FROM composer AS build
 
-COPY proxy/ /var/www/html
+COPY . /app
+RUN composer install
+RUN composer dump-autoload
+
+FROM php:8-apache
+
+COPY --from=build /app/proxy /var/www/html
+COPY --from=build /app/vendor /var/www/vendor
+COPY --from=build /app/plugins /var/www/plugins
