@@ -23,6 +23,17 @@ class Request {
 
   public array $cookies = [];
 
+  public static function create(): Request {
+    $request = new Request($_GET, $_POST, $_FILES, $_SERVER, $_COOKIE);
+    // We use getallheaders because it could be that not
+    // all headers are set in $_SERVER.
+    // For example the Authorization header.
+    foreach(getallheaders() as $header => $headerValue) {
+      $request->headers[$header] = $headerValue;
+    }
+    return $request;
+  }
+
   public function __construct(array $query, array $request = [], array $files = [], array $server = [], array $cookies = []) {
     $this->query = $query;
     $this->request = $request;
@@ -30,7 +41,10 @@ class Request {
     $this->server = $server;
     foreach ($server as $header => $headerValue) {
       if (stripos($header, 'HTTP_') === 0) {
-        $this->headers[substr($header, 5)] = $headerValue;
+        //In $_SERVER the HTTP headers look like HTTP_CONTENT_LENGTH.
+        // We translate this to Content-Length
+        $key = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($header, 5)))));
+        $this->headers[$key] = $headerValue;
       }
     }
     $this->cookies = $cookies;
