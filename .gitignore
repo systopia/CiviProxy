@@ -3,3 +3,4 @@ proxy/file_cache
 proxy/config.php
 debug.log
 .idea
+.phpunit.cache
