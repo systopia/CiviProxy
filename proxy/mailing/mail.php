@@ -8,6 +8,8 @@
 +---------------------------------------------------------*/
 
 ini_set('include_path', dirname(dirname(__FILE__)));
+require_once "config.php";
+require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
 require_once "proxy.php";
 
 // see if mail open tracking is enabled

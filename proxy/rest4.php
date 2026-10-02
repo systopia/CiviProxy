@@ -8,6 +8,7 @@
 +---------------------------------------------------------*/
 
 require_once "config.php";
+require_once "../vendor/autoload.php";
 require_once "proxy.php";
 require_once "checks.php";
 
