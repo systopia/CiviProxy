@@ -46,6 +46,7 @@ if (!empty($parameters['id'])) {
   $data_key   = 'data&'   . $parameters['id'];
   $url = $target_mosaico . $parameters['id'];
 } elseif (!empty($parameters['template_url'])) {
+  if (civiproxy_has_parent_segment($parameters['template_url'])) civiproxy_http_error("Invalid Resource", 403);
   // check restrictions
   if (!empty($file_cache_exclude)) {
     foreach ($file_cache_exclude as $pattern) {

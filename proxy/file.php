@@ -22,6 +22,7 @@ $parameters = civiproxy_get_parameters($valid_parameters);
 
 // check if id specified
 if (empty($parameters['id'])) civiproxy_http_error("Resource not found");
+if (civiproxy_has_parent_segment($parameters['id'])) civiproxy_http_error("Invalid Resource", 403);
 
 // check restrictions
 if (!empty($file_cache_exclude)) {
@@ -68,7 +69,7 @@ if ($header && $data) {
 }
 
 // if we get here, we have a cache miss => load
-$url = $target_file . $parameters['id'];
+$url = $target_file . civiproxy_encode_url_path($parameters['id']);
 // error_log("CACHE MISS. LOADING $url");
 
 $curlSession = curl_init();
@@ -92,6 +93,7 @@ if (curl_error($curlSession)) {
   error_log(curl_error($curlSession));
   civiproxy_http_error(curl_error($curlSession), curl_errno($curlSession));
 }
+$http_code = curl_getinfo($curlSession, CURLINFO_HTTP_CODE);
 
 // process the results
 $content = explode("\r\n\r\n", $response, 2);
@@ -102,8 +104,10 @@ $body    = $content[1];
 $header_lines = explode(chr(10), $header);
 
 // store the information in the cache
-$file_cache->save(json_encode($header_lines), $header_key);
-$file_cache->save($body, $data_key);
+if ($http_code >= 200 && $http_code < 300) {
+  $file_cache->save(json_encode($header_lines), $header_key);
+  $file_cache->save($body, $data_key);
+}
 
 // and reply
 foreach ($header_lines as $header_line) {

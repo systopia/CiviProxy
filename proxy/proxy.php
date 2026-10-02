@@ -321,6 +321,29 @@ function civiproxy_mend_URLs(&$string) {
 }
 
 /**
+ * @param string $path
+ * @return string
+ */
+function civiproxy_encode_url_path(string $path): string {
+  $parts = explode('?', $path, 2);
+  $segments = array_map(
+    fn(string $segment): string => rawurlencode(rawurldecode($segment)),
+    explode('/', $parts[0])
+  );
+  $encoded = implode('/', $segments);
+  return isset($parts[1]) ? $encoded . '?' . $parts[1] : $encoded;
+}
+
+/**
+ * @param string $path
+ * @return bool
+ */
+function civiproxy_has_parent_segment(string $path): bool {
+  $segments = preg_split('#[/\\\\]#', rawurldecode(explode('?', $path, 2)[0]));
+  return in_array('..', $segments, TRUE);
+}
+
+/**
  * Will check the incoming connection.
  * This hook allowes for (future) checks for flooding, spoofing,
  * unauthorized access quantities, etc.

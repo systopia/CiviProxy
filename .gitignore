@@ -5,3 +5,4 @@ vendor
 debug.log
 composer.lock
 .idea
+.phpunit.cache
