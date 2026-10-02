@@ -17,17 +17,24 @@ if (!$target_file) civiproxy_http_error("Feature disabled", 405);
 civiproxy_security_check('file');
 
 // basic restraints
-$valid_parameters = array( 'id'   => 'string' );
+$valid_parameters = ['id' => 'string'];
 $parameters = civiproxy_get_parameters($valid_parameters);
 
 // check if id specified
-if (empty($parameters['id'])) civiproxy_http_error("Resource not found");
-if (civiproxy_has_parent_segment($parameters['id'])) civiproxy_http_error("Invalid Resource", 403);
+if (empty($parameters['id'])) {
+  civiproxy_http_error("Resource not found");
+}
+
+if (civiproxy_has_parent_segment($parameters['id']) || str_contains($parameters['id'], "\0")) {
+  civiproxy_http_error('Invalid Resource', 403);
+}
+
+$path = civiproxy_encode_url_path($parameters['id']);
 
 // check restrictions
 if (!empty($file_cache_exclude)) {
   foreach ($file_cache_exclude as $pattern) {
-    if (preg_match($pattern, $parameters['id'])) {
+    if (preg_match($pattern, $path)) {
       civiproxy_http_error("Invalid Resource", 403);
     }
   }
@@ -35,7 +42,7 @@ if (!empty($file_cache_exclude)) {
 if (!empty($file_cache_include)) {
   $accept_id = FALSE;
   foreach ($file_cache_include as $pattern) {
-    if (preg_match($pattern, $parameters['id'])) {
+    if (preg_match($pattern, $path)) {
       $accept_id = TRUE;
     }
   }
@@ -46,16 +53,18 @@ if (!empty($file_cache_include)) {
 
 // load PEAR file cache
 ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . 'libs');
-if (!file_exists($file_cache_options['cacheDir'])) mkdir($file_cache_options['cacheDir']);
+if (!file_exists($file_cache_options['cacheDir'])) {
+  mkdir($file_cache_options['cacheDir']);
+}
 require_once('Cache/Lite.php');
 $file_cache = new Cache_Lite($file_cache_options);
 
 // look up the required resource
-$header_key = 'header&' . $parameters['id'];
-$data_key   = 'data&'   . $parameters['id'];
+$header_key = 'header&' . $path;
+$data_key = 'data&' . $path;
 
 $header = $file_cache->get($header_key);
-$data   = $file_cache->get($data_key);
+$data = $file_cache->get($data_key);
 
 if ($header && $data) {
   // error_log("CACHE HIT");
@@ -69,13 +78,13 @@ if ($header && $data) {
 }
 
 // if we get here, we have a cache miss => load
-$url = $target_file . civiproxy_encode_url_path($parameters['id']);
+$url = $target_file . $path;
 // error_log("CACHE MISS. LOADING $url");
 
 $curlSession = curl_init();
 curl_setopt($curlSession, CURLOPT_URL, $url);
 curl_setopt($curlSession, CURLOPT_HEADER, 1);
-curl_setopt($curlSession, CURLOPT_RETURNTRANSFER,1);
+curl_setopt($curlSession, CURLOPT_RETURNTRANSFER, 1);
 curl_setopt($curlSession, CURLOPT_TIMEOUT, 30);
 curl_setopt($curlSession, CURLOPT_SSL_VERIFYHOST, 2);
 if (!empty($target_interface)) {
@@ -97,8 +106,8 @@ $http_code = curl_getinfo($curlSession, CURLINFO_HTTP_CODE);
 
 // process the results
 $content = explode("\r\n\r\n", $response, 2);
-$header  = $content[0];
-$body    = $content[1];
+$header = $content[0];
+$body = $content[1];
 
 // extract headers
 $header_lines = explode(chr(10), $header);
@@ -115,4 +124,4 @@ foreach ($header_lines as $header_line) {
 }
 
 print $body;
-curl_close ($curlSession);
+curl_close($curlSession);
