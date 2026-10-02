@@ -520,7 +520,6 @@ function civiproxy_sanitise($value, $type) {
  * and ends processing
  */
 function civiproxy_http_error($message, $code = 404) {
-  global $civiproxy_version;
   global $error_message;
   global $civiproxy_logo;
 
