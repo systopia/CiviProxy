@@ -8,7 +8,7 @@
 +---------------------------------------------------------*/
 
 require_once "config.php";
-$civiproxy_version = '1.0.1-dev';
+$civiproxy_version = '1.0.1';
 
 /**
  * this will redirect the request to another URL,
@@ -619,4 +619,3 @@ function civiproxy_retrieve_api_parameters($remote_addr, $api_entity, $api_actio
   }
   return null;
 }
-
