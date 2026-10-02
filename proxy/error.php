@@ -115,7 +115,7 @@ require_once "proxy.php";
   <div id="container">
     <div id="info" class="center-small">
       <a href="https://www.systopia.de/"><?php echo $civiproxy_logo;?></a>
-      <p id="version">CiviProxy Version <?php echo $civiproxy_version;?></p>      
+      <p>CiviProxy</p>
     </div>
     <div id="error-container" class="center">
       <?php if(isset($civiproxy_error_message)):?>

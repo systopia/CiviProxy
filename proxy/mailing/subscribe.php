@@ -17,7 +17,7 @@ if (empty($mail_subscription_user_key)) civiproxy_http_error("Feature disabled",
 civiproxy_security_check('mail-subscribe');
 
 // LOAD VISIBLE GROUPS
-$group_query = civicrm_api3('Group', 'get', 
+$group_query = civicrm_api3('Group', 'get',
                           array( 'visibility' => 'Public Pages',
                                  'is_hidden'  => 0,
                                  'is_active'  => 1,
@@ -44,7 +44,7 @@ if (!empty($_REQUEST['email'])) {
 
   // ALL FINE. SUBSCRIBE USER!
   // first, get/create the contact
-  $contact_query = civicrm_api3('Contact', 'create', 
+  $contact_query = civicrm_api3('Contact', 'create',
                                 array( 'email'        => $email,
                                        'contact_type' => 'Individual',
                                        'dupe_check'   => 1,
@@ -63,7 +63,7 @@ if (!empty($_REQUEST['email'])) {
   }
 
   // then: subscribe
-  $subscribe_query = civicrm_api3('MailingEventSubscribe', 'create', 
+  $subscribe_query = civicrm_api3('MailingEventSubscribe', 'create',
                                 array( 'email'        => $email,
                                        'contact_id'   => $contact_id,
                                        'group_id'     => $group_id,
@@ -82,7 +82,7 @@ if (!empty($_REQUEST['email'])) {
 <html>
  <head>
   <meta charset="UTF-8">
-  <title>CiviProxy Version <?php echo $civiproxy_version;?></title>
+  <title>CiviProxy</title>
   <style type="text/css">
     body {
       margin: 0;
@@ -111,7 +111,7 @@ if (!empty($_REQUEST['email'])) {
       text-align: center;
       width: 462px;
     }
-    
+
   </style>
  </head>
  <body>
