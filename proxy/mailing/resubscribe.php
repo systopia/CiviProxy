@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>CiviProxy Version <?php echo $civiproxy_version; ?></title>
+  <title>CiviProxy</title>
   <style type="text/css">
     body {
       margin: 0;

@@ -526,7 +526,7 @@ function civiproxy_http_error($message, $code = 404) {
 
   $civiproxy_error_message = $message;
 
-  header("HTTP/1.1 $code $civiproxy_error_message (CiviProxy {$civiproxy_version})");
+  header("HTTP/1.1 $code $civiproxy_error_message (CiviProxy)");
   require "error.php";
 
   exit();
@@ -672,4 +672,3 @@ function civiproxy_retrieve_api_parameters($remote_addr, $api_entity, $api_actio
   }
   return null;
 }
-
