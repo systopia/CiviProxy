@@ -279,6 +279,21 @@ $_webhook2api = [
                 [["data", "object", "metadata", "email"],      ["email"]]
             ],
             "parameter_sanitation" => [],
+            "verify_request" => [
+              "enable" => FALSE, // SET to TRUE to enable verification of the request against a CiviCRM api.
+              "entity" => "HmacSignature", // This is an API from the CiviHMAC extension (https://lab.civicrm.org/extensions/civihmac)
+              "action" => "verify",
+              "version" => 3, // Only version 3 is supported
+              "parameters" => ["provider" => "example"],
+              "parameter_mapping" => [
+                [["HTTP_BODY"], ["body"]], // This will submit the body as string to CiviCRM
+                [["HTTP_HEADERS"], ["headers"]], // This will submit all headers to CiviCRM in the headers (will be submitted as an array)
+                // Or use the config below to specify which header should be sent to CiviCRM as a separate api key.
+                // [["HTTP_HEADERS", "x-ms-date"], ["x-ms-date"]],
+                // [["HTTP_HEADERS", "x-ms-conetnt-sha256"], ['x-ms-content-sha256']],
+                // [["HTTP_HEADERS", "Authorization"], ["authorization"]],
+              ],  
+            ],
         ]
     ]
 ];

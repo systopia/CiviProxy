@@ -8,7 +8,10 @@
 +---------------------------------------------------------*/
 
 require_once "config.php";
+require_once "../vendor/autoload.php";
 require_once "proxy.php";
+
+use Systopia\CiviProxy\Api\Request;
 
 // first check if webhooks are enabled
 if (empty($webhook2api)) civiproxy_http_error("Feature disabled", 405);
@@ -99,6 +102,17 @@ function webhook2api_processConfiguration($configuration, $post_input) {
     }
   }
 
+  // Verify request
+  if (!empty($configuration['verify_request']) && !empty($configuration['verify_request']['enable'])) {
+    $request = Request::create();
+    $request_is_valid = webhook2api_verifyRequest($configuration, $request, $post_input);
+    if (!$request_is_valid) {
+      // The verifcation of the request failed.
+      // So return an access denied.
+      return ["Access denied", 403];
+    }
+  }
+
   // default return code if everything goes according to plan
   $http_code = 200;
   // check if we have a json_array and react accordingly
@@ -147,6 +161,33 @@ function webhook2api_processConfiguration($configuration, $post_input) {
   }
   // all done
   exit();
+}
+
+function webhook2api_verifyRequest(array $configuration, Request $request, string $post_input): bool {
+  // compile API query
+  $data['HTTP_HEADERS'] = $request->headers;
+  $data['HTTP_BODY'] = $post_input;
+  $params = is_array($configuration['verify_request']['parameters']) ? $configuration['verify_request']['parameters'] : [];
+  if (!empty($configuration['verify_request']['parameter_mapping']) && is_array($configuration['verify_request']['parameter_mapping'])) {
+    foreach ($configuration['verify_request']['parameter_mapping'] as $mapping) {
+      $source_path = $mapping[0];
+      $target_path = $mapping[1];
+      // get value
+      $value = webhook2api_getValue($data, $source_path);
+
+      // set to target
+      webhook2api_setValue($params, $target_path, $value);
+    }
+  } 
+  else {
+    return FALSE;
+  }
+
+  $params['api_key'] = $configuration['api_key'];
+
+
+  $return = civicrm_api3($configuration['verify_request']['entity'], $configuration['verify_request']['action'], $params);
+  return array_key_exists('is_error', $return) && empty($return['is_error']);
 }
 
 
